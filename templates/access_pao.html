@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAO Legal Support - Project Sentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pao-blue: #0d47a1;
+            --pao-blue-dark: #0a3880;
+            --sentinel-orange: #ef6c00;
+            --sentinel-orange-light: #fff3e0;
+            --success: #1b5e20;
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text: #1a2332;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+        }
+
+        /* ── HERO ── */
+        .pao-hero {
+            background: linear-gradient(135deg, #0a1628 0%, #0d47a1 60%, #1565c0 100%);
+            color: white;
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .pao-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .pao-hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sentinel-orange), #ffd740, var(--sentinel-orange));
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .hero-title span { color: #ffd740; }
+        .hero-subtitle { font-size: 1.05rem; opacity: 0.8; max-width: 560px; margin: 0 auto; }
+
+        /* ── SERVICE CARDS ── */
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px 24px;
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--pao-blue);
+        }
+        .service-card.orange::before { background: var(--sentinel-orange); }
+        .service-card.green::before { background: #2e7d32; }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(13,71,161,0.12);
+        }
+        .icon-box {
+            width: 52px; height: 52px;
+            background: #e3f2fd;
+            color: var(--pao-blue);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+        .service-card.orange .icon-box { background: #fff3e0; color: var(--sentinel-orange); }
+        .service-card.green .icon-box { background: #e8f5e9; color: #2e7d32; }
+        .service-card h5 { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+        .service-card p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+
+        /* ── BUTTONS ── */
+        .btn-pao {
+            background: var(--pao-blue);
+            color: white;
+            font-weight: 700;
+            border-radius: 40px;
+            border: none;
+            padding: 10px 22px;
+            font-size: 0.83rem;
+            letter-spacing: 0.02em;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 7px;
+        }
+        .btn-pao:hover { background: var(--pao-blue-dark); color: white; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(13,71,161,0.3); }
+        .btn-orange {
+            background: var(--sentinel-orange);
+            color: white;
+            font-weight: 700;
+            border-radius: 40px;
+            border: none;
+            padding: 10px 22px;
+            font-size: 0.83rem;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 7px;
+        }
+        .btn-orange:hover { background: #e65100; color: white; transform: translateY(-1px); }
+        .btn-outline-pao {
+            background: transparent;
+            border: 2px solid var(--pao-blue);
+            color: var(--pao-blue);
+            font-weight: 700;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.83rem;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 7px;
+        }
+        .btn-outline-pao:hover { background: var(--pao-blue); color: white; }
+
+        /* ── FLASH MESSAGES ── */
+        .flash-success {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* ── APPLICATION MODAL ── */
+        #applyModal .modal-dialog { max-width: 600px; }
+        #applyModal .modal-content {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        }
+        #applyModal .modal-header {
+            background: linear-gradient(135deg, #0a1628, #0d47a1);
+            color: white;
+            padding: 22px 28px;
+            border-bottom: 3px solid var(--sentinel-orange);
+        }
+        #applyModal .modal-header .btn-close { filter: invert(1); }
+        #applyModal .modal-body { padding: 28px; }
+        #applyModal .modal-footer { background: #f8fafc; padding: 14px 28px; border-top: 1px solid var(--border); }
+
+        /* Form Styles */
+        .form-section-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--pao-blue);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .form-label-s {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        .form-ctrl {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-family: 'DM Sans', sans-serif;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafbfc;
+            color: var(--text);
+        }
+        .form-ctrl:focus {
+            outline: none;
+            border-color: var(--pao-blue);
+            box-shadow: 0 0 0 3px rgba(13,71,161,0.1);
+            background: white;
+        }
+        textarea.form-ctrl { resize: vertical; min-height: 110px; }
+        .required-star { color: var(--sentinel-orange); margin-left: 2px; }
+
+        /* Incident type pills */
+        .concern-types { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .concern-pill {
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+            background: white;
+            user-select: none;
+        }
+        .concern-pill:hover { border-color: var(--pao-blue); color: var(--pao-blue); background: #e3f2fd; }
+        .concern-pill.selected { border-color: var(--pao-blue); color: white; background: var(--pao-blue); }
+
+        /* Privacy note */
+        .privacy-note {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.76rem;
+            color: #0369a1;
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+
+        /* Steps Banner */
+        .steps-section {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .steps-section::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--pao-blue), var(--sentinel-orange));
+        }
+        .step-item { text-align: center; }
+        .step-num {
+            width: 44px; height: 44px;
+            background: #e3f2fd;
+            color: var(--pao-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+        }
+        .step-arrow { color: #cbd5e1; font-size: 1.2rem; padding-top: 8px; }
+        .step-label { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+        .step-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; }
+
+        /* ── MAP MODAL ── (unchanged from original, kept for reference) ── */
+        #paoMapModal .modal-dialog { max-width: 980px; }
+        #paoMapModal .modal-content { border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        #paoMapModal .modal-header { background: var(--pao-blue); color: white; border-bottom: 3px solid var(--sentinel-orange); padding: 0.9rem 1.4rem; }
+        #paoMapModal .modal-header .btn-close { filter: invert(1); }
+        #paoMapModal .modal-footer { background: #f8f9fa; padding: 0.6rem 1.2rem; }
+        .region-tabs { background: #e3eaf5; border-bottom: 2px solid #c5d4ef; }
+        .region-tabs .nav-link { color: #0d47a1; font-size: 0.8rem; font-weight: 700; border: none; border-radius: 0; padding: 8px 16px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; background: none; }
+        .region-tabs .nav-link.active { background: #0d47a1; color: white; }
+        .region-tabs .nav-link:hover:not(.active) { background: #c5d4ef; }
+        #map { height: 440px; width: 100%; z-index: 1; }
+        .office-list { max-height: 440px; overflow-y: auto; padding: 0; }
+        .office-item { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
+        .office-item:hover { background: #e3f2fd; }
+        .office-item.active { background: #bbdefb; border-left: 4px solid var(--pao-blue); }
+        .office-item h6 { font-size: 0.78rem; font-weight: 700; color: #0d47a1; margin-bottom: 2px; line-height: 1.3; }
+        .office-item p { font-size: 0.71rem; color: #666; margin: 0; }
+        .badge-hours { font-size: 0.65rem; background: #e8f5e9; color: #2e7d32; border-radius: 20px; padding: 2px 7px; font-weight: 600; }
+        .badge-rating { font-size: 0.65rem; background: #fff3e0; color: #e65100; border-radius: 20px; padding: 2px 7px; font-weight: 600; }
+        .badge-region { font-size: 0.62rem; border-radius: 20px; padding: 2px 8px; font-weight: 700; }
+        .badge-luzon { background: #e3f2fd; color: #0d47a1; }
+        .badge-visayas { background: #fce4ec; color: #880e4f; }
+        .badge-mindanao { background: #e8f5e9; color: #1b5e20; }
+        .count-badge { background: #ef6c00; color: white; border-radius: 20px; font-size: 0.65rem; padding: 1px 7px; font-weight: 700; margin-left: 4px; }
+        #officeSearch { border-radius: 20px; border: 1.5px solid #90caf9; font-size: 0.82rem; padding: 5px 13px; }
+        #officeSearch:focus { border-color: var(--pao-blue); box-shadow: 0 0 0 3px rgba(13,71,161,0.1); outline: none; }
+        .leaflet-popup-content-wrapper { border-radius: 10px; }
+        .popup-title { font-weight: 700; color: #0d47a1; font-size: 0.88rem; }
+        .popup-addr { font-size: 0.76rem; color: #555; margin-top: 3px; }
+        .popup-phone { font-size: 0.76rem; color: #ef6c00; margin-top: 3px; }
+        .directions-btn { display:inline-block; margin-top:6px; font-size:0.74rem; background:#0d47a1; color:white; padding:3px 10px; border-radius:20px; text-decoration:none; }
+        .directions-btn:hover { color:white; background:#1565c0; }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--pao-blue); }
+
+        /* Success overlay */
+        .success-overlay {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .success-overlay.show { display: block; }
+        .success-icon {
+            width: 72px; height: 72px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            color: #2e7d32;
+            margin: 0 auto 16px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- FLASH MESSAGES from Flask -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container mt-3">
+    {% for msg in messages %}
+    <div class="flash-success"><i class="fas fa-check-circle"></i> {{ msg }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- HERO -->
+<div class="pao-hero text-center">
+    <div class="container">
+        <div class="hero-badge"><i class="fas fa-shield-alt"></i> Project Sentinel — Legal Wing</div>
+        <h1 class="hero-title">PAO <span>Legal</span> Assistance</h1>
+        <p class="hero-subtitle">Free legal services for Student OJT and PWD workers under the Safe Spaces Act and Labor Code of the Philippines.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+
+    <!-- SERVICE CARDS -->
+    <div class="row g-4 mb-5">
+
+        <!-- Emergency Hotline -->
+        <div class="col-md-4">
+            <div class="service-card">
+                <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                <h5>Emergency Hotline</h5>
+                <p>Immediate legal consultation for harassment, labor violation, and OJT abuse cases.</p>
+                <div style="font-size:1.4rem;font-weight:800;color:var(--pao-blue);margin-bottom:4px;">(02) 8929-9436</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">Mon–Fri &nbsp;8:00 AM – 5:00 PM</div>
+            </div>
+        </div>
+
+        <!-- Request Legal Aid -->
+        <div class="col-md-4">
+            <div class="service-card orange">
+                <div class="icon-box"><i class="fas fa-file-signature"></i></div>
+                <h5>Request Legal Aid</h5>
+                <p>Submit your case for a pro-bono (free) lawyer assignment. All submissions are reviewed by PAO legal staff.</p>
+                <button class="btn-orange w-100" data-bs-toggle="modal" data-bs-target="#applyModal">
+                    <i class="fas fa-pen-to-square"></i> Start Application
+                </button>
+            </div>
+        </div>
+
+        <!-- Find PAO Offices -->
+        <div class="col-md-4">
+            <div class="service-card green">
+                <div class="icon-box"><i class="fas fa-map-marked-alt"></i></div>
+                <h5>Safe PAO Offices</h5>
+                <p>Locate PAO branches across Luzon, Visayas, and Mindanao with directions and contact info.</p>
+                <button class="btn-outline-pao w-100" data-bs-toggle="modal" data-bs-target="#paoMapModal">
+                    <i class="fas fa-map-pin"></i> Find Office Near Me
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="steps-section mb-5">
+        <h5 class="fw-bold mb-4" style="font-family:'DM Serif Display',serif;">How the Legal Aid Process Works</h5>
+        <div class="row align-items-center g-2">
+            <div class="col step-item">
+                <div class="step-num">1</div>
+                <div class="step-label">Submit Form</div>
+                <div class="step-sub">Fill out your legal aid application</div>
+            </div>
+            <div class="col-auto step-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="col step-item">
+                <div class="step-num">2</div>
+                <div class="step-label">Admin Review</div>
+                <div class="step-sub">Sentinel staff reviews your case</div>
+            </div>
+            <div class="col-auto step-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="col step-item">
+                <div class="step-num">3</div>
+                <div class="step-label">Lawyer Assigned</div>
+                <div class="step-sub">A PAO attorney is matched to you</div>
+            </div>
+            <div class="col-auto step-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="col step-item">
+                <div class="step-num">4</div>
+                <div class="step-label">Consultation</div>
+                <div class="step-sub">Meet with your pro-bono counsel</div>
+            </div>
+            <div class="col-auto step-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="col step-item">
+                <div class="step-num">5</div>
+                <div class="step-label">Legal Action</div>
+                <div class="step-sub">File complaint or pursue remedy</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BACK LINK -->
+    <div class="text-center pb-4">
+        <a href="/user" class="back-link"><i class="fas fa-arrow-left"></i> Back to User Dashboard</a>
+    </div>
+</div>
+
+
+<!-- ===================== LEGAL AID APPLICATION MODAL ===================== -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-0" id="applyModalLabel">
+                        <i class="fas fa-file-signature me-2" style="color:#ffd740;"></i>Legal Aid Application
+                    </h5>
+                    <small style="opacity:0.7; font-size:0.75rem;">Pro-bono lawyer assignment — Project Sentinel × PAO</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- FORM VIEW -->
+            <div id="formView">
+                <div class="modal-body">
+
+                    <!-- Privacy Note -->
+                    <div class="privacy-note mb-4">
+                        <i class="fas fa-lock-open mt-1" style="flex-shrink:0;"></i>
+                        <span>Your information is handled with strict confidentiality. Only authorized PAO legal staff and Sentinel admins will have access to your submission.</span>
+                    </div>
+
+                    <form id="legalAidForm" method="POST" action="/request-legal-aid" onsubmit="handleFormSubmit(event)">
+
+                        <!-- Personal Info -->
+                        <div class="form-section-title"><i class="fas fa-user me-2"></i>Personal Information</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-12">
+                                <label class="form-label-s">Full Name <span class="required-star">*</span></label>
+                                <input type="text" name="fullname" class="form-ctrl" placeholder="e.g. Maria Santos" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-s">Email Address <span class="required-star">*</span></label>
+                                <input type="email" name="email" class="form-ctrl" placeholder="you@email.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-s">Contact Number <span class="required-star">*</span></label>
+                                <input type="tel" name="contact" class="form-ctrl" placeholder="+63 9XX XXX XXXX" required>
+                            </div>
+                        </div>
+
+                        <!-- Case Details -->
+                        <div class="form-section-title"><i class="fas fa-gavel me-2"></i>Case Details</div>
+
+                        <div class="mb-3">
+                            <label class="form-label-s">Type of Concern <span class="required-star">*</span></label>
+                            <div class="concern-types" id="concernPills">
+                                <span class="concern-pill" onclick="selectConcern(this, 'Workplace Harassment')">Workplace Harassment</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'Unpaid Wages / OJT')">Unpaid Wages / OJT</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'PWD Rights Violation')">PWD Rights Violation</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'Unsafe Working Conditions')">Unsafe Working Conditions</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'Contract Dispute')">Contract Dispute</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'Overseas Worker Issue')">Overseas Worker Issue</span>
+                                <span class="concern-pill" onclick="selectConcern(this, 'Other')">Other</span>
+                            </div>
+                            <input type="hidden" name="concern_type" id="concernTypeInput">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-s">Describe Your Situation <span class="required-star">*</span></label>
+                            <textarea name="concern" class="form-ctrl" rows="5"
+                                placeholder="Please describe your situation in detail. Include company name, dates, and any relevant events. The more detail you provide, the better your assigned lawyer can prepare." required></textarea>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label-s">Company / Organization Involved</label>
+                            <input type="text" name="company_involved" class="form-ctrl" placeholder="Company name (optional)">
+                        </div>
+
+                        <div class="mt-3 d-flex align-items-center gap-2">
+                            <input type="checkbox" name="is_anonymous" id="anonCheck" value="1" style="width:16px;height:16px;cursor:pointer;">
+                            <label for="anonCheck" style="font-size:0.8rem; cursor:pointer; color:var(--text-muted);">
+                                <strong>Submit anonymously</strong> — your name will not be shared with the opposing party
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="legalAidForm" class="btn-orange">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUCCESS VIEW -->
+            <div class="success-overlay" id="successView">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h5 class="fw-bold mb-2">Application Submitted!</h5>
+                <p style="font-size:0.85rem;color:var(--text-muted);max-width:360px;margin:0 auto 20px;">
+                    Your legal aid request has been received by Sentinel staff. A PAO attorney will be assigned to review your case.
+                </p>
+                <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 18px;font-size:0.8rem;color:#0369a1;margin-bottom:20px;">
+                    <i class="fas fa-info-circle me-2"></i>
+                    You will be contacted via the email/contact number you provided within 3–5 working days.
+                </div>
+                <button class="btn-pao" data-bs-dismiss="modal" onclick="resetForm()">
+                    <i class="fas fa-arrow-left"></i> Back to PAO Portal
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================== PAO MAP MODAL ===================== -->
+<div class="modal fade" id="paoMapModal" tabindex="-1" aria-labelledby="paoMapLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-0" id="paoMapLabel">
+                        <i class="fas fa-map-marked-alt me-2"></i>PAO Offices — Luzon · Visayas · Mindanao
+                    </h5>
+                    <small class="opacity-75">Click a pin or office name to zoom in and get directions</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="region-tabs px-0">
+                <ul class="nav mb-0 ps-2">
+                    <li class="nav-item"><button class="nav-link active" onclick="filterRegion('all', this)">🇵🇭 All <span class="count-badge" id="cnt-all"></span></button></li>
+                    <li class="nav-item"><button class="nav-link" onclick="filterRegion('Luzon', this)">🏔 Luzon <span class="count-badge" id="cnt-Luzon"></span></button></li>
+                    <li class="nav-item"><button class="nav-link" onclick="filterRegion('Visayas', this)">🌊 Visayas <span class="count-badge" id="cnt-Visayas"></span></button></li>
+                    <li class="nav-item"><button class="nav-link" onclick="filterRegion('Mindanao', this)">🌿 Mindanao <span class="count-badge" id="cnt-Mindanao"></span></button></li>
+                </ul>
+            </div>
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-4 border-end d-flex flex-column" style="height:440px;">
+                        <div class="p-2 border-bottom bg-light">
+                            <input type="text" id="officeSearch" class="form-control" placeholder="🔍 Search offices…">
+                        </div>
+                        <ul class="office-list list-unstyled mb-0 flex-grow-1" id="officeList"></ul>
+                    </div>
+                    <div class="col-md-8"><div id="map"></div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <small class="text-muted"><i class="fas fa-info-circle me-1 text-primary"></i>Mon–Fri 8:00 AM – 5:00 PM &nbsp;·&nbsp; Free legal assistance for qualified indigent clients</small>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+// ── FORM LOGIC ──────────────────────────────────────────────────────────────
+
+function selectConcern(el, value) {
+    document.querySelectorAll('.concern-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('concernTypeInput').value = value;
+}
+
+function handleFormSubmit(e) {
+    // Let the form POST normally to Flask; show success if JS is preferred
+    // If you want AJAX, uncomment below and comment out the form action/method
+    // e.preventDefault();
+    // ... AJAX logic ...
+}
+
+function resetForm() {
+    document.getElementById('legalAidForm').reset();
+    document.querySelectorAll('.concern-pill').forEach(p => p.classList.remove('selected'));
+    document.getElementById('concernTypeInput').value = '';
+    document.getElementById('formView').style.display = '';
+    document.getElementById('successView').classList.remove('show');
+}
+
+// Flash message auto-dismiss
+document.querySelectorAll('.flash-success').forEach(el => {
+    setTimeout(() => el.style.opacity = '0', 4000);
+    setTimeout(() => el.remove(), 4500);
+});
+
+
+// ── MAP LOGIC ────────────────────────────────────────────────────────────────
+
+const PAO_OFFICES = [
+    { name:"PAO — Main Office (DOJ)", address:"DOJ Agencies Building, NIA Rd, Diliman, Quezon City", phone:"(02) 8929-9436", hours:"Mon–Fri 8AM–5PM", rating:4.2, region:"Luzon", lat:14.6378, lng:121.0450 },
+    { name:"PAO — Quezon City District", address:"6F Justice Cecilia Muñoz Palma Hall, Diliman, Quezon City", phone:"+63 961 007 7423", hours:"Mon–Fri 8AM–5PM", rating:4.1, region:"Luzon", lat:14.6465, lng:121.0502 },
+    { name:"PAO — Manila District Office", address:"4F, 350 Padre Burgos Ave, Ermita, Manila", phone:"(02) 8521-5302", hours:"Mon–Fri 8AM–5PM", rating:4.6, region:"Luzon", lat:14.5898, lng:120.9815 },
+    { name:"PAO — Pasay City District", address:"Room 401, Hall of Justice, F.B. Harrison St, Pasay City", phone:"(02) 8833-0806", hours:"Mon–Fri 8AM–5PM", rating:4.8, region:"Luzon", lat:14.5441, lng:120.9946 },
+    { name:"PAO — Caloocan City District", address:"11th Ave, Grace Park East, Caloocan, Metro Manila", phone:"N/A", hours:"Mon–Fri 8AM–5PM", rating:3.3, region:"Luzon", lat:14.6529, lng:120.9835 },
+    { name:"PAO — Taguig City District", address:"DPWH Compound Hall of Justice, Gen. Santos Ave, Taguig", phone:"(02) 8837-6490", hours:"Mon–Fri 8AM–5PM", rating:2.8, region:"Luzon", lat:14.4904, lng:121.0547 },
+    { name:"PAO — Las Piñas City District", address:"Room 201, Hall of Justice, Alabang-Zapote Rd, Las Piñas", phone:"(02) 8873-9886", hours:"Mon–Fri 8AM–5PM", rating:5.0, region:"Luzon", lat:14.4494, lng:120.9824 },
+    { name:"PAO — Valenzuela District", address:"3F Post Office Bldg, Justice Hall Compound, Maysan Rd, Valenzuela", phone:"(02) 8292-0211", hours:"Mon–Fri 8AM–5PM", rating:4.0, region:"Luzon", lat:14.6935, lng:120.9700 },
+    { name:"PAO — Baguio City District", address:"Hall of Justice, 113 City Hall Loop, Baguio City", phone:"(074) 442-5832", hours:"Mon–Fri 8AM–5PM", rating:5.0, region:"Luzon", lat:16.4138, lng:120.5913 },
+    { name:"PAO — Iriga City (Camarines Sur)", address:"2F EP Aquiler Bldg, Iriga City, Camarines Sur", phone:"(054) 881-7054", hours:"Mon–Fri 8AM–5PM", rating:3.0, region:"Luzon", lat:13.4345, lng:123.4118 },
+    { name:"PAO — San Jose, Occidental Mindoro", address:"San Jose, Occidental Mindoro", phone:"N/A", hours:"Mon–Fri 8AM–4:30PM", rating:2.3, region:"Luzon", lat:12.3531, lng:121.0709 },
+    { name:"PAO — Region VI (Iloilo City)", address:"4F CJ R.Q. Avanceña Hall of Justice, Bonifacio Drive, Iloilo City", phone:"(033) 335-0308", hours:"Mon–Fri 8AM–5PM", rating:4.1, region:"Visayas", lat:10.7045, lng:122.5683 },
+    { name:"PAO — Region VII (Cebu City)", address:"3F Taft Commercial Complex, Osmeña Blvd, Cebu City", phone:"(032) 253-5859", hours:"Mon–Fri 8AM–5PM", rating:3.9, region:"Visayas", lat:10.2972, lng:123.8983 },
+    { name:"PAO — Cebu City District", address:"3F Taft Commercial Bldg, MetroColon Carpark, Osmeña Blvd, Cebu City", phone:"(032) 238-4957", hours:"Mon–Fri 8AM–5PM", rating:3.3, region:"Visayas", lat:10.2975, lng:123.8990 },
+    { name:"PAO — Tacloban City (Leyte)", address:"Bulwagan ng Katarungan, Magsaysay Blvd, Tacloban City, Leyte", phone:"(053) 325-5381", hours:"Mon–Fri 8AM–5PM", rating:4.1, region:"Visayas", lat:11.2464, lng:125.0095 },
+    { name:"PAO — Cagayan de Oro City", address:"Tiano Brothers St, Cagayan de Oro City, Misamis Oriental", phone:"(088) 857-4809", hours:"Mon–Fri 8AM–5PM", rating:4.2, region:"Mindanao", lat:8.4807, lng:124.6424 },
+    { name:"PAO — Davao City", address:"Hall of Justice, Ecoland, Talomo, Davao City", phone:"(082) 297-8902", hours:"Mon–Fri 8AM–5PM", rating:3.6, region:"Mindanao", lat:7.0553, lng:125.6021 },
+    { name:"PAO — Tagum City (Davao del Norte)", address:"Capitol Rd, Tagum, Davao del Norte", phone:"(084) 628-8978", hours:"Mon–Fri 8AM–5PM", rating:3.0, region:"Mindanao", lat:7.4546, lng:125.7821 },
+    { name:"PAO — Digos City (Davao del Sur)", address:"Digos, Davao del Sur", phone:"+63 963 075 5946", hours:"Mon–Fri 8AM–5PM", rating:4.0, region:"Mindanao", lat:6.7467, lng:125.3656 },
+    { name:"PAO — Maramag, Bukidnon", address:"Nutrition Building, Municipal Compound, Sayre Hwy, Maramag, Bukidnon", phone:"(088) 356-1718", hours:"Mon–Fri 8AM–5PM", rating:null, region:"Mindanao", lat:7.7808, lng:125.0116 },
+    { name:"PAO — Region IX-B (Pagadian City)", address:"Pagadian City, Zamboanga del Sur", phone:"N/A", hours:"Mon–Fri 8AM–5PM", rating:5.0, region:"Mindanao", lat:7.8320, lng:123.4362 },
+    { name:"PAO — Dipolog City (Zamboanga del Norte)", address:"Provincial Capitol, Gonzales St, Dipolog City", phone:"(065) 212-2833", hours:"Mon–Fri 8AM–5PM", rating:4.0, region:"Mindanao", lat:8.5840, lng:123.3460 },
+    { name:"PAO — General Santos City", address:"Hall of Justice, Cabel St, Lagao, General Santos City, South Cotabato", phone:"(083) 552-5004", hours:"Mon–Fri 8AM–5PM", rating:3.6, region:"Mindanao", lat:6.1267, lng:125.1985 }
+];
+
+const REGION_COLORS  = { Luzon:'#0d47a1', Visayas:'#880e4f', Mindanao:'#1b5e20' };
+const REGION_CENTERS = {
+    all:      { latlng:[12.2, 122.0], zoom:6 },
+    Luzon:    { latlng:[14.8, 121.0], zoom:8 },
+    Visayas:  { latlng:[10.8, 123.5], zoom:8 },
+    Mindanao: { latlng:[7.7,  124.5], zoom:7 }
+};
+
+let map, markers = [], currentRegion = 'all', currentSearch = '';
+
+function makeIcon(region) {
+    const c = REGION_COLORS[region] || '#555';
+    return L.divIcon({
+        html:`<div style="background:${c};color:white;border-radius:50%;width:30px;height:30px;
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 2px 8px rgba(0,0,0,0.35);border:2px solid #ef6c00;">
+            <i class="fas fa-balance-scale" style="font-size:11px;"></i></div>`,
+        className:'', iconSize:[30,30], iconAnchor:[15,15], popupAnchor:[0,-16]
+    });
+}
+
+function initMap() {
+    if (map) return;
+    map = L.map('map').setView([12.2, 122.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom:18
+    }).addTo(map);
+
+    PAO_OFFICES.forEach((o, i) => {
+        const m = L.marker([o.lat, o.lng], { icon: makeIcon(o.region) }).addTo(map);
+        const stars = o.rating ? '★'.repeat(Math.round(o.rating))+'☆'.repeat(5-Math.round(o.rating)) : '';
+        const url   = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.name+' '+o.address)}`;
+        m.bindPopup(`
+            <div style="min-width:215px;">
+                <div class="popup-title">${o.name}</div>
+                <div style="margin:3px 0;">
+                    <span style="background:${REGION_COLORS[o.region]};color:white;font-size:0.65rem;padding:1px 8px;border-radius:10px;">${o.region}</span>
+                </div>
+                <div class="popup-addr"><i class="fas fa-map-marker-alt me-1" style="color:#ef6c00;"></i>${o.address}</div>
+                ${o.phone!=='N/A'?`<div class="popup-phone"><i class="fas fa-phone me-1"></i>${o.phone}</div>`:''}
+                ${o.rating?`<div style="font-size:0.73rem;color:#777;margin-top:3px;">${stars} (${o.rating}/5)</div>`:''}
+                <a href="${url}" target="_blank" class="directions-btn"><i class="fas fa-directions me-1"></i>Get Directions</a>
+            </div>`);
+        m.on('click', () => highlightListItem(i));
+        markers.push(m);
+    });
+
+    updateCounts();
+    renderList();
+}
+
+function updateCounts() {
+    ['all','Luzon','Visayas','Mindanao'].forEach(r => {
+        const el = document.getElementById('cnt-'+r);
+        if (el) el.textContent = r==='all' ? PAO_OFFICES.length : PAO_OFFICES.filter(o=>o.region===r).length;
+    });
+}
+
+function filterRegion(region, btn) {
+    currentRegion = region;
+    document.querySelectorAll('.region-tabs .nav-link').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    PAO_OFFICES.forEach((o, i) => {
+        if (region==='all' || o.region===region) markers[i].addTo(map);
+        else markers[i].remove();
+    });
+    const c = REGION_CENTERS[region] || REGION_CENTERS.all;
+    map.flyTo(c.latlng, c.zoom, { duration:1 });
+    renderList();
+}
+
+function renderList() {
+    const ul = document.getElementById('officeList');
+    ul.innerHTML = '';
+    const s = currentSearch.toLowerCase();
+    const filtered = PAO_OFFICES.filter(o =>
+        (currentRegion==='all' || o.region===currentRegion) &&
+        (!s || o.name.toLowerCase().includes(s) || o.address.toLowerCase().includes(s) || o.region.toLowerCase().includes(s))
+    );
+    if (!filtered.length) {
+        ul.innerHTML = '<li class="p-3 text-muted small text-center">No offices found.</li>';
+        return;
+    }
+    filtered.forEach(o => {
+        const i = PAO_OFFICES.indexOf(o);
+        const rc = !o.rating?'#999': o.rating>=4?'#2e7d32': o.rating>=3?'#e65100':'#c62828';
+        const li = document.createElement('li');
+        li.className = 'office-item';
+        li.dataset.index = i;
+        li.innerHTML = `
+            <h6>${o.name}</h6>
+            <p class="mb-1"><i class="fas fa-map-pin me-1" style="color:#0d47a1;font-size:0.65rem;"></i>${o.address}</p>
+            <div class="d-flex gap-1 mt-1 flex-wrap align-items-center">
+                <span class="badge-region badge-${o.region.toLowerCase()}">${o.region}</span>
+                <span class="badge-hours"><i class="fas fa-clock me-1"></i>${o.hours}</span>
+                ${o.rating?`<span class="badge-rating" style="color:${rc};">★ ${o.rating}</span>`:''}
+            </div>`;
+        li.addEventListener('click', () => { flyTo(i); highlightListItem(i); });
+        ul.appendChild(li);
+    });
+}
+
+function flyTo(i) {
+    const o = PAO_OFFICES[i];
+    map.flyTo([o.lat, o.lng], 15, { animate:true, duration:1.2 });
+    setTimeout(() => markers[i].openPopup(), 1300);
+}
+
+function highlightListItem(i) {
+    document.querySelectorAll('.office-item').forEach(el => el.classList.remove('active'));
+    const t = document.querySelector(`.office-item[data-index="${i}"]`);
+    if (t) { t.classList.add('active'); t.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+}
+
+document.getElementById('officeSearch').addEventListener('input', function() {
+    currentSearch = this.value; renderList();
+});
+
+document.getElementById('paoMapModal').addEventListener('shown.bs.modal', function() {
+    initMap();
+    setTimeout(() => map && map.invalidateSize(), 120);
+});
+    function handleFormSubmit(e) {
+    const concernVal = document.getElementById('concernTypeInput').value;
+    if (!concernVal) {
+        e.preventDefault();
+        alert('Please select a type of concern before submitting.');
+        return;
+    }
+    // allow normal POST
+}
+</script>
+</body>
+</html>

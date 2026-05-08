@@ -1,0 +1,58 @@
+{% extends "admin.html" %}
+
+{% block title %}PAO Legal Aid Requests{% endblock %}
+{% block breadcrumb %}LEGAL (PAO REQUESTS){% endblock %}
+
+{% block content %}
+
+<div class="s-card">
+    <div class="s-card-header danger-hdr">
+        <span><i class="fas fa-balance-scale me-2"></i>Legal Aid Requests</span>
+    </div>
+
+    {% if requests %}
+    <table class="s-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>CASE DETAILS</th>
+                <th>STATUS</th>
+                <th>DATE</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for r in requests %}
+            <tr>
+                <td class="col-mono">#{{ r.id }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.email }}</td>
+                <td>{{ r.message }}</td>
+
+                <td>
+                    <span class="pill
+                        {% if r.status == 'Pending' %}pill-pending
+                        {% elif r.status == 'Approved' %}pill-active
+                        {% elif r.status == 'Rejected' %}pill-banned
+                        {% endif %}
+                    ">
+                        {{ r.status }}
+                    </span>
+                </td>
+
+                <td class="col-mono">{{ r.created_at }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <p>No legal aid requests found.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

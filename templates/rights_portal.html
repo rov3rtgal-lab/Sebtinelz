@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your Rights | Project Sentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red:        #b71c1c;
+            --red-dark:   #7f0000;
+            --red-light:  #ef9a9a;
+            --navy:       #0d1b3e;
+            --navy-mid:   #1a2f5a;
+            --gold:       #c8a84b;
+            --gold-light: #f0d98b;
+            --cream:      #faf8f4;
+            --gray-100:   #f5f5f5;
+            --gray-200:   #e8e8e8;
+            --gray-500:   #9e9e9e;
+            --gray-700:   #616161;
+            --gray-900:   #1c1c1c;
+            --white:      #ffffff;
+            --shadow-sm:  0 2px 8px rgba(0,0,0,0.07);
+            --shadow-md:  0 8px 24px rgba(0,0,0,0.10);
+            --shadow-lg:  0 16px 48px rgba(0,0,0,0.13);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--cream);
+            font-family: 'Source Sans 3', sans-serif;
+            color: var(--gray-900);
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', Georgia, serif;
+            line-height: 1.25;
+        }
+
+        /* ── NAVBAR ── */
+        .site-nav {
+            background: var(--navy);
+            border-bottom: 3px solid var(--red);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .site-nav .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .site-nav .badge-official {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.6rem;
+            background: var(--red);
+            color: white;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            border-radius: 2px;
+        }
+
+        .nav-seal {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--navy);
+            flex-shrink: 0;
+        }
+
+        .btn-nav-exit {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 0.8rem;
+            padding: 6px 16px;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+
+        .btn-nav-exit:hover { background: rgba(255,255,255,0.1); color: white; border-color: white; }
+
+        .btn-nav-primary {
+            background: var(--red);
+            border: none;
+            color: white;
+            font-size: 0.8rem;
+            padding: 6px 18px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: 0.2s;
+        }
+
+        .btn-nav-primary:hover { background: var(--red-dark); color: white; }
+
+        /* ── HERO SECTION ── */
+        .hero {
+            background: var(--navy);
+            position: relative;
+            padding: 64px 0 56px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,255,255,0.015) 0,
+                rgba(255,255,255,0.015) 1px,
+                transparent 1px,
+                transparent 60px
+            );
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+        }
+
+        .hero-seal {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(200,168,75,0.15);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            animation: pulse-seal 3s infinite;
+        }
+
+        @keyframes pulse-seal {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(200,168,75,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(200,168,75,0); }
+        }
+
+        .hero-eyebrow {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: white;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .hero-sub {
+            color: rgba(255,255,255,0.65);
+            font-size: 1rem;
+            max-width: 560px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hero-badge {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.8);
+            padding: 5px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 3px;
+        }
+
+        /* ── SECTION TITLES ── */
+        .section-eyebrow {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--red);
+            margin-bottom: 8px;
+        }
+
+        .divider-line {
+            width: 48px;
+            height: 3px;
+            background: var(--red);
+            margin-bottom: 32px;
+        }
+
+        /* ── LAW CARDS ── */
+        .law-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-top: 4px solid var(--red);
+            padding: 32px 28px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            height: 100%;
+            position: relative;
+        }
+
+        .law-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .law-card .card-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(183,28,28,0.08);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--red);
+            margin-bottom: 18px;
+            flex-shrink: 0;
+        }
+
+        .law-tag {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--red);
+            background: rgba(183,28,28,0.07);
+            padding: 3px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .law-card h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .law-card .card-desc {
+            font-size: 0.88rem;
+            color: var(--gray-700);
+            margin-bottom: 20px;
+            line-height: 1.65;
+        }
+
+        .provision-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .provision-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .provision-list li:last-child { border-bottom: none; }
+
+        .provision-list li i {
+            color: var(--red);
+            margin-top: 3px;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .provision-list li b { color: var(--gray-900); font-weight: 600; }
+
+        /* ── INFO BANNER ── */
+        .info-banner {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-left: 5px solid var(--navy);
+            padding: 18px 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .info-banner i { color: var(--navy); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+
+        .info-banner p { margin: 0; font-size: 0.85rem; color: var(--gray-700); }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            background: var(--navy);
+            color: white;
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            background: rgba(200,168,75,0.08);
+            border-radius: 50%;
+        }
+
+        .cta-section h3 { color: white; font-size: 1.8rem; margin-bottom: 10px; }
+
+        .cta-section p { color: rgba(255,255,255,0.65); margin-bottom: 24px; font-size: 0.95rem; }
+
+        .btn-cta-primary {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            transition: 0.2s;
+            border-radius: 3px;
+        }
+
+        .btn-cta-primary:hover { background: var(--red-dark); color: white; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(183,28,28,0.3); }
+
+        .btn-cta-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 28px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border-radius: 3px;
+        }
+
+        .btn-cta-outline:hover { background: rgba(255,255,255,0.08); color: white; border-color: rgba(255,255,255,0.6); }
+
+        /* ── DISCLAIMER ── */
+        .disclaimer-box {
+            background: white;
+            border: 1px solid var(--gray-200);
+            padding: 20px 24px;
+            border-radius: 4px;
+        }
+
+        .disclaimer-box .disc-icon { color: var(--gold); font-size: 1.1rem; margin-bottom: 10px; }
+
+        .disclaimer-box h6 {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .disclaimer-box p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.6; }
+
+        /* ── FLOATING AI BUTTON ── */
+        .fab-ai {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            border: none;
+            box-shadow: 0 6px 24px rgba(183,28,28,0.4);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .fab-ai:hover { transform: scale(1.1) translateY(-2px); box-shadow: 0 10px 32px rgba(183,28,28,0.5); }
+
+        .fab-ai .fab-tooltip {
+            position: absolute;
+            right: 70px;
+            background: var(--gray-900);
+            color: white;
+            font-size: 0.75rem;
+            font-family: 'Source Sans 3', sans-serif;
+            padding: 6px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(6px);
+            transition: 0.2s;
+        }
+
+        .fab-ai:hover .fab-tooltip { opacity: 1; transform: translateX(0); }
+
+        /* ── CHAT MODAL ── */
+        #chatModal .modal-content {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .chat-header {
+            background: var(--navy);
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info h6 {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .chat-header-info span {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: blink-dot 2s infinite;
+        }
+
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        #chatHistory {
+            height: 380px;
+            overflow-y: auto;
+            background: #f7f7f8;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            scroll-behavior: smooth;
+        }
+
+        #chatHistory::-webkit-scrollbar { width: 4px; }
+        #chatHistory::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+        .msg-wrap {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            animation: msg-in 0.3s ease-out;
+        }
+
+        @keyframes msg-in {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-wrap.ai-wrap { align-items: flex-start; }
+        .msg-wrap.user-wrap { align-items: flex-end; }
+
+        .sender-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+            padding: 0 4px;
+        }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 82%;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .ai-bubble {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--red);
+            color: var(--gray-900);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-bubble {
+            background: var(--navy);
+            color: white;
+            border-radius: 10px 10px 2px 10px;
+        }
+
+        /* Typing indicator */
+        .typing-bubble {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--red);
+            padding: 14px 18px;
+            border-radius: 10px;
+            max-width: 82%;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--red);
+            animation: bounce-dot 1.2s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce-dot {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Quick suggestions */
+        .quick-suggestions {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .suggest-btn {
+            background: transparent;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-700);
+            font-size: 0.72rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Source Sans 3', sans-serif;
+            white-space: nowrap;
+        }
+
+        .suggest-btn:hover {
+            background: var(--red);
+            color: white;
+            border-color: var(--red);
+        }
+
+        /* Chat footer */
+        .chat-footer {
+            background: white;
+            padding: 14px 16px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #userInput {
+            flex: 1;
+            border: 1px solid var(--gray-200);
+            border-radius: 24px;
+            padding: 10px 18px;
+            font-size: 0.875rem;
+            font-family: 'Source Sans 3', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+            background: var(--gray-100);
+        }
+
+        #userInput:focus { border-color: var(--red); background: white; }
+
+        .btn-send {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            border: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .btn-send:hover { background: var(--red-dark); transform: scale(1.05); }
+        .btn-send:disabled { background: var(--gray-200); transform: none; cursor: not-allowed; }
+
+        /* Footer strip */
+        .site-footer {
+            background: var(--navy);
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+            padding: 22px;
+            font-size: 0.75rem;
+            border-top: 3px solid var(--red);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .cta-section { padding: 32px 24px; }
+            .hero { padding: 44px 0 40px; }
+            #chatHistory { height: 300px; }
+        }
+
+        /* ── Entrance animations ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="site-nav py-2">
+    <div class="container d-flex align-items-center gap-3">
+        <div class="nav-seal"><i class="fas fa-gavel"></i></div>
+        <a href="/user" class="nav-brand flex-grow-1">
+            PROJECT SENTINEL
+            <span class="badge-official d-none d-sm-inline">Legal Resource Center</span>
+        </a>
+        <a href="/user" class="btn btn-nav-exit d-none d-md-inline-flex">
+            <i class="fas fa-arrow-left me-1"></i> Exit
+        </a>
+        <button onclick="openChat()" class="btn btn-nav-primary">
+            <i class="fas fa-comments me-1"></i> Ask AI
+        </button>
+    </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="hero-seal">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <p class="hero-eyebrow">Republic of the Philippines · DOLE · PAO</p>
+                <h1>Know Your Rights.<br>Protect Your Future.</h1>
+                <p class="hero-sub">
+                    Project Sentinel's Legal Resource Center provides clear, accessible guidance on Philippine labor laws protecting OJT students, Persons with Disabilities (PWD), and overseas workers.
+                </p>
+                <div class="hero-badges">
+                    <span class="hero-badge"><i class="fas fa-shield-alt me-1"></i> RA 11313 — Safe Spaces Act</span>
+                    <span class="hero-badge"><i class="fas fa-wheelchair me-1"></i> RA 10524 — PWD Law</span>
+                    <span class="hero-badge"><i class="fas fa-user-graduate me-1"></i> OJT Trainee Rights</span>
+                    <span class="hero-badge"><i class="fas fa-globe me-1"></i> Overseas Worker Protections</span>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-end">
+                <div style="opacity:0.08; font-size:9rem; color:white; font-family:'Playfair Display',serif; line-height:1; user-select:none;">§</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ MAIN CONTENT ══ -->
+<div class="container py-5">
+
+    <!-- Info banner -->
+    <div class="info-banner mb-5 fade-up">
+        <i class="fas fa-info-circle"></i>
+        <p>The information on this page is drawn from enacted Philippine legislation. For case-specific legal advice, consult the <strong>Public Attorney's Office (PAO)</strong> through our Legal Aid portal or ask our AI assistant for guidance.</p>
+    </div>
+
+    <!-- LAWS SECTION -->
+    <p class="section-eyebrow">Philippine Law</p>
+    <h2 class="mb-1" style="font-size:1.9rem; color:var(--navy);">Applicable Legal Protections</h2>
+    <div class="divider-line"></div>
+
+    <div class="row g-4 mb-5">
+
+        <!-- RA 11313 -->
+        <div class="col-lg-4 fade-up">
+            <div class="law-card">
+                <div class="card-icon"><i class="fas fa-ban"></i></div>
+                <span class="law-tag">RA 11313 · Workplace</span>
+                <h4>Safe Spaces Act</h4>
+                <p class="card-desc">Mandates zero-tolerance policies against gender-based harassment in all workplaces, including OJT sites, schools, and online environments.</p>
+                <ul class="provision-list">
+                    <li><i class="fas fa-circle"></i><span><b>CODI Required:</b> All workplaces must maintain a Committee on Decorum and Investigation.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>10-Day Rule:</b> Management must respond to complaints within 10 days.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Whistleblower Shield:</b> You cannot be penalized for reporting harassment.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Liability Extends:</b> Employers are accountable even for third-party harassment.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Victim Support:</b> Psychological assistance and counseling must be provided.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RA 10524 -->
+        <div class="col-lg-4 fade-up" style="transition-delay:0.1s;">
+            <div class="law-card">
+                <div class="card-icon"><i class="fas fa-wheelchair"></i></div>
+                <span class="law-tag">RA 10524 · Employment</span>
+                <h4>PWD Employment Act</h4>
+                <p class="card-desc">Guarantees equal employment opportunities for Persons with Disabilities in both public and private sectors. Discrimination is a punishable offense.</p>
+                <ul class="provision-list">
+                    <li><i class="fas fa-circle"></i><span><b>1% Reservation:</b> Companies with 100+ employees must reserve at least 1% of positions for PWDs.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Equal Pay:</b> PWDs are entitled to the same wages and benefits as other employees.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Tax Incentives:</b> Employers receive deductions for hiring and accommodating PWDs.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>No Discrimination:</b> Refusing employment solely due to disability is unlawful.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Accessibility:</b> Workplaces must provide reasonable accommodations.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- OJT Rights -->
+        <div class="col-lg-4 fade-up" style="transition-delay:0.2s;">
+            <div class="law-card">
+                <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
+                <span class="law-tag">DOLE Order · OJT</span>
+                <h4>Student Intern Rights</h4>
+                <p class="card-desc">DOLE guidelines protect student trainees from labor exploitation and ensure safe, fair, and educationally meaningful OJT programs.</p>
+                <ul class="provision-list">
+                    <li><i class="fas fa-circle"></i><span><b>8-Hour Cap:</b> OJT students may not be required to render more than 8 hours per day.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Hazard-Free:</b> Interns must not be assigned to hazardous or heavy physical labor.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Safety Insurance:</b> Mandatory insurance coverage for OJT-related injuries.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>School Duty of Care:</b> Institutions bear responsibility for off-campus incidents.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>MOA Required:</b> A formal agreement must exist between school and company.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Overseas -->
+        <div class="col-lg-6 fade-up" style="transition-delay:0.05s;">
+            <div class="law-card">
+                <div class="card-icon"><i class="fas fa-globe-asia"></i></div>
+                <span class="law-tag">RA 10022 · Overseas</span>
+                <h4>Overseas Worker Safety Rights</h4>
+                <p class="card-desc">The Migrant Workers and Overseas Filipinos Act protects OFWs from abuse, illegal recruitment, and passport confiscation abroad.</p>
+                <ul class="provision-list">
+                    <li><i class="fas fa-circle"></i><span><b>Passport Retention:</b> Employers abroad cannot legally hold your passport.</span></li>
+                    <li><i class="fas fa-circle"></i><span><span><b>Embassy Access:</b> You have the right to contact the Philippine Embassy or POLO 24/7.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>POEA-Verified Only:</b> Only agencies accredited by POEA may deploy workers legally.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Contract Compliance:</b> Your employment contract governs your terms — any deviation is actionable.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Article V / Education -->
+        <div class="col-lg-6 fade-up" style="transition-delay:0.15s;">
+            <div class="law-card">
+                <div class="card-icon"><i class="fas fa-university"></i></div>
+                <span class="law-tag">RA 11313 · Education</span>
+                <h4>Academic & Training Institutions</h4>
+                <p class="card-desc">Schools and training centers are legally required to maintain safe environments for all students, including off-campus OJT placements.</p>
+                <ul class="provision-list">
+                    <li><i class="fas fa-circle"></i><span><b>Off-Campus Liability:</b> Protection applies during internship hours even at a company site.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Peer Harassment:</b> Student-on-student harassment is equally covered by the law.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Admin & Criminal Action:</b> Victims may pursue administrative, civil, or criminal cases.</span></li>
+                    <li><i class="fas fa-circle"></i><span><b>Remedial Support:</b> Schools must provide access to counseling services.</span></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CTA SECTION -->
+    <div class="cta-section fade-up mb-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h3>Have Your Rights Been Violated?</h3>
+                <p>You are not alone. Sentinel connects you to real legal aid through the Public Attorney's Office and DOLE. File a report, consult our AI assistant, or speak directly with a PAO lawyer — all from this portal.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/report" class="btn btn-cta-primary">
+                        <i class="fas fa-flag me-2"></i>File a Report
+                    </a>
+                    <a href="/pao" class="btn btn-cta-outline">
+                        <i class="fas fa-gavel me-2"></i>Request Legal Aid
+                    </a>
+                    <button onclick="openChat()" class="btn btn-cta-outline">
+                        <i class="fas fa-robot me-2"></i>Ask Sentinel AI
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:18px; border-radius:6px; text-align:center;">
+                            <div style="font-size:1.8rem; color:var(--gold); font-family:'Playfair Display',serif; font-weight:900;">PAO</div>
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); margin-top:4px; text-transform:uppercase; letter-spacing:1px;">Free Legal Aid</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:18px; border-radius:6px; text-align:center;">
+                            <div style="font-size:1.8rem; color:var(--gold); font-family:'Playfair Display',serif; font-weight:900;">DOLE</div>
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); margin-top:4px; text-transform:uppercase; letter-spacing:1px;">Labor Standards</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div style="background:rgba(183,28,28,0.25); border:1px solid rgba(183,28,28,0.4); padding:14px 18px; border-radius:6px; display:flex; align-items:center; gap:12px;">
+                            <i class="fas fa-phone-alt" style="color:var(--red-light);"></i>
+                            <div>
+                                <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1px;">DOLE Hotline</div>
+                                <div style="color:white; font-weight:700; font-size:1rem;">1349</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer-box fade-up">
+        <i class="fas fa-exclamation-triangle disc-icon"></i>
+        <h6>Legal Disclaimer</h6>
+        <p>The information provided on this page is intended for general guidance and educational purposes only. It does not constitute formal legal advice and should not be relied upon as such. Every case is different — please consult the <strong>Public Attorney's Office (PAO)</strong> or a licensed attorney for advice specific to your situation.</p>
+    </div>
+
+</div>
+
+<!-- ══ FLOATING AI BUTTON ══ -->
+<button class="fab-ai" onclick="openChat()" title="Ask Sentinel AI">
+    <i class="fas fa-robot"></i>
+    <span class="fab-tooltip">Ask Sentinel AI</span>
+</button>
+
+<!-- ══ CHAT MODAL ══ -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="chat-avatar"><i class="fas fa-robot"></i></div>
+                <div class="chat-header-info flex-grow-1">
+                    <h6>Sentinel Legal Assistant</h6>
+                    <span><span class="status-dot"></span>Online · Powered by AI</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Chat History -->
+            <div id="chatHistory">
+                <div class="msg-wrap ai-wrap">
+                    <div class="sender-label">Sentinel AI</div>
+                    <div class="msg-bubble ai-bubble">
+                        👋 Hello! I'm Sentinel's Legal Assistant. I'm here to help you understand your rights under Philippine law — including the <strong>Safe Spaces Act (RA 11313)</strong>, <strong>PWD Employment Law (RA 10524)</strong>, and <strong>OJT student rights</strong>.
+                        <br><br>
+                        Feel free to ask me anything, or choose a topic below to get started.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="quick-suggestions" id="quickSuggestions">
+                <button class="suggest-btn" onclick="sendMessage('What should I do if I am being harassed at work?')">🚨 I'm being harassed</button>
+                <button class="suggest-btn" onclick="sendMessage('Explain RA 11313 in simple terms')">📋 Explain RA 11313</button>
+                <button class="suggest-btn" onclick="sendMessage('Do I have rights as an OJT student?')">🎓 OJT student rights</button>
+                <button class="suggest-btn" onclick="sendMessage('What are my rights as a PWD employee?')">♿ PWD employment rights</button>
+            </div>
+
+            <!-- Input Footer -->
+            <div class="chat-footer">
+                <div class="chat-input-group">
+                    <input type="text" id="userInput" placeholder="Type your question here…" autocomplete="off" />
+                    <button class="btn-send" id="sendBtn" onclick="sendMessage()" title="Send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div style="text-align:center; margin-top:8px; font-size:0.65rem; color:var(--gray-500);">
+                    Sentinel AI provides general guidance. For specific legal advice, consult PAO.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+    <p>Project Sentinel · Republic of the Philippines · DOLE / PAO Partner Portal</p>
+    <p style="margin-top:4px;">For emergencies, call DOLE Hotline <strong style="color:rgba(255,255,255,0.7);">1349</strong> or the PAO at <strong style="color:rgba(255,255,255,0.7);">(02) 8929-9436</strong></p>
+</footer>
+
+<!-- ══ JS ══ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ── Modal instance ── */
+    const chatModalEl = document.getElementById('chatModal');
+    const chatModal   = new bootstrap.Modal(chatModalEl);
+    const chatHistory = document.getElementById('chatHistory');
+    const userInput   = document.getElementById('userInput');
+    const sendBtn     = document.getElementById('sendBtn');
+
+    function openChat() {
+        chatModal.show();
+        setTimeout(() => userInput.focus(), 400);
+    }
+
+    /* ── Scroll helper ── */
+    function scrollBottom() {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    /* ── Append message ── */
+    function appendMessage(content, role, id = null) {
+        const wrap = document.createElement('div');
+        wrap.className = `msg-wrap ${role === 'ai' ? 'ai-wrap' : 'user-wrap'}`;
+        if (id) wrap.id = id;
+
+        const label = document.createElement('div');
+        label.className = 'sender-label';
+        label.textContent = role === 'ai' ? 'Sentinel AI' : 'You';
+
+        const bubble = document.createElement('div');
+        bubble.className = `msg-bubble ${role === 'ai' ? 'ai-bubble' : 'user-bubble'}`;
+        bubble.innerHTML = content;
+
+        wrap.appendChild(label);
+        wrap.appendChild(bubble);
+        chatHistory.appendChild(wrap);
+        scrollBottom();
+        return wrap;
+    }
+
+    /* ── Typing indicator ── */
+    function showTyping() {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-wrap ai-wrap';
+        wrap.id = 'typing-indicator';
+
+        const label = document.createElement('div');
+        label.className = 'sender-label';
+        label.textContent = 'Sentinel AI is typing…';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'typing-bubble';
+        bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+
+        wrap.appendChild(label);
+        wrap.appendChild(bubble);
+        chatHistory.appendChild(wrap);
+        scrollBottom();
+    }
+
+    function removeTyping() {
+        const el = document.getElementById('typing-indicator');
+        if (el) el.remove();
+    }
+
+    /* ── Main send function ── */
+    async function sendMessage(textOverride = null) {
+        const text = (textOverride || userInput.value || '').trim();
+        if (!text) return;
+
+        /* Hide quick suggestions after first real message */
+        const qs = document.getElementById('quickSuggestions');
+        if (qs) qs.style.display = 'none';
+
+        /* Show user message */
+        appendMessage(escapeHtml(text), 'user');
+        if (!textOverride) userInput.value = '';
+        sendBtn.disabled = true;
+
+        /* Show typing */
+        showTyping();
+
+        try {
+            const response = await fetch('/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            removeTyping();
+
+            /* Format reply: convert newlines to <br> */
+            const formatted = (data.reply || 'Sorry, I could not get a response. Please try again.')
+                .replace(/\n/g, '<br>');
+            appendMessage(formatted, 'ai');
+
+        } catch (err) {
+            removeTyping();
+            appendMessage(
+                '⚠️ I\'m having trouble connecting to the legal database right now. Please try again in a moment, or contact a PAO attorney directly for urgent matters.',
+                'ai'
+            );
+            console.error('Chatbot error:', err);
+        }
+
+        sendBtn.disabled = false;
+        userInput.focus();
+    }
+
+    /* ── Safety: escape HTML in user input ── */
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
+    /* ── Enter key ── */
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+    });
+
+    /* ── Scroll-triggered fade-up ── */
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

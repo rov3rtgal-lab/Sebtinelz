@@ -1,0 +1,100 @@
+{% extends 'admin.html' %}
+{% block title %}Scholarships{% endblock %}
+{% block breadcrumb %}SCHOLARSHIPS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-graduation-cap me-2"></i>SCHOLARSHIP PARTNERS</h1>
+            <p class="page-subtitle">Monitor scholarship-granting agencies for compliance and student safety.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="pill pill-resolved"><i class="fas fa-check"></i> {{ safe|length }} Active</span>
+            <span class="pill pill-banned"><i class="fas fa-ban"></i> {{ risky|length }} Blacklisted</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="stat-card s-teal">
+            <div class="stat-label">TOTAL PARTNERS</div>
+            <div class="stat-num c-teal">{{ scholars|length }}</div>
+            <div class="stat-footer">Registered scholarship bodies</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-green">
+            <div class="stat-label">ACTIVE & SAFE</div>
+            <div class="stat-num c-green">{{ safe|length }}</div>
+            <div class="stat-footer">Fully compliant</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-red">
+            <div class="stat-label">BLACKLISTED</div>
+            <div class="stat-num c-red">{{ risky|length }}</div>
+            <div class="stat-footer">Barred from operations</div>
+        </div>
+    </div>
+</div>
+
+<div class="s-card mb-3">
+    <div class="s-card-header success-hdr"><i class="fas fa-graduation-cap me-2"></i>ACTIVE SCHOLARSHIP PARTNERS</div>
+    {% if safe %}
+    <table class="s-table">
+        <thead>
+            <tr><th>ORGANIZATION</th><th>SEC/PERMIT</th><th>INDUSTRY</th><th>COMPLIANCE</th><th>ACTIONS</th></tr>
+        </thead>
+        <tbody>
+            {% for co in safe %}
+            <tr>
+                <td style="font-weight:600;">{{ co.name }}</td>
+                <td class="col-mono">{{ co.sec_id }}</td>
+                <td>{{ co.industry }}</td>
+                <td>
+                    <div class="score-wrap">
+                        <div class="score-track"><div class="score-fill" style="width:{{ co.compliance_score }}%;background:var(--green);"></div></div>
+                        <span class="score-val" style="color:var(--green);">{{ co.compliance_score }}</span>
+                    </div>
+                </td>
+                <td>
+                    <a href="/admin/company-registry/toggle/{{ co.id }}" class="btn-s btn-danger">
+                        <i class="fas fa-ban"></i> BLACKLIST
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><i class="fas fa-graduation-cap"></i><p>No active scholarship partners on record.</p></div>
+    {% endif %}
+</div>
+
+{% if risky %}
+<div class="s-card">
+    <div class="s-card-header danger-hdr"><i class="fas fa-ban me-2"></i>BLACKLISTED SCHOLARSHIP BODIES</div>
+    <table class="s-table">
+        <thead>
+            <tr><th>ORGANIZATION</th><th>SEC/PERMIT</th><th>COMPLIANCE</th><th>ACTIONS</th></tr>
+        </thead>
+        <tbody>
+            {% for co in risky %}
+            <tr>
+                <td style="font-weight:600;">{{ co.name }}</td>
+                <td class="col-mono">{{ co.sec_id }}</td>
+                <td><span class="score-val" style="color:var(--red);">{{ co.compliance_score }}/100</span></td>
+                <td>
+                    <a href="/admin/company-registry/toggle/{{ co.id }}" class="btn-s btn-success">
+                        <i class="fas fa-check"></i> RESTORE
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

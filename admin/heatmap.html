@@ -1,0 +1,129 @@
+{% extends 'admin.html' %}
+{% block title %}Heatmap{% endblock %}
+{% block breadcrumb %}OVERVIEW (HEATMAP){% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-map-marked-alt me-2"></i>INCIDENT HEATMAP</h1>
+            <p class="page-subtitle">Geographic distribution of reported workplace incidents across the Philippines.</p>
+        </div>
+        <span class="pill pill-pending"><i class="fas fa-circle-dot"></i> {{ incident_count }} Total Incidents</span>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    {% set high = namespace(count=0) %}
+    {% set med  = namespace(count=0) %}
+    {% set low  = namespace(count=0) %}
+    {% for pt in heatmap_points %}
+        {% if pt.weight >= 7 %}{% set high.count = high.count + 1 %}
+        {% elif pt.weight >= 4 %}{% set med.count = med.count + 1 %}
+        {% else %}{% set low.count = low.count + 1 %}{% endif %}
+    {% endfor %}
+    <div class="col-md-4">
+        <div class="stat-card s-red">
+            <div class="stat-label">HIGH DENSITY ZONES</div>
+            <div class="stat-num c-red">{{ high.count }}</div>
+            <div class="stat-footer">Weight ≥ 7 — Critical attention required</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-orange">
+            <div class="stat-label">MEDIUM DENSITY ZONES</div>
+            <div class="stat-num c-orange">{{ med.count }}</div>
+            <div class="stat-footer">Weight 4–6 — Monitor closely</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-teal">
+            <div class="stat-label">LOW DENSITY ZONES</div>
+            <div class="stat-num c-teal">{{ low.count }}</div>
+            <div class="stat-footer">Weight ≤ 3 — Within acceptable range</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="s-card">
+            <div class="s-card-header">
+                <span><i class="fas fa-map me-2"></i>LIVE INCIDENT MAP</span>
+                <span style="font-size:.65rem; opacity:.7;">Leaflet · OpenStreetMap</span>
+            </div>
+            <div id="map" style="height:480px; width:100%;"></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="s-card h-100">
+            <div class="s-card-header"><i class="fas fa-list me-2"></i>INCIDENT HOTSPOTS</div>
+            <div style="overflow-y:auto; max-height:480px;">
+                <table class="s-table">
+                    <thead>
+                        <tr>
+                            <th>LOCATION</th>
+                            <th>WEIGHT</th>
+                            <th>RISK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pt in heatmap_points|sort(attribute='weight', reverse=True) %}
+                        <tr>
+                            <td style="font-weight:600;">{{ pt.label }}</td>
+                            <td class="col-mono">{{ pt.weight }}</td>
+                            <td>
+                                {% if pt.weight >= 7 %}
+                                    <span class="pill pill-banned">HIGH</span>
+                                {% elif pt.weight >= 4 %}
+                                    <span class="pill pill-pending">MED</span>
+                                {% else %}
+                                    <span class="pill pill-resolved">LOW</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const map = L.map('map').setView([12.8797, 121.7740], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const points = [
+        {% for pt in heatmap_points %}
+        [{{ pt.lat }}, {{ pt.lng }}, {{ pt.weight }}],
+        {% endfor %}
+    ];
+
+    L.heatLayer(points, {
+        radius: 40,
+        blur: 25,
+        maxZoom: 10,
+        gradient: {0.2: '#006064', 0.5: '#ef6c00', 1.0: '#c62828'}
+    }).addTo(map);
+
+    {% for pt in heatmap_points %}
+    L.circleMarker([{{ pt.lat }}, {{ pt.lng }}], {
+        radius: 6,
+        color: '{% if pt.weight >= 7 %}#c62828{% elif pt.weight >= 4 %}#ef6c00{% else %}#006064{% endif %}',
+        fillOpacity: 0.85,
+        weight: 1.5
+    }).addTo(map).bindPopup('<b>{{ pt.label }}</b><br>Incidents: <b>{{ pt.weight }}</b>');
+    {% endfor %}
+</script>
+{% endblock %}

@@ -1,0 +1,935 @@
+<!--{% extends "admin/base_admin.html" %}-->
+<!--{% block title %}Legal (PAO){% endblock %}-->
+<!--{% block breadcrumb %}Administration › Legal (PAO){% endblock %}-->
+
+<!--{% block content %}-->
+<!--<div class="admin-page-header">-->
+<!--    <h4><i class="fas fa-gavel me-2"></i>PUBLIC ATTORNEY'S OFFICE (PAO) — LEGAL MANAGEMENT</h4>-->
+<!--    <p>Manage lawyer availability and assign legal counsel to active incident reports.</p>-->
+<!--</div>-->
+
+<!--<div class="row g-3 mb-4 text-center">-->
+<!--    <div class="col-md-4">-->
+<!--        <div class="admin-stat-card border-teal">-->
+<!--            <p class="admin-stat-label">TOTAL LAWYERS</p>-->
+<!--            <h2 class="admin-stat-number" style="color:#006064;">{{ lawyers | length }}</h2>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-md-4">-->
+<!--        <div class="admin-stat-card border-green">-->
+<!--            <p class="admin-stat-label">AVAILABLE NOW</p>-->
+<!--            <h2 class="admin-stat-number text-success">{{ lawyers | selectattr('is_available') | list | length }}</h2>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="col-md-4">-->
+<!--        <div class="admin-stat-card border-orange">-->
+<!--            <p class="admin-stat-label">IN SESSION</p>-->
+<!--            <h2 class="admin-stat-number text-danger">{{ lawyers | rejectattr('is_available') | list | length }}</h2>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="row g-3">-->
+<!--    &lt;!&ndash; Lawyers Panel &ndash;&gt;-->
+<!--    <div class="col-lg-6">-->
+<!--        <div class="sentinel-card">-->
+<!--            <div class="sentinel-card-header">-->
+<!--                <span><i class="fas fa-user-tie me-2"></i>LEGAL COUNSEL ROSTER</span>-->
+<!--            </div>-->
+<!--            {% if lawyers %}-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table admin-main-table align-middle mb-0">-->
+<!--                    <thead>-->
+<!--                        <tr><th>Attorney</th><th>Specialization</th><th>Availability</th><th>Action</th></tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        {% for lawyer in lawyers %}-->
+<!--                        <tr>-->
+<!--                            <td class="fw-bold">Atty. {{ lawyer.name }}</td>-->
+<!--                            <td style="font-size:0.8rem;">{{ lawyer.specialization }}</td>-->
+<!--                            <td>-->
+<!--                                {% if lawyer.is_available %}-->
+<!--                                <span class="badge-active">AVAILABLE</span>-->
+<!--                                {% else %}-->
+<!--                                <span class="badge-blacklisted">IN SESSION</span>-->
+<!--                                {% endif %}-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <a href="/admin/legal/toggle/{{ lawyer.id }}"-->
+<!--                                   class="btn btn-sm {% if lawyer.is_available %}btn-outline-danger{% else %}btn-outline-success{% endif %}"-->
+<!--                                   style="font-size:0.7rem;">-->
+<!--                                    {% if lawyer.is_available %}<i class="fas fa-pause me-1"></i>Set Busy-->
+<!--                                    {% else %}<i class="fas fa-play me-1"></i>Set Free{% endif %}-->
+<!--                                </a>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        {% endfor %}-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            {% else %}-->
+<!--            <div class="p-4 text-center text-muted">No lawyers in the system.</div>-->
+<!--            {% endif %}-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Assign Lawyer &ndash;&gt;-->
+<!--    <div class="col-lg-6">-->
+<!--        <div class="sentinel-card">-->
+<!--            <div class="sentinel-card-header">-->
+<!--                <span><i class="fas fa-link me-2"></i>ASSIGN LAWYER TO INCIDENT</span>-->
+<!--            </div>-->
+<!--            <div class="p-3">-->
+<!--                {% if pending_reports and lawyers %}-->
+<!--                <form action="/admin/legal/assign" method="POST">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label fw-bold" style="font-size:0.75rem;">SELECT LAWYER</label>-->
+<!--                        <select name="lawyer_id" class="form-select form-select-sm" required>-->
+<!--                            <option value="" disabled selected>— Choose Lawyer —</option>-->
+<!--                            {% for l in lawyers %}-->
+<!--                            <option value="{{ l.id }}" {% if not l.is_available %}disabled{% endif %}>-->
+<!--                                Atty. {{ l.name }} ({{ l.specialization }}){% if not l.is_available %} — IN SESSION{% endif %}-->
+<!--                            </option>-->
+<!--                            {% endfor %}-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label fw-bold" style="font-size:0.75rem;">SELECT INCIDENT</label>-->
+<!--                        <select name="incident_id" class="form-select form-select-sm" required>-->
+<!--                            <option value="" disabled selected>— Choose Incident —</option>-->
+<!--                            {% for r in pending_reports %}-->
+<!--                            <option value="{{ r.id }}">#{{ r.id }} — {{ r.incident_type or 'Unclassified' }} @ {{ r.company_name or 'Unknown' }}</option>-->
+<!--                            {% endfor %}-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <button type="submit" class="btn btn-sm btn-success fw-bold w-100">-->
+<!--                        <i class="fas fa-gavel me-2"></i>ASSIGN COUNSEL-->
+<!--                    </button>-->
+<!--                </form>-->
+<!--                {% elif not pending_reports %}-->
+<!--                <div class="text-center py-4">-->
+<!--                    <i class="fas fa-check-circle fa-2x text-success mb-2 d-block"></i>-->
+<!--                    <p class="text-muted" style="font-size:0.8rem;">No pending incidents require legal assignment.</p>-->
+<!--                </div>-->
+<!--                {% else %}-->
+<!--                <div class="text-center py-4">-->
+<!--                    <i class="fas fa-user-slash fa-2x text-muted mb-2 d-block"></i>-->
+<!--                    <p class="text-muted" style="font-size:0.8rem;">No lawyers in the system to assign.</p>-->
+<!--                </div>-->
+<!--                {% endif %}-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Pending incidents quick view &ndash;&gt;-->
+<!--        {% if pending_reports %}-->
+<!--        <div class="sentinel-card mt-3">-->
+<!--            <div class="sentinel-card-header" style="font-size:0.75rem;">-->
+<!--                <span><i class="fas fa-clipboard-list me-2"></i>PENDING INCIDENTS ({{ pending_reports | length }})</span>-->
+<!--                <a href="/admin/pending-incidents" class="btn btn-sm btn-outline-light" style="font-size:0.65rem;">View All</a>-->
+<!--            </div>-->
+<!--            <ul class="list-group list-group-flush">-->
+<!--                {% for r in pending_reports[:5] %}-->
+<!--                <li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.8rem; padding:10px 15px;">-->
+<!--                    <span><span class="fw-bold">#{{ r.id }}</span> — {{ r.incident_type or 'Unclassified' }}</span>-->
+<!--                    <span class="text-muted" style="font-size:0.7rem;">{{ r.company_name or '—' }}</span>-->
+<!--                </li>-->
+<!--                {% endfor %}-->
+<!--                {% if pending_reports | length > 5 %}-->
+<!--                <li class="list-group-item text-center text-muted" style="font-size:0.72rem;">+{{ pending_reports | length - 5 }} more…</li>-->
+<!--                {% endif %}-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--        {% endif %}-->
+<!--    </div>-->
+<!--</div>-->
+<!--{% endblock %}-->
+{% extends 'admin.html' %}
+{% block title %}Legal (PAO){% endblock %}
+{% block breadcrumb %}LEGAL (PAO){% endblock %}
+
+{% block content %}
+
+<!-- ── FLASH MESSAGES ── -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="mb-3">
+    {% for category, message in messages %}
+    <div class="alert-box alert-{{ category }}" style="
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        font-size: .83rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        {% if category == 'success' %}background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20;
+        {% elif category == 'warning' %}background:#fff3e0;border:1px solid #ffcc80;color:#e65100;
+        {% elif category == 'info' %}background:#e3f2fd;border:1px solid #90caf9;color:#0d47a1;
+        {% else %}background:#fce4ec;border:1px solid #f48fb1;color:#880e4f;{% endif %}">
+        <i class="fas
+            {% if category == 'success' %}fa-check-circle
+            {% elif category == 'warning' %}fa-exclamation-triangle
+            {% elif category == 'info' %}fa-info-circle
+            {% else %}fa-bell{% endif %}"></i>
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- ── PAGE HEADER ── -->
+<div class="page-header mb-4">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-gavel me-2"></i>LEGAL — PUBLIC ATTORNEY'S OFFICE
+            </h1>
+            <p class="page-subtitle">
+                Review legal aid requests submitted by workers and students, manage attorney availability, and assign counsel to pending incidents.
+            </p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            {% set avail_lawyers = lawyers | selectattr('is_available') | list %}
+            <span class="pill pill-resolved">
+                <i class="fas fa-user-tie me-1"></i> {{ avail_lawyers | length }} Available
+            </span>
+            <span class="pill pill-pending">
+                <i class="fas fa-file-alt me-1"></i> {{ pending_reports | length }} Pending Cases
+            </span>
+            <span class="pill pill-anon">
+                <i class="fas fa-hand-paper me-1"></i> {{ legal_requests | length }} Aid Requests
+            </span>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     STAT CARDS
+     ══════════════════════════════════════════════════════════ -->
+{% set pending_count  = legal_requests | selectattr('status','equalto','Pending')  | list | length %}
+{% set resolved_count = legal_requests | selectattr('status','equalto','Resolved') | list | length %}
+{% set archived_count = legal_requests | selectattr('status','equalto','Archived') | list | length %}
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);
+                    padding:18px 20px;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);">
+                {{ legal_requests | length }}
+            </div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;
+                        color:var(--text-muted);text-transform:uppercase;">Total Requests</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div style="background:#fff3e0;border-radius:12px;border:1px solid #ffcc80;
+                    padding:18px 20px;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:#e65100;">
+                {{ pending_count }}
+            </div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;
+                        color:#e65100;text-transform:uppercase;">Pending</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div style="background:#e8f5e9;border-radius:12px;border:1px solid #a5d6a7;
+                    padding:18px 20px;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:#2e7d32;">
+                {{ resolved_count }}
+            </div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;
+                        color:#2e7d32;text-transform:uppercase;">Resolved</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div style="background:#f3f4f6;border-radius:12px;border:1px solid var(--border);
+                    padding:18px 20px;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--text-muted);">
+                {{ archived_count }}
+            </div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;
+                        color:var(--text-muted);text-transform:uppercase;">Archived</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION 1 — USER LEGAL AID REQUESTS TABLE
+     ══════════════════════════════════════════════════════════ -->
+<div class="s-card mb-4">
+    <div class="s-card-header warning-hdr"
+         style="display:flex;justify-content:space-between;align-items:center;">
+        <span>
+            <i class="fas fa-hand-paper me-2"></i>USER LEGAL AID REQUESTS
+        </span>
+        <span style="font-size:.65rem;opacity:.8;">
+            Submitted via the PAO portal &nbsp;·&nbsp; {{ legal_requests | length }} record(s)
+        </span>
+    </div>
+
+    {% if legal_requests %}
+
+    <!-- Search / Filter Bar -->
+    <div style="padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border);
+                display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="legalSearch"
+               placeholder="🔍  Search by name, email, concern type…"
+               oninput="filterTable()"
+               style="flex:1;min-width:220px;border:1.5px solid var(--border);border-radius:8px;
+                      padding:7px 13px;font-size:.8rem;outline:none;background:#fff;">
+        <select id="statusFilter" onchange="filterTable()"
+                style="border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;
+                       font-size:.8rem;background:#fff;outline:none;">
+            <option value="">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Archived">Archived</option>
+        </select>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table class="s-table" id="legalTable">
+            <thead>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th>FULL NAME</th>
+                    <th>CONCERN TYPE</th>
+                    <th>EMAIL</th>
+                    <th>CONTACT</th>
+                    <th>COMPANY INVOLVED</th>
+                    <th>DESCRIPTION</th>
+                    <th style="text-align:center;">ANON?</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in legal_requests %}
+                <tr class="legal-row"
+                    data-name="{{ req.fullname | lower }}"
+                    data-email="{{ req.email | lower }}"
+                    data-type="{{ req.concern_type | lower }}"
+                    data-status="{{ req.status }}">
+
+                    <!-- ID -->
+                    <td style="font-weight:800;color:var(--accent);font-size:.85rem;">
+                        {{ req.id }}
+                    </td>
+
+                    <!-- Full Name -->
+                    <td>
+                        <div style="font-weight:700;font-size:.83rem;white-space:nowrap;">
+                            {{ req.fullname if req.fullname else '—' }}
+                        </div>
+                        {% if req.is_anonymous %}
+                        <div style="font-size:.65rem;color:var(--text-muted);margin-top:2px;">
+                            <i class="fas fa-user-secret me-1"></i>Anonymous submission
+                        </div>
+                        {% endif %}
+                    </td>
+
+                    <!-- Concern Type -->
+                    <td>
+                        {% if req.concern_type %}
+                        <span style="display:inline-block;background:#fff3e0;color:#e65100;
+                                     border:1px solid #ffcc80;border-radius:20px;
+                                     padding:3px 10px;font-size:.65rem;font-weight:700;
+                                     white-space:nowrap;">
+                            <i class="fas fa-tag me-1"></i>{{ req.concern_type }}
+                        </span>
+                        {% else %}
+                        <span style="color:var(--text-muted);font-size:.75rem;">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Email -->
+                    <td style="font-size:.75rem;color:var(--text-muted);">
+                        {% if req.email %}
+                        <a href="mailto:{{ req.email }}"
+                           style="color:var(--accent);text-decoration:none;">
+                            {{ req.email }}
+                        </a>
+                        {% else %}—{% endif %}
+                    </td>
+
+                    <!-- Contact -->
+                    <td style="font-size:.75rem;white-space:nowrap;">
+                        {{ req.contact if req.contact else '—' }}
+                    </td>
+
+                    <!-- Company Involved -->
+                    <td style="font-size:.75rem;">
+                        {% if req.company_involved %}
+                        <span style="display:flex;align-items:center;gap:5px;">
+                            <i class="fas fa-building"
+                               style="color:var(--text-muted);font-size:.65rem;"></i>
+                            {{ req.company_involved }}
+                        </span>
+                        {% else %}
+                        <span style="color:var(--text-muted);">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Description (truncated + View Full button) -->
+                    <td style="max-width:220px;">
+                        {% if req.concern %}
+                        <div style="font-size:.73rem;color:var(--text-muted);
+                                    line-height:1.4;white-space:normal;">
+                            {{ req.concern[:90] }}{% if req.concern | length > 90 %}…{% endif %}
+                        </div>
+                        <button onclick="openDetail(
+                                    '{{ req.id }}',
+                                    '{{ req.fullname | replace("'", "\\'") }}',
+                                    '{{ req.concern_type | replace("'", "\\'") }}',
+                                    '{{ req.email | replace("'", "\\'") }}',
+                                    '{{ req.contact | replace("'", "\\'") }}',
+                                    '{{ (req.company_involved or "") | replace("'", "\\'") }}',
+                                    '{{ req.concern | replace("'", "\\'") | replace("\n", "\\n") }}',
+                                    '{{ req.is_anonymous }}',
+                                    '{{ req.status }}'
+                                )"
+                                style="margin-top:5px;background:none;
+                                       border:1px solid var(--border);border-radius:6px;
+                                       padding:2px 8px;font-size:.65rem;color:var(--accent);
+                                       cursor:pointer;font-weight:600;">
+                            <i class="fas fa-eye me-1"></i>VIEW FULL
+                        </button>
+                        {% else %}
+                        <span style="color:var(--text-muted);font-size:.75rem;">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Anonymous badge -->
+                    <td style="text-align:center;">
+                        {% if req.is_anonymous %}
+                        <span style="display:inline-block;background:#ede9fe;color:#5b21b6;
+                                     border-radius:20px;padding:2px 9px;font-size:.62rem;
+                                     font-weight:700;">
+                            <i class="fas fa-user-secret me-1"></i>ANON
+                        </span>
+                        {% else %}
+                        <span style="display:inline-block;background:#e3f2fd;color:#0d47a1;
+                                     border-radius:20px;padding:2px 9px;font-size:.62rem;
+                                     font-weight:700;">
+                            <i class="fas fa-user me-1"></i>NAMED
+                        </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Status badge -->
+                    <td>
+                        {% if req.status == 'Resolved' %}
+                        <span style="display:inline-flex;align-items:center;gap:5px;
+                                     background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;
+                                     border-radius:20px;padding:3px 10px;
+                                     font-size:.65rem;font-weight:700;">
+                            <i class="fas fa-check-circle"></i> RESOLVED
+                        </span>
+                        {% elif req.status == 'Archived' %}
+                        <span style="display:inline-flex;align-items:center;gap:5px;
+                                     background:#f3f4f6;color:var(--text-muted);
+                                     border:1px solid var(--border);border-radius:20px;
+                                     padding:3px 10px;font-size:.65rem;font-weight:700;">
+                            <i class="fas fa-archive"></i> ARCHIVED
+                        </span>
+                        {% else %}
+                        <span style="display:inline-flex;align-items:center;gap:5px;
+                                     background:#fff3e0;color:#e65100;border:1px solid #ffcc80;
+                                     border-radius:20px;padding:3px 10px;
+                                     font-size:.65rem;font-weight:700;">
+                            <i class="fas fa-clock"></i> PENDING
+                        </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                        {% if req.status == 'Pending' %}
+                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                            <a href="/admin/legal/resolve/{{ req.id }}"
+                               onclick="return confirm('Mark request #{{ req.id }} as Resolved?')"
+                               style="display:inline-flex;align-items:center;gap:4px;
+                                      background:#2e7d32;color:#fff;border-radius:6px;
+                                      padding:4px 10px;font-size:.68rem;font-weight:700;
+                                      text-decoration:none;white-space:nowrap;">
+                                <i class="fas fa-check"></i> RESOLVE
+                            </a>
+                            <a href="/admin/legal/archive/{{ req.id }}"
+                               onclick="return confirm('Archive request #{{ req.id }}?')"
+                               style="display:inline-flex;align-items:center;gap:4px;
+                                      background:var(--bg);color:var(--text-muted);
+                                      border:1px solid var(--border);border-radius:6px;
+                                      padding:4px 10px;font-size:.68rem;font-weight:700;
+                                      text-decoration:none;white-space:nowrap;">
+                                <i class="fas fa-archive"></i> ARCHIVE
+                            </a>
+                        </div>
+                        {% else %}
+                        <span style="font-size:.68rem;color:var(--text-muted);">— Closed —</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No-results message shown by JS -->
+    <div id="noResults"
+         style="display:none;padding:32px;text-align:center;
+                color:var(--text-muted);font-size:.83rem;">
+        <i class="fas fa-search"
+           style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>
+        No requests match your search.
+    </div>
+
+    <!-- Table footer summary -->
+    <div style="padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);
+                font-size:.72rem;color:var(--text-muted);
+                display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+        <span><i class="fas fa-clock me-1" style="color:#e65100;"></i>
+            {{ pending_count }} Pending</span>
+        <span><i class="fas fa-check me-1" style="color:#2e7d32;"></i>
+            {{ resolved_count }} Resolved</span>
+        <span><i class="fas fa-archive me-1"></i>
+            {{ archived_count }} Archived</span>
+        <span style="margin-left:auto;">
+            <i class="fas fa-database me-1"></i>
+            {{ legal_requests | length }} total record(s)
+        </span>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div style="padding:60px 24px;text-align:center;">
+        <div style="width:64px;height:64px;background:#f3f4f6;border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    margin:0 auto 16px;font-size:1.6rem;color:var(--text-muted);">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <p style="font-size:.88rem;color:var(--text-muted);margin:0;">
+            No legal aid requests have been submitted yet.
+        </p>
+        <p style="font-size:.75rem;color:var(--text-muted);margin-top:6px;">
+            Requests submitted via
+            <code style="background:#f3f4f6;padding:1px 6px;border-radius:4px;">/pao</code>
+            will appear here automatically.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION 2 — LAWYER ROSTER + ASSIGN PANEL
+     ══════════════════════════════════════════════════════════ -->
+<div class="row g-3">
+
+    <!-- Lawyer Roster -->
+    <div class="col-lg-5">
+        <div class="s-card h-100">
+            <div class="s-card-header">
+                <i class="fas fa-users me-2"></i>LEGAL COUNSEL ROSTER
+            </div>
+            {% if lawyers %}
+            <table class="s-table">
+                <thead>
+                    <tr>
+                        <th>ATTORNEY</th>
+                        <th>SPECIALIZATION</th>
+                        <th>STATUS</th>
+                        <th>TOGGLE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lw in lawyers %}
+                    <tr>
+                        <td style="font-weight:700;">Atty. {{ lw.name }}</td>
+                        <td style="font-size:.75rem;color:var(--text-muted);">
+                            {{ lw.specialization }}
+                        </td>
+                        <td>
+                            {% if lw.is_available %}
+                            <span style="display:inline-flex;align-items:center;gap:5px;
+                                         background:#e8f5e9;color:#2e7d32;
+                                         border:1px solid #a5d6a7;border-radius:20px;
+                                         padding:3px 9px;font-size:.65rem;font-weight:700;">
+                                <i class="fas fa-circle-check"></i> AVAILABLE
+                            </span>
+                            {% else %}
+                            <span style="display:inline-flex;align-items:center;gap:5px;
+                                         background:#fff3e0;color:#e65100;
+                                         border:1px solid #ffcc80;border-radius:20px;
+                                         padding:3px 9px;font-size:.65rem;font-weight:700;">
+                                <i class="fas fa-circle-xmark"></i> IN SESSION
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/admin/legal/toggle/{{ lw.id }}"
+                               style="display:inline-flex;align-items:center;gap:4px;
+                                      border-radius:6px;padding:4px 10px;font-size:.68rem;
+                                      font-weight:700;text-decoration:none;white-space:nowrap;
+                                      {% if lw.is_available %}
+                                      background:#fff3e0;color:#e65100;border:1px solid #ffcc80;
+                                      {% else %}
+                                      background:#e0f2f1;color:#00695c;border:1px solid #80cbc4;
+                                      {% endif %}">
+                                <i class="fas fa-toggle-{% if lw.is_available %}off{% else %}on{% endif %}"></i>
+                                {% if lw.is_available %}SET BUSY{% else %}SET FREE{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding:40px;text-align:center;
+                        color:var(--text-muted);font-size:.83rem;">
+                <i class="fas fa-user-tie"
+                   style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                No lawyers registered in the system.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Assign Lawyer -->
+    <div class="col-lg-7">
+        <div class="s-card">
+            <div class="s-card-header warning-hdr">
+                <i class="fas fa-link me-2"></i>ASSIGN LAWYER TO INCIDENT REPORT
+            </div>
+
+            {% if pending_reports and lawyers %}
+            <div style="padding:20px;">
+                <form method="POST" action="/admin/legal/assign">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label style="font-size:.7rem;font-weight:700;letter-spacing:.06em;
+                                          text-transform:uppercase;color:var(--text-muted);
+                                          display:block;margin-bottom:6px;">
+                                SELECT LAWYER
+                            </label>
+                            <select name="lawyer_id"
+                                    style="width:100%;border:1.5px solid var(--border);
+                                           border-radius:8px;padding:8px 12px;
+                                           font-size:.82rem;background:#fff;outline:none;"
+                                    required>
+                                <option value="" disabled selected>Choose attorney…</option>
+                                {% for lw in lawyers %}
+                                <option value="{{ lw.id }}"
+                                        {% if not lw.is_available %}disabled{% endif %}>
+                                    Atty. {{ lw.name }} — {{ lw.specialization }}
+                                    {% if not lw.is_available %}(In Session){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label style="font-size:.7rem;font-weight:700;letter-spacing:.06em;
+                                          text-transform:uppercase;color:var(--text-muted);
+                                          display:block;margin-bottom:6px;">
+                                SELECT INCIDENT
+                            </label>
+                            <select name="incident_id"
+                                    style="width:100%;border:1.5px solid var(--border);
+                                           border-radius:8px;padding:8px 12px;
+                                           font-size:.82rem;background:#fff;outline:none;"
+                                    required>
+                                <option value="" disabled selected>Choose case…</option>
+                                {% for rep in pending_reports %}
+                                <option value="{{ rep.id }}">
+                                    #{{ rep.id }} — {{ rep.incident_type or 'Unclassified' }}
+                                    @ {{ rep.company_name or 'Unknown' }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit"
+                                    style="width:100%;background:#00695c;color:#fff;
+                                           border:none;border-radius:8px;padding:9px 12px;
+                                           font-size:.75rem;font-weight:700;cursor:pointer;
+                                           display:flex;align-items:center;
+                                           justify-content:center;gap:5px;">
+                                <i class="fas fa-link"></i> ASSIGN
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div style="padding:40px;text-align:center;
+                        color:var(--text-muted);font-size:.83rem;">
+                <i class="fas fa-check-circle"
+                   style="font-size:2rem;color:#2e7d32;
+                          margin-bottom:10px;display:block;"></i>
+                No pending cases to assign, or no lawyers on record.
+            </div>
+            {% endif %}
+
+            {% if pending_reports %}
+            <div style="border-top:1px solid var(--border);">
+                <div style="padding:8px 16px;font-size:.68rem;font-weight:700;
+                            letter-spacing:.07em;color:var(--text-muted);
+                            background:var(--bg);text-transform:uppercase;">
+                    Pending Incident Reports ({{ pending_reports | length }})
+                </div>
+                <table class="s-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>TYPE</th>
+                            <th>COMPANY</th>
+                            <th>IDENTITY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rep in pending_reports %}
+                        <tr>
+                            <td style="font-weight:700;color:var(--accent);">
+                                {{ rep.id }}
+                            </td>
+                            <td style="font-weight:600;font-size:.8rem;">
+                                {{ rep.incident_type or '—' }}
+                            </td>
+                            <td style="font-size:.78rem;color:var(--text-muted);">
+                                {{ rep.company_name or '—' }}
+                            </td>
+                            <td>
+                                {% if rep.is_anonymous %}
+                                <span style="display:inline-block;background:#ede9fe;
+                                             color:#5b21b6;border-radius:20px;
+                                             padding:2px 8px;font-size:.62rem;
+                                             font-weight:700;">ANON</span>
+                                {% else %}
+                                <span style="display:inline-block;background:#e3f2fd;
+                                             color:#0d47a1;border-radius:20px;
+                                             padding:2px 8px;font-size:.62rem;
+                                             font-weight:700;">NAMED</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     DETAIL MODAL — View Full Request
+     ══════════════════════════════════════════════════════════ -->
+<div id="detailModal"
+     style="display:none;position:fixed;inset:0;z-index:9999;
+            background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);
+            align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;width:100%;max-width:560px;
+                margin:20px;box-shadow:0 25px 60px rgba(0,0,0,0.3);overflow:hidden;">
+
+        <!-- Modal Header -->
+        <div style="background:linear-gradient(135deg,#0a1628,#0d47a1);
+                    color:#fff;padding:20px 24px;border-bottom:3px solid #ef6c00;
+                    display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;
+                            text-transform:uppercase;opacity:.7;margin-bottom:4px;">
+                    Legal Aid Request — Full Detail
+                </div>
+                <div style="font-size:1.05rem;font-weight:700;">
+                    <i class="fas fa-file-signature me-2"
+                       style="color:#ffd740;"></i>Request <span id="modal-id">#—</span>
+                </div>
+            </div>
+            <button onclick="closeDetail()"
+                    style="background:rgba(255,255,255,.15);border:none;color:#fff;
+                           width:32px;height:32px;border-radius:50%;cursor:pointer;
+                           font-size:1rem;display:flex;align-items:center;
+                           justify-content:center;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div style="padding:24px;max-height:70vh;overflow-y:auto;">
+
+            <!-- Concern Type Banner -->
+            <div style="background:#fff3e0;border:1px solid #ffcc80;border-radius:10px;
+                        padding:10px 16px;margin-bottom:20px;display:flex;
+                        align-items:center;gap:10px;font-size:.82rem;
+                        font-weight:700;color:#e65100;">
+                <i class="fas fa-tag"></i>
+                <span id="modal-type">—</span>
+            </div>
+
+            <!-- Info Grid -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;
+                        gap:14px;margin-bottom:20px;">
+
+                <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;">
+                    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;
+                                text-transform:uppercase;color:#64748b;margin-bottom:4px;">
+                        <i class="fas fa-user me-1"></i>Full Name
+                    </div>
+                    <div id="modal-name"
+                         style="font-size:.88rem;font-weight:700;">—</div>
+                </div>
+
+                <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;">
+                    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;
+                                text-transform:uppercase;color:#64748b;margin-bottom:4px;">
+                        <i class="fas fa-shield-alt me-1"></i>Identity
+                    </div>
+                    <div id="modal-anon"
+                         style="font-size:.85rem;font-weight:700;">—</div>
+                </div>
+
+                <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;">
+                    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;
+                                text-transform:uppercase;color:#64748b;margin-bottom:4px;">
+                        <i class="fas fa-envelope me-1"></i>Email
+                    </div>
+                    <div id="modal-email"
+                         style="font-size:.83rem;word-break:break-all;">—</div>
+                </div>
+
+                <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;">
+                    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;
+                                text-transform:uppercase;color:#64748b;margin-bottom:4px;">
+                        <i class="fas fa-phone me-1"></i>Contact Number
+                    </div>
+                    <div id="modal-contact"
+                         style="font-size:.83rem;font-weight:600;">—</div>
+                </div>
+
+                <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;
+                            grid-column:1/-1;">
+                    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;
+                                text-transform:uppercase;color:#64748b;margin-bottom:4px;">
+                        <i class="fas fa-building me-1"></i>Company / Organization Involved
+                    </div>
+                    <div id="modal-company"
+                         style="font-size:.83rem;font-weight:600;">—</div>
+                </div>
+            </div>
+
+            <!-- Full Description -->
+            <div>
+                <div style="font-size:.68rem;font-weight:700;letter-spacing:.08em;
+                            text-transform:uppercase;color:#64748b;margin-bottom:8px;">
+                    <i class="fas fa-align-left me-1"></i>Full Description / Situation
+                </div>
+                <div id="modal-concern"
+                     style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+                            padding:14px 16px;font-size:.82rem;line-height:1.65;
+                            color:#1a2332;white-space:pre-wrap;min-height:80px;">—</div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="padding:14px 24px;background:#f8fafc;
+                    border-top:1px solid #e2e8f0;
+                    display:flex;justify-content:flex-end;gap:8px;">
+            <button onclick="closeDetail()"
+                    style="background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;
+                           padding:8px 18px;font-size:.78rem;font-weight:700;
+                           cursor:pointer;color:#64748b;">
+                <i class="fas fa-times me-1"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════════ -->
+<script>
+
+// ── Search & Status Filter ───────────────────────────────────
+function filterTable() {
+    const search = document.getElementById('legalSearch').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value;
+    const rows   = document.querySelectorAll('.legal-row');
+    let   visible = 0;
+
+    rows.forEach(row => {
+        const matchSearch = !search
+            || row.dataset.name.includes(search)
+            || row.dataset.email.includes(search)
+            || row.dataset.type.includes(search);
+        const matchStatus = !status || row.dataset.status === status;
+
+        if (matchSearch && matchStatus) {
+            row.style.display = '';
+            visible++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    document.getElementById('noResults').style.display =
+        visible === 0 ? 'block' : 'none';
+}
+
+// ── Detail Modal ─────────────────────────────────────────────
+function openDetail(id, name, type, email, contact, company, concern, isAnon, status) {
+    document.getElementById('modal-id').textContent      = '#' + id;
+    document.getElementById('modal-name').textContent    = name    || '—';
+    document.getElementById('modal-type').textContent    = type    || 'Other';
+    document.getElementById('modal-email').textContent   = email   || '—';
+    document.getElementById('modal-contact').textContent = contact || '—';
+    document.getElementById('modal-company').textContent = company || '—';
+    document.getElementById('modal-concern').textContent = concern.replace(/\\n/g, '\n') || '—';
+
+    const anonEl = document.getElementById('modal-anon');
+    if (isAnon === 'True') {
+        anonEl.innerHTML =
+            '<span style="color:#5b21b6;">' +
+            '<i class="fas fa-user-secret me-1"></i>Anonymous Submission</span>';
+    } else {
+        anonEl.innerHTML =
+            '<span style="color:#0d47a1;">' +
+            '<i class="fas fa-user me-1"></i>Named Submission</span>';
+    }
+
+    const modal = document.getElementById('detailModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+    document.getElementById('detailModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDetail();
+});
+
+// Auto-dismiss flash messages after 4s
+document.querySelectorAll('.alert-box').forEach(el => {
+    setTimeout(() => {
+        el.style.transition = 'opacity .5s';
+        el.style.opacity = '0';
+    }, 4000);
+    setTimeout(() => el.remove(), 4500);
+});
+
+</script>
+
+{% endblock %}

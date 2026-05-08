@@ -1,0 +1,98 @@
+{% extends 'admin.html' %}
+{% block title %}Overseas (DMW){% endblock %}
+{% block breadcrumb %}OVERSEAS (DMW){% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-globe-americas me-2"></i>OVERSEAS (DMW)</h1>
+            <p class="page-subtitle">Department of Migrant Workers — overseas placement partner monitoring.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="pill pill-banned"><i class="fas fa-exclamation-triangle"></i> {{ high_risk|length }} High Risk</span>
+            <span class="pill pill-resolved"><i class="fas fa-check"></i> {{ compliant|length }} Compliant</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="stat-card s-teal">
+            <div class="stat-label">TOTAL OVERSEAS</div>
+            <div class="stat-num c-teal">{{ overseas|length }}</div>
+            <div class="stat-footer">Registered DMW partners</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-green">
+            <div class="stat-label">COMPLIANT (≥70)</div>
+            <div class="stat-num c-green">{{ compliant|length }}</div>
+            <div class="stat-footer">Score ≥ 70/100</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card s-red">
+            <div class="stat-label">HIGH RISK (&lt;70)</div>
+            <div class="stat-num c-red">{{ high_risk|length }}</div>
+            <div class="stat-footer">Requires immediate review</div>
+        </div>
+    </div>
+</div>
+
+{% if high_risk %}
+<div class="s-card mb-3">
+    <div class="s-card-header danger-hdr"><i class="fas fa-exclamation-triangle me-2"></i>HIGH-RISK OVERSEAS COMPANIES</div>
+    <table class="s-table">
+        <thead>
+            <tr><th>COMPANY</th><th>SEC/PERMIT</th><th>INDUSTRY</th><th>SCORE</th><th>STATUS</th><th>ACTIONS</th></tr>
+        </thead>
+        <tbody>
+            {% for co in high_risk %}
+            <tr>
+                <td style="font-weight:700;">{{ co.name }}</td>
+                <td class="col-mono">{{ co.sec_id }}</td>
+                <td>{{ co.industry }}</td>
+                <td><span class="score-val" style="color:var(--red);">{{ co.compliance_score }}/100</span></td>
+                <td><span class="pill {% if co.status == 'Active' %}pill-active{% else %}pill-banned{% endif %}">{{ co.status }}</span></td>
+                <td>
+                    <a href="/admin/company-registry/toggle/{{ co.id }}" class="btn-s {% if co.status == 'Active' %}btn-danger{% else %}btn-success{% endif %}">
+                        {% if co.status == 'Active' %}<i class="fas fa-ban"></i> BLACKLIST{% else %}<i class="fas fa-check"></i> RESTORE{% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="s-card">
+    <div class="s-card-header success-hdr"><i class="fas fa-globe me-2"></i>COMPLIANT OVERSEAS PARTNERS</div>
+    {% if compliant %}
+    <table class="s-table">
+        <thead>
+            <tr><th>COMPANY</th><th>SEC/PERMIT</th><th>INDUSTRY</th><th>SCORE</th><th>STATUS</th></tr>
+        </thead>
+        <tbody>
+            {% for co in compliant %}
+            <tr>
+                <td style="font-weight:600;">{{ co.name }}</td>
+                <td class="col-mono">{{ co.sec_id }}</td>
+                <td>{{ co.industry }}</td>
+                <td>
+                    <div class="score-wrap">
+                        <div class="score-track"><div class="score-fill" style="width:{{ co.compliance_score }}%;background:var(--green);"></div></div>
+                        <span class="score-val" style="color:var(--green);">{{ co.compliance_score }}</span>
+                    </div>
+                </td>
+                <td><span class="pill {% if co.status == 'Active' %}pill-active{% else %}pill-banned{% endif %}">{{ co.status }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><i class="fas fa-globe-americas"></i><p>No compliant overseas companies on record.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

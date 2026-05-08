@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWD Overseas Employment | Project Sentinel</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Sora (display) + DM Sans (body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════
+           DESIGN TOKENS
+        ═══════════════════════════════════════════════════ */
+        :root {
+            --navy:          #0a1f44;
+            --navy-mid:      #0d2a5e;
+            --navy-light:    #1a3a7a;
+            --gold:          #d4a017;
+            --gold-light:    #f5c842;
+            --teal:          #00897b;
+            --teal-light:    #e0f2f1;
+            --red:           #c62828;
+            --red-light:     #ffebee;
+            --amber:         #f59e0b;
+            --green:         #2e7d32;
+            --green-light:   #e8f5e9;
+            --bg:            #f2f5fb;
+            --surface:       #ffffff;
+            --border:        #dde3ef;
+            --text:          #0f1e35;
+            --text-2:        #4a5568;
+            --text-3:        #8a96a8;
+            --radius-card:   18px;
+            --shadow-card:   0 4px 24px rgba(10,31,68,0.09);
+            --shadow-hover:  0 12px 40px rgba(10,31,68,0.16);
+            --transition:    all 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           BASE
+        ═══════════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Skip link for screen-readers */
+        .skip-link {
+            position: absolute;
+            top: -60px;
+            left: 16px;
+            background: var(--navy);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 0 0 8px 8px;
+            font-weight: 700;
+            z-index: 9999;
+            transition: top 0.2s;
+            text-decoration: none;
+        }
+        .skip-link:focus { top: 0; }
+
+        /* ═══════════════════════════════════════════════════
+           NAVBAR
+        ═══════════════════════════════════════════════════ */
+        .sentinel-nav {
+            background: var(--surface);
+            border-bottom: 3px solid var(--navy);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: 0 2px 12px rgba(10,31,68,0.10);
+        }
+        .sentinel-nav .container {
+            display: flex;
+            align-items: stretch;
+            height: 62px;
+            gap: 0;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px 0 0;
+            border-right: 1px solid var(--border);
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav-brand-icon {
+            width: 36px; height: 36px;
+            background: var(--navy);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-brand-icon i { color: var(--gold-light); font-size: 1rem; }
+        .nav-brand-text { line-height: 1; }
+        .nav-brand-name {
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--navy);
+            letter-spacing: 0.04em;
+        }
+        .nav-brand-sub {
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--text-3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 14px;
+            height: 62px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-2);
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+            transition: var(--transition);
+        }
+        .nav-links a:hover,
+        .nav-links a[aria-current="page"] {
+            color: var(--navy);
+            border-bottom-color: var(--gold);
+        }
+        .nav-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+        .btn-nav-legal {
+            background: var(--navy);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            transition: var(--transition);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-nav-legal:hover { background: var(--navy-light); color: #fff; }
+
+        /* ═══════════════════════════════════════════════════
+           HERO BANNER
+        ═══════════════════════════════════════════════════ */
+        .pwd-hero {
+            background: var(--navy);
+            position: relative;
+            overflow: hidden;
+            padding: 56px 0 48px;
+        }
+        /* Geometric accent lines */
+        .pwd-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    -55deg,
+                    rgba(255,255,255,0.015) 0px,
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px,
+                    transparent 40px
+                );
+        }
+        /* Gold accent bar */
+        .pwd-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 30px;
+            padding: 5px 14px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 18px;
+        }
+        .hero-title {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+            margin-bottom: 14px;
+        }
+        .hero-title em {
+            font-style: normal;
+            color: var(--gold-light);
+        }
+        .hero-sub {
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.65;
+            max-width: 520px;
+            margin-bottom: 0;
+        }
+        /* Credential badges */
+        .hero-credentials {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+        }
+        .cred-badge {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.85);
+        }
+        .cred-badge i { color: var(--gold-light); font-size: 0.85rem; }
+        /* Stats panel */
+        .hero-stats {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .hero-stat-item { text-align: center; }
+        .hero-stat-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gold-light);
+            line-height: 1;
+        }
+        .hero-stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.55);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
+        }
+        .stat-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           CONTROLS BAR
+        ═══════════════════════════════════════════════════ */
+        .controls-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+            position: sticky;
+            top: 62px;
+            z-index: 100;
+        }
+        .search-wrap {
+            position: relative;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-3);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.83rem;
+            color: var(--text);
+            background: var(--bg);
+            transition: var(--transition);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--navy);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(10,31,68,0.08);
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.83rem;
+            color: var(--text);
+            background: var(--bg);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(10,31,68,0.08);
+        }
+        .results-meta {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-3);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .results-count {
+            background: var(--navy);
+            color: #fff;
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           LAYOUT: MAIN + SIDEBAR
+        ═══════════════════════════════════════════════════ */
+        .main-layout { padding: 28px 0 60px; }
+        .sidebar-sticky {
+            position: sticky;
+            top: 130px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .sidebar-card {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .sidebar-card-header {
+            background: var(--navy);
+            color: #fff;
+            padding: 13px 18px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-card-header i { color: var(--gold-light); }
+        .sidebar-card-body { padding: 18px; }
+        .right-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .right-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .right-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: var(--green-light);
+            color: var(--green);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .right-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .right-desc {
+            font-size: 0.71rem;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+        .hotline-box {
+            background: linear-gradient(135deg, var(--navy), var(--navy-light));
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            color: #fff;
+            margin-top: 4px;
+        }
+        .hotline-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--gold-light);
+        }
+        .hotline-sub { font-size: 0.68rem; color: rgba(255,255,255,0.65); margin-top: 4px; }
+        .btn-pao-link {
+            display: block;
+            margin-top: 12px;
+            background: var(--gold);
+            color: var(--navy);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            letter-spacing: 0.04em;
+            transition: var(--transition);
+        }
+        .btn-pao-link:hover { background: var(--gold-light); color: var(--navy); }
+
+        /* ═══════════════════════════════════════════════════
+           SKELETON LOADERS
+        ═══════════════════════════════════════════════════ */
+        .skeleton {
+            background: linear-gradient(90deg, #e8edf5 25%, #f4f6fb 50%, #e8edf5 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-card {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           COMPANY CARDS
+        ═══════════════════════════════════════════════════ */
+        .company-card {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 16px;
+            transition: var(--transition);
+            overflow: hidden;
+            animation: fadeUp 0.4s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .company-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(10,31,68,0.18);
+        }
+        /* Accent strip on left */
+        .card-accent-strip {
+            width: 5px;
+            background: var(--navy);
+            flex-shrink: 0;
+            border-radius: var(--radius-card) 0 0 var(--radius-card);
+            align-self: stretch;
+        }
+        .card-accent-strip.high  { background: var(--green); }
+        .card-accent-strip.med   { background: var(--amber); }
+        .card-accent-strip.low   { background: var(--red); }
+
+        .card-inner {
+            display: flex;
+            gap: 0;
+            align-items: stretch;
+        }
+        .card-main { flex: 1; padding: 22px 24px 20px; min-width: 0; }
+        .card-actions-panel {
+            padding: 20px 22px 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            min-width: 200px;
+            border-left: 1px solid var(--border);
+            margin-left: 16px;
+            padding-left: 20px;
+        }
+
+        /* Logo avatar */
+        .company-logo-wrap { flex-shrink: 0; }
+        .company-avatar {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #fff;
+            letter-spacing: -0.02em;
+        }
+
+        /* Card top row */
+        .card-top-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .card-title-group { flex: 1; min-width: 0; }
+        .company-name {
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .company-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.71rem;
+            font-weight: 700;
+            color: var(--text-2);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3px 10px;
+        }
+        .meta-tag i { font-size: 0.65rem; color: var(--text-3); }
+        .badge-verified {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--green-light);
+            color: var(--green);
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .badge-recommended {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #fff3cd;
+            color: #92400e;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid #fcd34d;
+        }
+
+        /* Score bar */
+        .score-section { margin-bottom: 14px; }
+        .score-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .score-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .score-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+        .score-value.high  { color: var(--green); }
+        .score-value.med   { color: var(--amber); }
+        .score-value.low   { color: var(--red); }
+        .score-track {
+            height: 6px;
+            background: var(--bg);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1s cubic-bezier(0.4,0,0.2,1);
+        }
+        .score-fill.high  { background: linear-gradient(90deg, #2e7d32, #4caf50); }
+        .score-fill.med   { background: linear-gradient(90deg, #e65100, #f59e0b); }
+        .score-fill.low   { background: linear-gradient(90deg, #c62828, #ef5350); }
+
+        /* Compliance chips */
+        .compliance-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-2);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 9px;
+        }
+        .chip i { font-size: 0.62rem; color: var(--green); }
+
+        /* Action buttons (right panel) */
+        .action-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 15px;
+            border-radius: 9px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            text-decoration: none;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .btn-apply-main {
+            background: var(--navy);
+            color: #fff;
+            border-color: var(--navy);
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-apply-main:hover {
+            background: var(--navy-light);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(10,31,68,0.25);
+        }
+        .btn-details {
+            background: transparent;
+            color: var(--navy);
+            border-color: var(--navy);
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-details:hover { background: #f0f4ff; }
+        .btn-save {
+            background: transparent;
+            color: var(--text-2);
+            border-color: var(--border);
+        }
+        .btn-save:hover { border-color: var(--amber); color: var(--amber); }
+        .btn-save.saved { border-color: var(--amber); color: var(--amber); background: #fffbeb; }
+        .btn-report {
+            background: transparent;
+            color: var(--red);
+            border-color: var(--border);
+            font-size: 0.68rem;
+        }
+        .btn-report:hover { border-color: var(--red); background: var(--red-light); }
+
+        .card-bottom-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           EMPTY STATE
+        ═══════════════════════════════════════════════════ */
+        .empty-state {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            border: 2px dashed var(--border);
+            padding: 64px 32px;
+            text-align: center;
+        }
+        .empty-icon {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            color: var(--text-3);
+            margin: 0 auto 20px;
+        }
+        .empty-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .empty-sub { font-size: 0.83rem; color: var(--text-2); max-width: 340px; margin: 0 auto 20px; }
+
+        /* ═══════════════════════════════════════════════════
+           MODALS
+        ═══════════════════════════════════════════════════ */
+        .sentinel-modal .modal-content {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(10,31,68,0.22);
+        }
+        .sentinel-modal .modal-header {
+            background: var(--navy);
+            color: #fff;
+            padding: 20px 26px;
+            border-bottom: 3px solid var(--gold);
+        }
+        .sentinel-modal .modal-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sentinel-modal .modal-title i { color: var(--gold-light); }
+        .sentinel-modal .modal-body { padding: 26px; }
+        .sentinel-modal .modal-footer {
+            background: #f8fafc;
+            padding: 14px 26px;
+            border-top: 1px solid var(--border);
+        }
+        .sentinel-modal .btn-close { filter: invert(1); }
+
+        /* Detail modal specific */
+        .detail-score-ring {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            border: 6px solid var(--green);
+            margin: 0 auto 12px;
+        }
+        .detail-score-ring.med { border-color: var(--amber); }
+        .detail-score-ring.low { border-color: var(--red); }
+        .ring-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1;
+        }
+        .ring-label { font-size: 0.55rem; font-weight: 700; color: var(--text-3); letter-spacing: 0.08em; }
+
+        .detail-section-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-3);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .detail-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--bg);
+            font-size: 0.82rem;
+        }
+        .detail-info-row:last-child { border-bottom: none; }
+        .detail-info-label { color: var(--text-3); font-weight: 600; }
+        .detail-info-val { color: var(--text); font-weight: 700; text-align: right; }
+
+        /* Report modal form */
+        .form-label-s {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-2);
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form-ctrl {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.83rem;
+            color: var(--text);
+            background: var(--bg);
+            transition: var(--transition);
+        }
+        .form-ctrl:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(10,31,68,0.08);
+            background: #fff;
+        }
+        textarea.form-ctrl { resize: vertical; min-height: 100px; }
+        .required-star { color: var(--red); margin-left: 2px; }
+
+        /* Alert */
+        .sentinel-alert {
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            border: none;
+        }
+        .sentinel-alert.success { background: var(--green-light); color: var(--green); }
+        .sentinel-alert.error   { background: var(--red-light); color: var(--red); }
+
+        /* ═══════════════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════════════ */
+        .page-footer {
+            background: var(--navy);
+            color: rgba(255,255,255,0.55);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.72rem;
+        }
+        .page-footer a { color: var(--gold-light); text-decoration: none; }
+
+        /* ═══════════════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-stats { display: none; }
+            .card-actions-panel {
+                flex-direction: row;
+                min-width: unset;
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                margin-left: 0;
+                padding: 14px 18px;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .card-inner { flex-direction: column; }
+            .card-main { padding-bottom: 0; }
+        }
+
+        /* Stagger card animations */
+        .company-card:nth-child(1) { animation-delay: 0.05s; }
+        .company-card:nth-child(2) { animation-delay: 0.10s; }
+        .company-card:nth-child(3) { animation-delay: 0.15s; }
+        .company-card:nth-child(4) { animation-delay: 0.20s; }
+        .company-card:nth-child(5) { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+
+<!-- ══════════ ACCESSIBILITY: SKIP LINK ══════════ -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<nav class="sentinel-nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+        <a href="/user" class="nav-brand" aria-label="Project Sentinel Home">
+            <div class="nav-brand-icon" aria-hidden="true">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="nav-brand-text">
+                <div class="nav-brand-name">SENTINEL</div>
+                <div class="nav-brand-sub">Safe Spaces Protection</div>
+            </div>
+        </a>
+        <div class="nav-links" role="menubar">
+            <a href="/user" role="menuitem"><i class="fas fa-home" aria-hidden="true"></i> Portal</a>
+            <a href="/service/ojt" role="menuitem"><i class="fas fa-briefcase" aria-hidden="true"></i> OJT</a>
+            <a href="/service/pwd-jobs" role="menuitem" aria-current="page"><i class="fas fa-globe" aria-hidden="true"></i> PWD Overseas</a>
+            <a href="/service/scholar-pathway" role="menuitem"><i class="fas fa-graduation-cap" aria-hidden="true"></i> Scholarships</a>
+            <a href="/rights" role="menuitem"><i class="fas fa-gavel" aria-hidden="true"></i> Rights</a>
+        </div>
+        <div class="nav-actions">
+            <a href="/pao" class="btn-nav-legal" aria-label="Access PAO Legal Support">
+                <i class="fas fa-balance-scale" aria-hidden="true"></i>
+                Legal Support
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<header class="pwd-hero" role="banner">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="hero-eyebrow" aria-label="Portal type">
+                    <i class="fas fa-universal-access" aria-hidden="true"></i>
+                    PWD Overseas Employment Portal
+                </div>
+                <h1 class="hero-title">
+                    International Opportunities<br>
+                    for <em>Persons with Disabilities</em>
+                </h1>
+                <p class="hero-sub">
+                    Verified, non-discriminatory international placements backed by POEA, DMW, and the Magna Carta for Persons with Disability (RA 7277). Every employer listed here has passed our compliance screening.
+                </p>
+                <div class="hero-credentials" role="list" aria-label="Verification credentials">
+                    <div class="cred-badge" role="listitem">
+                        <i class="fas fa-certificate" aria-hidden="true"></i>
+                        POEA Accredited
+                    </div>
+                    <div class="cred-badge" role="listitem">
+                        <i class="fas fa-shield-check" aria-hidden="true"></i>
+                        DMW Verified
+                    </div>
+                    <div class="cred-badge" role="listitem">
+                        <i class="fas fa-wheelchair" aria-hidden="true"></i>
+                        RA 7277 Compliant
+                    </div>
+                    <div class="cred-badge" role="listitem">
+                        <i class="fas fa-gavel" aria-hidden="true"></i>
+                        ILO Standards
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="hero-stats" role="region" aria-label="Portal statistics">
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-num" id="heroCompanyCount" aria-live="polite">—</div>
+                        <div class="hero-stat-label">Verified Employers</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-num">100%</div>
+                        <div class="hero-stat-label">Non-Discriminatory</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-num">24/7</div>
+                        <div class="hero-stat-label">Embassy Support Line</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ══════════ CONTROLS BAR ══════════ -->
+<section class="controls-bar" aria-label="Search and filter controls">
+    <div class="container">
+        <div class="row g-2 align-items-center">
+            <!-- Search -->
+            <div class="col-md-4">
+                <div class="search-wrap">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input
+                        type="search"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Search company or industry…"
+                        aria-label="Search companies by name or industry"
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+            <!-- Industry filter -->
+            <div class="col-md-2">
+                <label for="filterIndustry" class="visually-hidden">Filter by industry</label>
+                <select id="filterIndustry" class="filter-select" aria-label="Filter by industry">
+                    <option value="">All Industries</option>
+                    <option value="IT Support">IT Support</option>
+                    <option value="Healthcare Admin">Healthcare</option>
+                    <option value="Design/CX">Design / CX</option>
+                    <option value="Logistics">Logistics</option>
+                    <option value="Education">Education</option>
+                </select>
+            </div>
+            <!-- Score filter -->
+            <div class="col-md-2">
+                <label for="filterScore" class="visually-hidden">Filter by safety score</label>
+                <select id="filterScore" class="filter-select" aria-label="Filter by safety score">
+                    <option value="">All Scores</option>
+                    <option value="high">High (90–100)</option>
+                    <option value="med">Medium (70–89)</option>
+                    <option value="low">Low (&lt;70)</option>
+                </select>
+            </div>
+            <!-- Sort -->
+            <div class="col-md-2">
+                <label for="sortSelect" class="visually-hidden">Sort companies</label>
+                <select id="sortSelect" class="filter-select" aria-label="Sort companies">
+                    <option value="score-desc">Highest Safety Score</option>
+                    <option value="score-asc">Lowest Safety Score</option>
+                    <option value="name-asc">Name A–Z</option>
+                    <option value="name-desc">Name Z–A</option>
+                </select>
+            </div>
+            <!-- Results count -->
+            <div class="col-md-2 text-end">
+                <div class="results-meta">
+                    Showing
+                    <span class="results-count" id="resultsCount" aria-live="polite" aria-label="Number of results">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<main id="main-content" class="main-layout" role="main">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- ── COMPANY LIST ── -->
+            <div class="col-lg-8">
+
+                <!-- Skeleton loaders (hidden after load) -->
+                <div id="skeletonLoaders" aria-label="Loading companies" aria-busy="true">
+                    {% for _ in range(3) %}
+                    <div class="skeleton-card">
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="skeleton" style="width:52px;height:52px;border-radius:12px;flex-shrink:0;"></div>
+                            <div style="flex:1;">
+                                <div class="skeleton mb-2" style="height:16px;width:60%;"></div>
+                                <div class="skeleton" style="height:12px;width:40%;"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton mb-2" style="height:8px;width:100%;border-radius:4px;"></div>
+                        <div class="skeleton" style="height:8px;width:80%;border-radius:4px;"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Actual company list -->
+                <div id="companyList" style="display:none;" role="list" aria-label="Verified overseas employers">
+
+                    {% if results %}
+                        {% for co in results %}
+                        {# Determine score tier #}
+                        {% set score = co.compliance_score %}
+                        {% if score >= 90 %}{% set tier = 'high' %}
+                        {% elif score >= 70 %}{% set tier = 'med' %}
+                        {% else %}{% set tier = 'low' %}{% endif %}
+
+                        {# Avatar initials from company name #}
+                        {% set initials = co.name[:2]|upper %}
+                        {% set avatar_colors = ['#0a1f44','#0d2a5e','#1a3a7a','#00695c','#2e7d32','#1565c0','#283593','#4a148c'] %}
+                        {% set color = avatar_colors[loop.index0 % avatar_colors|length] %}
+
+                        {# Is it recommended? (top 25% score or first result) #}
+                        {% set is_recommended = (score >= 95) %}
+
+                        <article
+                            class="company-card"
+                            role="listitem"
+                            data-name="{{ co.name|lower }}"
+                            data-industry="{{ co.industry|lower }}"
+                            data-score="{{ co.compliance_score }}"
+                            data-tier="{{ tier }}"
+                            aria-label="Company: {{ co.name }}"
+                        >
+                            <div class="card-inner">
+                                <!-- Accent strip -->
+                                <div class="card-accent-strip {{ tier }}" aria-hidden="true"></div>
+
+                                <!-- Main content -->
+                                <div class="card-main">
+                                    <!-- Top row: logo + title + badges -->
+                                    <div class="card-top-row">
+                                        <div class="company-logo-wrap">
+                                            <div
+                                                class="company-avatar"
+                                                style="background:{{ color }};"
+                                                aria-label="Company initials: {{ initials }}"
+                                                aria-hidden="true"
+                                            >{{ initials }}</div>
+                                        </div>
+                                        <div class="card-title-group">
+                                            <h2 class="company-name" title="{{ co.name }}">{{ co.name }}</h2>
+                                            <div class="company-meta">
+                                                <span class="meta-tag">
+                                                    <i class="fas fa-industry" aria-hidden="true"></i>
+                                                    {{ co.industry }}
+                                                </span>
+                                                <span class="badge-verified" aria-label="Verified employer">
+                                                    <i class="fas fa-circle-check" aria-hidden="true"></i>
+                                                    Verified
+                                                </span>
+                                                {% if is_recommended %}
+                                                <span class="badge-recommended" aria-label="AI Recommended">
+                                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                                    AI Pick
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Safety Score bar -->
+                                    <div class="score-section" aria-label="Safety compliance score">
+                                        <div class="score-label-row">
+                                            <span class="score-label">
+                                                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                                Safety Compliance Score
+                                            </span>
+                                            <span
+                                                class="score-value {{ tier }}"
+                                                aria-label="{{ co.compliance_score }} out of 100"
+                                            >{{ co.compliance_score }}/100</span>
+                                        </div>
+                                        <div
+                                            class="score-track"
+                                            role="progressbar"
+                                            aria-valuenow="{{ co.compliance_score }}"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100"
+                                            aria-label="Safety score: {{ co.compliance_score }}%"
+                                        >
+                                            <div
+                                                class="score-fill {{ tier }}"
+                                                style="width: {{ co.compliance_score }}%;"
+                                            ></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Compliance chips -->
+                                    <div class="compliance-chips" role="list" aria-label="Compliance certifications">
+                                        <div class="chip" role="listitem">
+                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                            PWD-Inclusive Policy
+                                        </div>
+                                        <div class="chip" role="listitem">
+                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                            Accessible Workplace
+                                        </div>
+                                        <div class="chip" role="listitem">
+                                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                            Equal Pay Guaranteed
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile action buttons -->
+                                    <div class="card-bottom-actions d-lg-none">
+                                        <button
+                                            class="btn-action btn-apply-main"
+                                            onclick="openApplyModal('{{ co.name|e }}', '{{ co.industry|e }}')"
+                                            aria-label="Apply Now to {{ co.name }}"
+                                        >
+                                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                            Apply Now
+                                        </button>
+                                        <button
+                                            class="btn-action btn-details"
+                                            onclick="openDetailModal('{{ co.name|e }}', '{{ co.industry|e }}', {{ co.compliance_score }}, '{{ tier }}')"
+                                            aria-label="View details for {{ co.name }}"
+                                        >
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            Details
+                                        </button>
+                                        <button
+                                            class="btn-action btn-save"
+                                            onclick="toggleSave(this, '{{ co.name|e }}')"
+                                            aria-label="Save {{ co.name }} to bookmarks"
+                                            aria-pressed="false"
+                                        >
+                                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                                        </button>
+                                        <button
+                                            class="btn-action btn-report"
+                                            onclick="openReportModal('{{ co.name|e }}')"
+                                            aria-label="Report issue with {{ co.name }}"
+                                        >
+                                            <i class="fas fa-flag" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Desktop action panel -->
+                                <div class="card-actions-panel d-none d-lg-flex" aria-label="Actions for {{ co.name }}">
+                                    <div class="action-badges">
+                                        <button
+                                            class="btn-action btn-save"
+                                            onclick="toggleSave(this, '{{ co.name|e }}')"
+                                            aria-label="Save {{ co.name }} to bookmarks"
+                                            aria-pressed="false"
+                                        >
+                                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+                                        <button
+                                            class="btn-action btn-report"
+                                            onclick="openReportModal('{{ co.name|e }}')"
+                                            aria-label="Report issue with {{ co.name }}"
+                                        >
+                                            <i class="fas fa-flag" aria-hidden="true"></i>
+                                            Report Issue
+                                        </button>
+                                    </div>
+                                    <div style="width:100%; display:flex; flex-direction:column; gap:8px;">
+                                        <button
+                                            class="btn-action btn-apply-main"
+                                            onclick="openApplyModal('{{ co.name|e }}', '{{ co.industry|e }}')"
+                                            aria-label="Apply Now to {{ co.name }}"
+                                        >
+                                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                            Apply Now
+                                        </button>
+                                        <button
+                                            class="btn-action btn-details"
+                                            onclick="openDetailModal('{{ co.name|e }}', '{{ co.industry|e }}', {{ co.compliance_score }}, '{{ tier }}')"
+                                            aria-label="View full details for {{ co.name }}"
+                                        >
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div><!-- /card-inner -->
+                        </article>
+                        {% endfor %}
+
+                    {% else %}
+                        <!-- Empty state -->
+                        <div class="empty-state" role="status" aria-live="polite">
+                            <div class="empty-icon" aria-hidden="true">
+                                <i class="fas fa-building-circle-xmark"></i>
+                            </div>
+                            <h2 class="empty-title">No employers found</h2>
+                            <p class="empty-sub">
+                                No verified overseas employers are currently available for PWD placements.
+                                Please check back later or contact the Sentinel team.
+                            </p>
+                            <a href="/pao" class="btn-action btn-apply-main" style="display:inline-flex; text-decoration:none;">
+                                <i class="fas fa-balance-scale" aria-hidden="true"></i>
+                                Contact PAO Legal Support
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- No-results message for search filter -->
+                    <div id="noResults" class="empty-state" style="display:none;" role="status" aria-live="polite">
+                        <div class="empty-icon" aria-hidden="true">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h2 class="empty-title">No matches found</h2>
+                        <p class="empty-sub">Try adjusting your search or filter criteria.</p>
+                        <button class="btn-action btn-details" onclick="resetFilters()">
+                            <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SIDEBAR ── -->
+            <aside class="col-lg-4" aria-label="Rights and resources sidebar">
+                <div class="sidebar-sticky">
+
+                    <!-- Legal Rights Card -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-header">
+                            <i class="fas fa-gavel" aria-hidden="true"></i>
+                            Your Legal Protections
+                        </div>
+                        <div class="sidebar-card-body" role="list">
+                            <div class="right-item" role="listitem">
+                                <div class="right-icon" aria-hidden="true"><i class="fas fa-file-shield"></i></div>
+                                <div>
+                                    <div class="right-title">RA 7277 — Magna Carta</div>
+                                    <div class="right-desc">Full employment rights and anti-discrimination protection for Persons with Disabilities.</div>
+                                </div>
+                            </div>
+                            <div class="right-item" role="listitem">
+                                <div class="right-icon" aria-hidden="true"><i class="fas fa-handshake"></i></div>
+                                <div>
+                                    <div class="right-title">Equal Terms & Benefits</div>
+                                    <div class="right-desc">Same salary, allowances, and benefits as non-PWD employees in equivalent roles.</div>
+                                </div>
+                            </div>
+                            <div class="right-item" role="listitem">
+                                <div class="right-icon" aria-hidden="true"><i class="fas fa-wheelchair"></i></div>
+                                <div>
+                                    <div class="right-title">Mandatory Accommodations</div>
+                                    <div class="right-desc">Employers must provide accessible facilities and reasonable workplace adjustments.</div>
+                                </div>
+                            </div>
+                            <div class="right-item" role="listitem">
+                                <div class="right-icon" aria-hidden="true"><i class="fas fa-passport"></i></div>
+                                <div>
+                                    <div class="right-title">Passport & Document Rights</div>
+                                    <div class="right-desc">Employers cannot hold your passport. You retain full custody of your documents.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-header">
+                            <i class="fas fa-phone-volume" aria-hidden="true"></i>
+                            Emergency Contacts
+                        </div>
+                        <div class="sidebar-card-body">
+                            <div class="hotline-box" role="region" aria-label="PAO Emergency Hotline">
+                                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65;margin-bottom:4px;">PAO PWD Hotline</div>
+                                <div class="hotline-num" aria-label="Phone number: (02) 8929-9436">(02) 8929-9436</div>
+                                <div class="hotline-sub">Mon–Fri, 8:00 AM – 5:00 PM</div>
+                            </div>
+                            <a href="/pao" class="btn-pao-link" aria-label="Go to PAO Legal Support page">
+                                <i class="fas fa-balance-scale" aria-hidden="true"></i>
+                                Access PAO Legal Support
+                            </a>
+                            <div style="margin-top:12px; font-size:0.7rem; color:var(--text-3); text-align:center;">
+                                For overseas emergencies, contact your nearest Philippine Embassy or Consulate.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Saved Jobs Card -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-header">
+                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                            Saved Employers
+                        </div>
+                        <div class="sidebar-card-body" id="savedList">
+                            <p style="font-size:0.78rem; color:var(--text-3); text-align:center; margin:0;">
+                                No saved employers yet.<br>
+                                <span style="font-size:0.68rem;">Click the bookmark icon on any card to save.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+
+        </div><!-- /row -->
+    </div><!-- /container -->
+</main>
+
+<!-- ══════════ DETAIL MODAL ══════════ -->
+<div class="modal fade sentinel-modal" id="detailModal" tabindex="-1" aria-labelledby="detailModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detailModalTitle">
+                    <i class="fas fa-building" aria-hidden="true"></i>
+                    <span id="detailCompanyName">Company Details</span>
+                </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close details"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-4 text-center">
+                        <div id="detailRing" class="detail-score-ring">
+                            <div class="ring-num" id="detailRingNum">—</div>
+                            <div class="ring-label">SAFETY</div>
+                        </div>
+                        <div style="font-size:0.72rem;color:var(--text-3);">Compliance Score</div>
+                        <div style="margin-top:16px;">
+                            <span class="badge-verified" style="font-size:0.7rem;">
+                                <i class="fas fa-circle-check"></i>
+                                POEA Verified
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="detail-section-title">Employer Information</div>
+                        <div class="detail-info-row">
+                            <span class="detail-info-label">Company Name</span>
+                            <span class="detail-info-val" id="detailInfoName">—</span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-info-label">Industry</span>
+                            <span class="detail-info-val" id="detailInfoIndustry">—</span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-info-label">Placement Type</span>
+                            <span class="detail-info-val">Overseas / International</span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-info-label">PWD Policy</span>
+                            <span class="detail-info-val" style="color:var(--green);">✓ Inclusive</span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-info-label">Accessible Workplace</span>
+                            <span class="detail-info-val" style="color:var(--green);">✓ Certified</span>
+                        </div>
+                        <div class="detail-section-title mt-3">Compliance Certifications</div>
+                        <div class="compliance-chips">
+                            <div class="chip"><i class="fas fa-check-circle"></i> RA 7277 Compliant</div>
+                            <div class="chip"><i class="fas fa-check-circle"></i> ILO Standards</div>
+                            <div class="chip"><i class="fas fa-check-circle"></i> Equal Pay</div>
+                            <div class="chip"><i class="fas fa-check-circle"></i> No Passport Holding</div>
+                            <div class="chip"><i class="fas fa-check-circle"></i> Embassy Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-details" data-bs-dismiss="modal">Close</button>
+                <button
+                    type="button"
+                    class="btn-action btn-apply-main"
+                    id="detailApplyBtn"
+                    aria-label="Apply to this company"
+                >
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    Apply Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ REPORT MODAL ══════════ -->
+<div class="modal fade sentinel-modal" id="reportModal" tabindex="-1" aria-labelledby="reportModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--red);">
+                <h3 class="modal-title" id="reportModalTitle">
+                    <i class="fas fa-flag" aria-hidden="true"></i>
+                    Report Company Issue
+                </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close report form"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Success / Error alerts -->
+                <div id="reportSuccess" class="sentinel-alert success" style="display:none;" role="alert" aria-live="polite">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    Your complaint has been submitted successfully. A Sentinel officer will review it shortly.
+                </div>
+                <div id="reportError" class="sentinel-alert error" style="display:none;" role="alert" aria-live="polite">
+                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+                    Submission failed. Please try again or call our hotline.
+                </div>
+
+                <div style="background:var(--red-light);border:1px solid #fca5a5;border-radius:10px;padding:12px 14px;font-size:0.78rem;color:var(--red);margin-bottom:18px;">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    All complaints are handled with strict confidentiality. You may remain anonymous.
+                </div>
+
+                <!-- CSRF placeholder -->
+                <!-- CSRF: add flask-wtf and uncomment the input below when ready -->
+                <!-- input type="hidden" name="csrf_token" value="..." -->
+
+                <form id="reportForm" novalidate aria-label="Company complaint form">
+                    <input type="hidden" id="reportCompanyName" name="company_name">
+                    <input type="hidden" name="incident_type" value="PWD Rights Violation">
+
+                    <div class="mb-3">
+                        <label for="reportTargetCompany" class="form-label-s">
+                            Company Being Reported <span class="required-star" aria-label="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="reportTargetCompany"
+                            class="form-ctrl"
+                            readonly
+                            aria-readonly="true"
+                            aria-describedby="reportTargetDesc"
+                        >
+                        <small id="reportTargetDesc" class="visually-hidden">Company name is auto-filled from your selection.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reporterName" class="form-label-s">
+                            Your Name
+                            <span style="font-size:0.65rem;font-weight:400;color:var(--text-3);"> (optional — leave blank to remain anonymous)</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="reporterName"
+                            name="reporter_name"
+                            class="form-ctrl"
+                            placeholder="e.g. Juan dela Cruz"
+                            autocomplete="name"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reporterContact" class="form-label-s">Contact Number</label>
+                        <input
+                            type="tel"
+                            id="reporterContact"
+                            name="reporter_contact"
+                            class="form-ctrl"
+                            placeholder="+63 9XX XXX XXXX"
+                            autocomplete="tel"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reportDescription" class="form-label-s">
+                            Describe the Issue <span class="required-star" aria-label="required">*</span>
+                        </label>
+                        <textarea
+                            id="reportDescription"
+                            name="description"
+                            class="form-ctrl"
+                            placeholder="Describe what happened in detail. Include dates, locations, and any witnesses if available."
+                            required
+                            aria-required="true"
+                            aria-describedby="descHint"
+                        ></textarea>
+                        <small id="descHint" style="font-size:0.68rem;color:var(--text-3);">
+                            The more detail you provide, the better Sentinel can investigate.
+                        </small>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input
+                            type="checkbox"
+                            id="isAnonymous"
+                            name="is_anonymous"
+                            value="1"
+                            style="width:16px;height:16px;cursor:pointer;"
+                            aria-label="Submit this report anonymously"
+                        >
+                        <label for="isAnonymous" style="font-size:0.78rem;cursor:pointer;color:var(--text-2);">
+                            Submit anonymously — my identity will not be disclosed
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-details" data-bs-dismiss="modal">Cancel</button>
+                <button
+                    type="button"
+                    class="btn-action btn-apply-main"
+                    style="background:var(--red);border-color:var(--red);"
+                    onclick="submitReport()"
+                    aria-label="Submit complaint report"
+                >
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    Submit Complaint
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ APPLY MODAL ══════════ -->
+<div class="modal fade sentinel-modal" id="applyModal" tabindex="-1" aria-labelledby="applyModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="applyModalTitle">
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    Apply — <span id="applyCompanyName">Company</span>
+                </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close application form"></button>
+            </div>
+            <div class="modal-body">
+                <div style="background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:12px 14px;font-size:0.78rem;color:var(--green);margin-bottom:18px;">
+                    <i class="fas fa-shield-check" aria-hidden="true"></i>
+                    This employer is verified and compliant with RA 7277 (Magna Carta for PWDs). Your application is protected by law.
+                </div>
+                <p style="font-size:0.84rem;color:var(--text-2);margin-bottom:16px;">
+                    To apply for a position at <strong id="applyCompanyNameInline">this company</strong>, please contact a Sentinel representative or submit your interest through the PAO portal.
+                </p>
+                <div class="hotline-box" style="border-radius:12px;">
+                    <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65;margin-bottom:4px;">Employment Coordination Hotline</div>
+                    <div class="hotline-num">(02) 8929-9436</div>
+                    <div class="hotline-sub">Mon–Fri 8:00 AM – 5:00 PM · Free for PWD applicants</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-details" data-bs-dismiss="modal">Close</button>
+                <a href="/pao" class="btn-action btn-apply-main" style="text-decoration:none;">
+                    <i class="fas fa-balance-scale" aria-hidden="true"></i>
+                    Go to PAO Portal
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="page-footer" role="contentinfo">
+    <p style="margin:0;">
+        Project Sentinel · PWD Overseas Employment Portal ·
+        Compliant with <a href="/rights">RA 7277</a>, ILO Standards, and <a href="/rights">Safe Spaces Act</a> ·
+        <a href="/pao">Legal Support</a>
+    </p>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SENTINEL PWD OVERSEAS PORTAL — INTERACTIVE LOGIC
+═══════════════════════════════════════════════════════════ */
+
+// ── Saved jobs in localStorage ──────────────────────────────
+const SAVED_KEY = 'sentinel_pwd_saved';
+
+function getSaved() {
+    try { return JSON.parse(localStorage.getItem(SAVED_KEY)) || []; }
+    catch { return []; }
+}
+
+function setSaved(arr) {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(arr));
+}
+
+function toggleSave(btn, companyName) {
+    let saved = getSaved();
+    const idx = saved.indexOf(companyName);
+    if (idx === -1) {
+        saved.push(companyName);
+        btn.classList.add('saved');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('aria-label', `Unsave ${companyName}`);
+    } else {
+        saved.splice(idx, 1);
+        btn.classList.remove('saved');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('aria-label', `Save ${companyName} to bookmarks`);
+    }
+    setSaved(saved);
+    renderSavedList();
+}
+
+function renderSavedList() {
+    const saved = getSaved();
+    const container = document.getElementById('savedList');
+    if (!saved.length) {
+        container.innerHTML = `<p style="font-size:0.78rem; color:var(--text-3); text-align:center; margin:0;">
+            No saved employers yet.<br>
+            <span style="font-size:0.68rem;">Click the bookmark icon on any card to save.</span>
+        </p>`;
+        return;
+    }
+    container.innerHTML = saved.map(name => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;">
+            <span style="color:var(--text);">${escapeHtml(name)}</span>
+            <button onclick="removeSaved('${escapeHtml(name)}')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:0.7rem;" aria-label="Remove ${escapeHtml(name)} from saved">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`).join('');
+}
+
+function removeSaved(name) {
+    let saved = getSaved();
+    saved = saved.filter(s => s !== name);
+    setSaved(saved);
+    renderSavedList();
+    // Unpress all save buttons for this company
+    document.querySelectorAll('.btn-save').forEach(btn => {
+        if (btn.getAttribute('aria-label').includes(name) || btn.closest('[data-name="' + name.toLowerCase() + '"]')) {
+            btn.classList.remove('saved');
+            btn.setAttribute('aria-pressed', 'false');
+        }
+    });
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Detail Modal ─────────────────────────────────────────────
+function openDetailModal(name, industry, score, tier) {
+    document.getElementById('detailCompanyName').textContent = name;
+    document.getElementById('detailInfoName').textContent    = name;
+    document.getElementById('detailInfoIndustry').textContent = industry;
+    document.getElementById('detailRingNum').textContent     = score;
+
+    const ring = document.getElementById('detailRing');
+    ring.className = 'detail-score-ring';
+    if (tier === 'med') ring.classList.add('med');
+    if (tier === 'low') ring.classList.add('low');
+
+    document.getElementById('detailApplyBtn').onclick = () => {
+        bootstrap.Modal.getInstance(document.getElementById('detailModal')).hide();
+        setTimeout(() => openApplyModal(name, industry), 300);
+    };
+
+    new bootstrap.Modal(document.getElementById('detailModal')).show();
+}
+
+// ── Apply Modal ──────────────────────────────────────────────
+function openApplyModal(name, industry) {
+    document.getElementById('applyCompanyName').textContent       = name;
+    document.getElementById('applyCompanyNameInline').textContent = name;
+    new bootstrap.Modal(document.getElementById('applyModal')).show();
+}
+
+// ── Report Modal ─────────────────────────────────────────────
+function openReportModal(companyName) {
+    document.getElementById('reportCompanyName').value       = companyName;
+    document.getElementById('reportTargetCompany').value     = companyName;
+    document.getElementById('reportForm').reset();
+    document.getElementById('reportCompanyName').value       = companyName;
+    document.getElementById('reportTargetCompany').value     = companyName;
+    document.getElementById('reportSuccess').style.display  = 'none';
+    document.getElementById('reportError').style.display    = 'none';
+    new bootstrap.Modal(document.getElementById('reportModal')).show();
+}
+
+async function submitReport() {
+    const description = document.getElementById('reportDescription').value.trim();
+    if (!description) {
+        document.getElementById('reportDescription').focus();
+        document.getElementById('reportDescription').style.borderColor = 'var(--red)';
+        return;
+    }
+    document.getElementById('reportDescription').style.borderColor = '';
+
+    const formData = new FormData();
+    formData.append('company_name',  document.getElementById('reportCompanyName').value);
+    formData.append('incident_type', 'PWD Rights Violation');
+    formData.append('description',   description);
+    formData.append('is_anonymous',  document.getElementById('isAnonymous').checked ? '1' : '');
+
+    try {
+        const resp = await fetch('/submit-report', { method: 'POST', body: formData });
+        if (resp.ok || resp.redirected) {
+            document.getElementById('reportSuccess').style.display = 'flex';
+            document.getElementById('reportError').style.display   = 'none';
+            document.getElementById('reportForm').reset();
+            setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide(), 2800);
+        } else {
+            throw new Error('Server error');
+        }
+    } catch {
+        document.getElementById('reportError').style.display   = 'flex';
+        document.getElementById('reportSuccess').style.display = 'none';
+    }
+}
+
+// ── Search, Filter & Sort ────────────────────────────────────
+const cards     = Array.from(document.querySelectorAll('.company-card'));
+const noResults = document.getElementById('noResults');
+
+function applyFilters() {
+    const query      = document.getElementById('searchInput').value.toLowerCase().trim();
+    const industry   = document.getElementById('filterIndustry').value.toLowerCase();
+    const scoreTier  = document.getElementById('filterScore').value;
+    const sortVal    = document.getElementById('sortSelect').value;
+    const listEl     = document.getElementById('companyList');
+
+    let visible = cards.filter(card => {
+        const name   = card.dataset.name || '';
+        const ind    = card.dataset.industry || '';
+        const score  = parseInt(card.dataset.score, 10);
+        const tier   = card.dataset.tier;
+
+        const matchQ = !query    || name.includes(query) || ind.includes(query);
+        const matchI = !industry || ind.includes(industry);
+        const matchS = !scoreTier || tier === scoreTier ||
+            (scoreTier === 'high' && score >= 90) ||
+            (scoreTier === 'med'  && score >= 70 && score < 90) ||
+            (scoreTier === 'low'  && score < 70);
+
+        return matchQ && matchI && matchS;
+    });
+
+    // Sort
+    visible.sort((a, b) => {
+        const sa = parseInt(a.dataset.score, 10);
+        const sb = parseInt(b.dataset.score, 10);
+        const na = a.dataset.name;
+        const nb = b.dataset.name;
+        if (sortVal === 'score-desc') return sb - sa;
+        if (sortVal === 'score-asc')  return sa - sb;
+        if (sortVal === 'name-asc')   return na.localeCompare(nb);
+        if (sortVal === 'name-desc')  return nb.localeCompare(na);
+        return 0;
+    });
+
+    // Show/hide cards and re-order DOM
+    const hiddenNames = new Set();
+    cards.forEach(c => {
+        const isVisible = visible.includes(c);
+        c.style.display = isVisible ? '' : 'none';
+        if (!isVisible) hiddenNames.add(c.dataset.name);
+    });
+
+    // Re-order visible cards
+    visible.forEach(c => listEl.appendChild(c));
+
+    // No results message
+    if (visible.length === 0 && cards.length > 0) {
+        noResults.style.display = '';
+    } else {
+        noResults.style.display = 'none';
+    }
+
+    document.getElementById('resultsCount').textContent = visible.length;
+    document.getElementById('resultsCount').setAttribute('aria-label', `${visible.length} results`);
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value    = '';
+    document.getElementById('filterIndustry').value = '';
+    document.getElementById('filterScore').value    = '';
+    document.getElementById('sortSelect').value     = 'score-desc';
+    applyFilters();
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('filterIndustry').addEventListener('change', applyFilters);
+document.getElementById('filterScore').addEventListener('change', applyFilters);
+document.getElementById('sortSelect').addEventListener('change', applyFilters);
+
+// ── Keyboard navigation support ──────────────────────────────
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        ['detailModal','reportModal','applyModal'].forEach(id => {
+            const modalEl = document.getElementById(id);
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+// ── Restore saved state on load ──────────────────────────────
+function restoreSavedState() {
+    const saved = getSaved();
+    document.querySelectorAll('.btn-save').forEach(btn => {
+        const card = btn.closest('.company-card');
+        if (!card) return;
+        const name = card.querySelector('.company-name')?.textContent?.trim();
+        if (name && saved.includes(name)) {
+            btn.classList.add('saved');
+            btn.setAttribute('aria-pressed', 'true');
+        }
+    });
+}
+
+// ── Page Init ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    // Simulate skeleton loader delay then show real content
+    setTimeout(() => {
+        const skeleton = document.getElementById('skeletonLoaders');
+        const list     = document.getElementById('companyList');
+        if (skeleton) skeleton.style.display = 'none';
+        if (list)     list.style.display     = '';
+
+        // Initialize filters and count
+        applyFilters();
+
+        // Set hero count
+        const heroCount = document.getElementById('heroCompanyCount');
+        if (heroCount) heroCount.textContent = cards.length || '—';
+
+        // Restore saved bookmarks
+        restoreSavedState();
+        renderSavedList();
+
+        // Animate score bars
+        document.querySelectorAll('.score-fill').forEach(bar => {
+            const w = bar.style.width;
+            bar.style.width = '0';
+            requestAnimationFrame(() => {
+                setTimeout(() => { bar.style.width = w; }, 100);
+            });
+        });
+    }, 800); // realistic 800ms skeleton delay
+});
+</script>
+</body>
+</html>

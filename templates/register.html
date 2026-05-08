@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentinel — Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal:       #006064;
+            --teal-dark:  #004448;
+            --teal-light: #e0f2f1;
+            --orange:     #ef6c00;
+            --text:       #1a2b2c;
+            --muted:      #607d8b;
+            --surface:    #f5fafa;
+            --border:     #cfd8d8;
+            --danger:     #c62828;
+            --green:      #2e7d32;
+            --white:      #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px;
+        }
+
+        /* ── CARD ─────────────────────────── */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 40px rgba(0,96,100,0.10);
+            border: none;
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 36px 36px;
+            animation: fadeUp 0.4s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(16px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* ── HEADER ───────────────────────── */
+        .card-header-custom {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--teal);
+            color: white;
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .logo-badge i { color: #ffd54f; }
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.65rem;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+        .card-subtitle {
+            font-size: 0.84rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* ── SECTION LABEL ────────────────── */
+        .section-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin: 22px 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── FIELDS ───────────────────────── */
+        .field { margin-bottom: 14px; }
+
+        .field label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .field label .opt {
+            font-weight: 400;
+            color: var(--muted);
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+
+        .input-wrap { position: relative; }
+
+        .input-wrap i.ico {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+        .input-wrap:focus-within i.ico { color: var(--teal); }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 11px 13px 11px 38px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--text);
+            background: var(--surface);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            appearance: none;
+        }
+        .field input::placeholder { color: #afc1c2; }
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--teal);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(0,96,100,0.09);
+        }
+        .field input.bad { border-color: var(--danger); background: #fff8f8; }
+
+        .select-arrow {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.72rem;
+            pointer-events: none;
+        }
+
+        /* toggle pw */
+        .eye-btn {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: var(--muted); font-size: 0.8rem;
+            cursor: pointer; padding: 4px;
+            transition: color 0.2s;
+        }
+        .eye-btn:hover { color: var(--teal); }
+
+        /* two-col row */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* error text */
+        .err {
+            font-size: 0.7rem;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+        .err.show { display: flex; }
+
+        /* password strength */
+        .strength-row {
+            display: flex;
+            gap: 4px;
+            margin-top: 7px;
+        }
+        .sbar {
+            flex: 1; height: 3px;
+            border-radius: 3px;
+            background: var(--border);
+            transition: background 0.25s;
+        }
+        .sbar.w { background: #ef5350; }
+        .sbar.f { background: var(--orange); }
+        .sbar.g { background: #fdd835; }
+        .sbar.s { background: #43a047; }
+        .strength-txt {
+            font-size: 0.67rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        /* ── ACCOUNT TYPE CHIPS ───────────── */
+        .type-chips {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .type-chips input[type="radio"] { display: none; }
+        .chip-label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            background: var(--surface);
+            transition: all 0.18s;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .chip-label .chip-icon {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        .chip-label:hover { border-color: var(--teal); background: var(--teal-light); }
+        .type-chips input:checked + .chip-label {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            color: var(--teal);
+            box-shadow: 0 0 0 2.5px rgba(0,96,100,0.12);
+        }
+
+        /* ── GENDER ───────────────────────── */
+        .gender-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        .gender-chips input[type="radio"] { display: none; }
+        .g-label {
+            padding: 7px 14px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            background: var(--surface);
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+        .g-label:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+        .gender-chips input:checked + .g-label {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            color: var(--teal);
+        }
+
+        /* ── CHECKBOX ─────────────────────── */
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-bottom: 10px;
+        }
+        .check-row input[type="checkbox"] {
+            width: 15px; height: 15px;
+            margin-top: 2px;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .check-row label {
+            font-size: 0.77rem;
+            color: var(--muted);
+            line-height: 1.55;
+            cursor: pointer;
+        }
+        .check-row label a { color: var(--teal); font-weight: 600; text-decoration: none; }
+        .check-row label a:hover { text-decoration: underline; }
+
+        /* ── SUBMIT BUTTON ────────────────── */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .btn-submit:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0,96,100,0.25); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit.loading .btn-text { opacity: 0; }
+        .btn-submit.loading::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── FOOTER ───────────────────────── */
+        .card-footer-custom {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+        .card-footer-custom a {
+            color: var(--teal);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .card-footer-custom a:hover { text-decoration: underline; }
+
+        /* ── SUCCESS ──────────────────────── */
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+        .success-box.show { display: block; animation: fadeUp 0.4s ease both; }
+        .success-circle {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: var(--green);
+        }
+
+        /* ── ALERT ────────────────────────── */
+        .alert-box {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.81rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+        }
+        .alert-err { background: #fdecea; border:1px solid #f5c6cb; color: var(--danger); }
+        .alert-box.hidden { display: none; }
+
+        /* ── RESPONSIVE ───────────────────── */
+        @media (max-width: 520px) {
+            .card { padding: 28px 20px 24px; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <!-- SUCCESS STATE -->
+    <div class="success-box" id="successBox">
+        <div class="success-circle"><i class="fas fa-check"></i></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--text);margin-bottom:8px;">Account Created!</h2>
+        <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:24px;">Welcome to Project Sentinel. You can now access OJT placements, overseas listings, and PAO legal support.</p>
+        <a href="/login" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:white;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;text-decoration:none;font-size:0.9rem;">
+            <i class="fas fa-arrow-right-to-bracket"></i> Go to Sign In
+        </a>
+    </div>
+
+    <!-- FORM -->
+    <div id="formWrap">
+
+        <!-- Header -->
+        <div class="card-header-custom">
+            <div class="logo-badge"><i class="fas fa-shield-halved"></i> Project Sentinel</div>
+            <h1 class="card-title">Create your account</h1>
+            <p class="card-subtitle">Fill in the details below to get started. It only takes a minute.</p>
+        </div>
+
+        <!-- Flask flashes (uncomment for Jinja) -->
+        <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}{% for cat, msg in messages %}
+        <div class="alert-box alert-err">
+            <i class="fas fa-circle-exclamation"></i><span>{{ msg }}</span>
+        </div>
+        {% endfor %}{% endif %}{% endwith %} -->
+
+        <div class="alert-box alert-err hidden" id="topAlert">
+            <i class="fas fa-circle-exclamation"></i>
+            <span id="topAlertMsg"></span>
+        </div>
+
+        <form action="/register" method="POST" id="regForm" novalidate>
+
+            <!-- ACCOUNT TYPE -->
+            <div class="section-label">I am a</div>
+            <div class="field">
+                <div class="type-chips">
+                    <div>
+                        <input type="radio" name="account_type" id="t_student" value="student" checked>
+                        <label class="chip-label" for="t_student">
+                            <span class="chip-icon">🎓</span> Student / OJT
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="account_type" id="t_worker" value="worker">
+                        <label class="chip-label" for="t_worker">
+                            <span class="chip-icon">💼</span> Worker / OFW
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="account_type" id="t_pwd" value="pwd">
+                        <label class="chip-label" for="t_pwd">
+                            <span class="chip-icon">♿</span> PWD Applicant
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="account_type" id="t_scholar" value="scholar">
+                        <label class="chip-label" for="t_scholar">
+                            <span class="chip-icon">🏅</span> Scholar
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONAL INFO -->
+            <div class="section-label">Personal Information</div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="firstname">First Name <span style="color:var(--danger)">*</span></label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user ico"></i>
+                        <input type="text" id="firstname" name="firstname" placeholder="Juan" required autocomplete="given-name">
+                    </div>
+                    <div class="err" id="err_fn"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Required</div>
+                </div>
+                <div class="field">
+                    <label for="lastname">Last Name <span style="color:var(--danger)">*</span></label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user ico"></i>
+                        <input type="text" id="lastname" name="lastname" placeholder="dela Cruz" required autocomplete="family-name">
+                    </div>
+                    <div class="err" id="err_ln"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Required</div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="birthdate">Date of Birth <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-calendar ico"></i>
+                    <input type="date" id="birthdate" name="birthdate" required autocomplete="bday">
+                </div>
+                <div class="err" id="err_bd"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Required</div>
+            </div>
+
+            <!-- GENDER — inclusive pill chips -->
+            <div class="field">
+                <label>Gender <span class="opt">(optional — all are welcome)</span></label>
+                <div class="gender-chips">
+                    <div><input type="radio" name="gender" id="g_m"  value="male">         <label class="g-label" for="g_m">Male</label></div>
+                    <div><input type="radio" name="gender" id="g_f"  value="female">       <label class="g-label" for="g_f">Female</label></div>
+                    <div><input type="radio" name="gender" id="g_nb" value="nonbinary">    <label class="g-label" for="g_nb">Non-binary</label></div>
+                    <div><input type="radio" name="gender" id="g_tm" value="trans_male">   <label class="g-label" for="g_tm">Trans Male</label></div>
+                    <div><input type="radio" name="gender" id="g_tf" value="trans_female"> <label class="g-label" for="g_tf">Trans Female</label></div>
+                    <div><input type="radio" name="gender" id="g_pn" value="prefer_not">   <label class="g-label" for="g_pn">Prefer not to say</label></div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="contact">Mobile Number <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-phone ico"></i>
+                    <input type="tel" id="contact" name="contact" placeholder="+63 9XX XXX XXXX" required autocomplete="tel">
+                </div>
+                <div class="err" id="err_ct"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Enter a valid PH number (e.g. 09XX or +639XX)</div>
+            </div>
+
+            <div class="field">
+                <label for="address">Home Address <span class="opt">(optional)</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-location-dot ico"></i>
+                    <input type="text" id="address" name="address" placeholder="City, Province" autocomplete="street-address">
+                </div>
+            </div>
+
+            <!-- PWD ID — shown only when PWD is selected -->
+            <div class="field" id="pwdField" style="display:none;">
+                <label for="pwd_id">PWD ID Number <span class="opt">(optional)</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-id-card ico"></i>
+                    <input type="text" id="pwd_id" name="pwd_id" placeholder="e.g. NCDA-2024-XXXXX">
+                </div>
+                <p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">Unlocks PWD-exclusive listings &amp; priority legal support.</p>
+            </div>
+
+            <!-- CREDENTIALS -->
+            <div class="section-label">Sign-in Credentials</div>
+
+            <div class="field">
+                <label for="email">Email Address <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-envelope ico"></i>
+                    <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email">
+                </div>
+                <div class="err" id="err_em"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Enter a valid email address</div>
+            </div>
+
+            <div class="field">
+                <label for="password">Password <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-lock ico"></i>
+                    <input type="password" id="password" name="password" placeholder="Min. 8 characters" required autocomplete="new-password" oninput="checkPw(this.value)" style="padding-right:40px;">
+                    <button type="button" class="eye-btn" onclick="togglePw('password','eyeIco1')"><i class="fas fa-eye" id="eyeIco1"></i></button>
+                </div>
+                <div class="strength-row">
+                    <div class="sbar" id="sb1"></div>
+                    <div class="sbar" id="sb2"></div>
+                    <div class="sbar" id="sb3"></div>
+                    <div class="sbar" id="sb4"></div>
+                </div>
+                <div class="strength-txt" id="pwStrTxt">Enter a password</div>
+                <div class="err" id="err_pw"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> At least 8 characters required</div>
+            </div>
+
+            <div class="field">
+                <label for="confirm_pw">Confirm Password <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-lock ico"></i>
+                    <input type="password" id="confirm_pw" name="confirm_password" placeholder="Repeat your password" required autocomplete="new-password" style="padding-right:40px;">
+                    <button type="button" class="eye-btn" onclick="togglePw('confirm_pw','eyeIco2')"><i class="fas fa-eye" id="eyeIco2"></i></button>
+                </div>
+                <div class="err" id="err_cpw"><i class="fas fa-circle-exclamation" style="font-size:.6rem"></i> Passwords do not match</div>
+            </div>
+
+            <!-- TERMS -->
+            <div style="margin-top:18px;">
+                <div class="check-row">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
+                        My data is protected under the <strong>Data Privacy Act of 2012</strong>.
+                    </label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Send me updates on job listings, scholarships, and advisories.</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="btn-text"><i class="fas fa-check-circle"></i> Create My Account</span>
+            </button>
+
+        </form>
+
+        <div class="card-footer-custom">
+            Already have an account? <a href="/login">Sign in here</a>
+        </div>
+
+    </div><!-- /formWrap -->
+
+</div><!-- /card -->
+
+<script>
+    /* ── PWD field toggle ─────────────────────── */
+    document.querySelectorAll('input[name="account_type"]').forEach(r => {
+        r.addEventListener('change', () => {
+            document.getElementById('pwdField').style.display = r.value === 'pwd' ? 'block' : 'none';
+        });
+    });
+
+    /* ── Password strength ────────────────────── */
+    function checkPw(pw) {
+        ['sb1','sb2','sb3','sb4'].forEach(id => document.getElementById(id).className = 'sbar');
+        const lbl = document.getElementById('pwStrTxt');
+        if (!pw) { lbl.textContent = 'Enter a password'; lbl.style.color = 'var(--muted)'; return; }
+
+        let s = 0;
+        if (pw.length >= 8)           s++;
+        if (/[A-Z]/.test(pw))         s++;
+        if (/[0-9]/.test(pw))         s++;
+        if (/[^A-Za-z0-9]/.test(pw))  s++;
+
+        const cls  = ['','w','f','g','s'];
+        const text = ['','Weak — try adding numbers','Fair — add uppercase letters','Good — almost there!','Strong password ✓'];
+        const col  = ['','#ef5350','#ef6c00','#f9a825','#43a047'];
+
+        for (let i = 0; i < s; i++) document.getElementById('sb'+(i+1)).classList.add(cls[s]);
+        lbl.textContent = text[s] || 'Weak';
+        lbl.style.color = col[s] || 'var(--muted)';
+    }
+
+    /* ── Toggle password visibility ───────────── */
+    function togglePw(fieldId, iconId) {
+        const el = document.getElementById(fieldId);
+        const ic = document.getElementById(iconId);
+        const show = el.type === 'password';
+        el.type = show ? 'text' : 'password';
+        ic.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+    }
+
+    /* ── Form submit & validation ──────────────── */
+    document.getElementById('regForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // clear all errors
+        document.querySelectorAll('.err').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('input').forEach(el => el.classList.remove('bad'));
+        document.getElementById('topAlert').classList.add('hidden');
+
+        let ok = true;
+
+        const fn  = document.getElementById('firstname');
+        const ln  = document.getElementById('lastname');
+        const bd  = document.getElementById('birthdate');
+        const ct  = document.getElementById('contact');
+        const em  = document.getElementById('email');
+        const pw  = document.getElementById('password');
+        const cpw = document.getElementById('confirm_pw');
+        const trm = document.getElementById('terms');
+
+        function fail(input, errId) {
+            input.classList.add('bad');
+            document.getElementById(errId).classList.add('show');
+            ok = false;
+        }
+
+        if (!fn.value.trim())  fail(fn,  'err_fn');
+        if (!ln.value.trim())  fail(ln,  'err_ln');
+        if (!bd.value)         fail(bd,  'err_bd');
+
+        const phone = ct.value.replace(/\s/g,'');
+        if (!phone || !/^(\+63|09)\d{9,10}$/.test(phone)) fail(ct, 'err_ct');
+
+        if (!em.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) fail(em, 'err_em');
+        if (!pw.value || pw.value.length < 8)  fail(pw,  'err_pw');
+        if (pw.value !== cpw.value)            fail(cpw, 'err_cpw');
+
+        if (!trm.checked) {
+            const a = document.getElementById('topAlert');
+            document.getElementById('topAlertMsg').textContent = 'Please accept the Terms of Service to create your account.';
+            a.classList.remove('hidden');
+            ok = false;
+        }
+
+        if (!ok) {
+            const first = document.querySelector('.bad');
+            if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Loading state
+        const btn = document.getElementById('submitBtn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        // Simulated — replace setTimeout block with: this.submit();
+        // Actual submission to Flask
+        this.submit();
+    });
+</script>
+</body>
+</html>
