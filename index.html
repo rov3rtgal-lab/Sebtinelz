@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentinel - Safe Spaces Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        :root {
+            --sentinel-teal: #006064;
+            --sentinel-light-teal: #f0f7f7;
+            --sentinel-orange: #ef6c00;
+            --text-dark: #263238;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--sentinel-light-teal);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* Navbar Styling */
+        .sentinel-navbar { background: var(--white); border-bottom: 1px solid #dee2e6; }
+        .brand-name { font-size: 1.5rem; font-weight: 800; color: var(--sentinel-teal); margin: 0; }
+        .brand-tagline { font-size: 0.6rem; font-weight: 700; color: #78909c; letter-spacing: 0.5px; }
+
+        .nav-link {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--text-dark) !important;
+            padding: 0 15px !important;
+        }
+
+        .login-pill {
+            background: var(--sentinel-teal);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 24px !important;
+            font-size: 0.9rem;
+        }
+
+        /* Hero & Search */
+        .hero-banner {
+            background-color: var(--sentinel-teal);
+            padding: 60px 0 100px 0;
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 8px;
+            border-radius: 50px;
+            display: flex;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .search-container input {
+            border: none;
+            flex: 1;
+            padding: 0 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .btn-incident {
+            background: var(--sentinel-orange);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 800;
+            transition: 0.3s;
+        }
+
+        .btn-incident:hover { background: #d86000; transform: scale(1.05); }
+
+        /* Portal Cards */
+        .portal-grid { margin-top: -60px; }
+
+        .portal-link { text-decoration: none; color: inherit; display: block; height: 100%; }
+
+        .portal-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-bottom: 5px solid transparent;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-bottom-color: var(--sentinel-orange);
+        }
+
+        .card-icon { font-size: 2.5rem; color: var(--sentinel-teal); margin-bottom: 20px; }
+        .card-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 15px; }
+        .card-text { font-size: 0.8rem; color: #546e7a; line-height: 1.5; }
+
+        /* Blacklist */
+        .blacklist-section {
+            margin-top: 50px;
+            background: #fff5f5;
+            border: 2px solid #ffdde1;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .blacklist-title { font-weight: 800; color: #b71c1c; font-size: 1.1rem; }
+        .banned-name { color: #d32f2f; font-weight: 700; margin: 0 15px; font-size: 0.9rem; }
+
+        /* FAB */
+        .fab-access {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #2e7d32;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sentinel-navbar sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <h1 class="brand-name">PROJECT SENTINEL</h1>
+            <p class="brand-tagline">SAFE SPACES PROTECTION SYSTEM</p>
+        </a>
+        <div class="collapse navbar-collapse justify-content-center">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/jobs">Local Jobs</a></li>
+                <li class="nav-item"><a class="nav-link" href="/scholarships">Overseas Scholar</a></li>
+                <li class="nav-item"><a class="nav-link" href="/rights">Know Your Rights</a></li>
+                <li class="nav-item"><a class="nav-link" href="/pao">PAO Support</a></li>
+            </ul>
+        </div>
+        <a href="/login" class="login-pill text-decoration-none"><i class="fas fa-user-circle me-2"></i>Login</a>
+    </div>
+</nav>
+
+<section class="hero-banner">
+    <div class="container">
+        <form action="/search" method="GET" class="search-container">
+            <i class="fas fa-search my-auto ms-3 text-muted"></i>
+            <input type="text" name="q" placeholder="Search for safe companies, OJT slots, or scholarship programs...">
+            <a href="/report" class="btn-incident text-decoration-none">REPORT AN INCIDENT</a>
+        </form>
+    </div>
+</section>
+
+<div class="container portal-grid">
+    <div class="row g-4 row-cols-1 row-cols-md-3 row-cols-lg-5">
+        <div class="col">
+            <a href="/service/ojt" class="portal-link">
+                <div class="portal-card">
+                    <div class="card-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="card-title">STUDENT OJT PLACEMENTS</div>
+                    <div class="card-text">Verified entries for scholarship-eligible programs.</div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="/service/pwd-jobs" class="portal-link">
+                <div class="portal-card">
+                    <div class="card-icon"><i class="fas fa-globe"></i></div>
+                    <div class="card-title">PWD OVERSEAS EMPLOYMENT</div>
+                    <div class="card-text">Safe international work environments for PWDs.</div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="/rights" class="portal-link">
+                <div class="portal-card">
+                    <div class="card-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="card-title">KNOW YOUR RIGHTS</div>
+                    <div class="card-text">Learn about the Safe Spaces Act & your protections.</div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="/admin/pao" class="portal-link">
+                <div class="portal-card">
+                    <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="card-title">ACCESS PAO SUPPORT</div>
+                    <div class="card-text">Direct legal assistance for students and PWDs.</div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="/service/scholar-pathway" class="portal-link">
+                <div class="portal-card">
+                    <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
+                    <div class="card-title">OVERSEAS SCHOLAR PATHWAYS</div>
+                    <div class="card-text">Verified student scholarship programs & safe placements.</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="blacklist-section shadow-sm">
+        <div class="blacklist-title mb-3">SENTINEL GLOBAL BLACKLIST</div>
+        <div class="d-flex justify-content-center flex-wrap">
+            <span class="banned-item"><i class="fas fa-skull"></i> Tech Pioneers Corp (BANNED)</span>
+            <span class="banned-item"><i class="fas fa-skull mx-2"></i> Industrial Solutions Inc (BANNED)</span>
+            <span class="banned-item"><i class="fas fa-skull mx-2"></i> Global Staffing Group (BANNED)</span>
+        </div>
+    </div>
+</div>
+
+<div class="fab-access"><i class="fas fa-universal-access me-2"></i> Accessibility Settings</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

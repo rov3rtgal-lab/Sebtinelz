@@ -1,0 +1,110 @@
+{% extends 'admin.html' %}
+{% block title %}UHT Reports{% endblock %}
+{% block breadcrumb %}UHT REPORTS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-file-alt me-2"></i>UHT REPORTS</h1>
+            <p class="page-subtitle">Unified Hazard Tracking — incidents grouped by type and company.</p>
+        </div>
+        <span class="pill pill-pending">{{ total }} Total Reports</span>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <div class="s-card">
+            <div class="s-card-header warning-hdr"><i class="fas fa-tags me-2"></i>BY INCIDENT TYPE</div>
+            {% if grouped %}
+            <table class="s-table">
+                <thead>
+                    <tr><th>INCIDENT TYPE</th><th>COUNT</th><th>SHARE</th></tr>
+                </thead>
+                <tbody>
+                    {% for itype, items in grouped.items() %}
+                    <tr>
+                        <td style="font-weight:600;">{{ itype }}</td>
+                        <td class="col-mono">{{ items|length }}</td>
+                        <td>
+                            <div class="score-wrap">
+                                <div class="score-track" style="width:90px;">
+                                    <div class="score-fill" style="width:{{ ((items|length / total) * 100)|int }}%;background:var(--orange);"></div>
+                                </div>
+                                <span class="score-val" style="color:var(--orange);">{{ ((items|length / total) * 100)|int }}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-file-alt"></i><p>No reports filed yet.</p></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="s-card">
+            <div class="s-card-header danger-hdr"><i class="fas fa-building me-2"></i>BY COMPANY</div>
+            {% if by_company %}
+            <table class="s-table">
+                <thead>
+                    <tr><th>COMPANY</th><th>REPORTS</th><th>RISK</th></tr>
+                </thead>
+                <tbody>
+                    {% for company, count in by_company.items()|sort(attribute='1', reverse=True) %}
+                    <tr>
+                        <td style="font-weight:600;">{{ company }}</td>
+                        <td class="col-mono">{{ count }}</td>
+                        <td>
+                            {% if count >= 3 %}
+                                <span class="pill pill-banned">HIGH</span>
+                            {% elif count == 2 %}
+                                <span class="pill pill-pending">MED</span>
+                            {% else %}
+                                <span class="pill pill-resolved">LOW</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-building"></i><p>No company data yet.</p></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="s-card">
+    <div class="s-card-header"><i class="fas fa-list me-2"></i>ALL INCIDENT DETAIL</div>
+    {% if grouped %}
+    {% for itype, items in grouped.items() %}
+    <div style="padding:10px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;border-bottom:1px solid var(--border);">
+        {{ itype }} — {{ items|length }} report(s)
+    </div>
+    <table class="s-table" style="margin-bottom:0;">
+        <tbody>
+            {% for inc in items %}
+            <tr>
+                <td class="col-mono" style="width:40px;">{{ inc.id }}</td>
+                <td style="font-weight:600;">{{ inc.company_name or '—' }}</td>
+                <td style="font-size:.75rem;color:var(--text-muted);max-width:320px;white-space:normal;">{{ inc.description[:100] }}{% if inc.description and inc.description|length > 100 %}…{% endif %}</td>
+                <td><span class="pill {% if inc.is_anonymous %}pill-anon{% else %}pill-named{% endif %}">{% if inc.is_anonymous %}ANON{% else %}NAMED{% endif %}</span></td>
+                <td>
+                    <span class="pill {% if inc.status == 'Resolved' %}pill-resolved{% elif inc.status == 'Archived' %}pill-archived{% else %}pill-pending{% endif %}">
+                        {{ inc.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state"><i class="fas fa-file-alt"></i><p>No incident reports in the system.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

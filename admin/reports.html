@@ -1,0 +1,917 @@
+{% extends 'admin.html' %}
+{% block title %}Reports & Export{% endblock %}
+{% block breadcrumb %}REPORTS{% endblock %}
+
+{% block content %}
+
+{# ════════════════════════════════════════════════════════
+   INLINE STYLES — scoped to this page only
+   ════════════════════════════════════════════════════════ #}
+<style>
+  /* ── Page-level tokens ── */
+  .rp {
+    --rp-red:     #b71c1c;
+    --rp-navy:    #0d1b3e;
+    --rp-gold:    #c8a84b;
+    --rp-teal:    #00695c;
+    --rp-green:   #1b5e20;
+    --rp-orange:  #e65100;
+    --rp-gray-50:  #fafafa;
+    --rp-gray-100: #f4f4f4;
+    --rp-gray-200: #e5e5e5;
+    --rp-gray-400: #bdbdbd;
+    --rp-gray-500: #9e9e9e;
+    --rp-gray-700: #5f5f5f;
+    --rp-gray-900: #1a1a1a;
+    --rp-shadow:   0 2px 10px rgba(0,0,0,0.07);
+    --rp-shadow-lg: 0 12px 40px rgba(0,0,0,0.13);
+  }
+
+  /* ── Page header ── */
+  .rp .rp-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--rp-gray-200);
+  }
+
+  .rp .rp-eyebrow {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--rp-red);
+    margin-bottom: 4px;
+  }
+
+  .rp .rp-title {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--rp-navy);
+    letter-spacing: -0.3px;
+    margin: 0;
+  }
+
+  .rp .rp-subtitle {
+    font-size: 0.82rem;
+    color: var(--rp-gray-500);
+    margin-top: 4px;
+  }
+
+  /* ── Stat cards ── */
+  .rp .rp-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .rp .rp-stat {
+    background: #fff;
+    border: 1px solid var(--rp-gray-200);
+    border-top: 3px solid var(--rp-gray-400);
+    padding: 18px 20px;
+    border-radius: 4px;
+    box-shadow: var(--rp-shadow);
+    transition: transform 0.2s;
+  }
+
+  .rp .rp-stat:hover { transform: translateY(-2px); }
+  .rp .rp-stat.s-navy  { border-top-color: var(--rp-navy); }
+  .rp .rp-stat.s-teal  { border-top-color: var(--rp-teal); }
+  .rp .rp-stat.s-green { border-top-color: var(--rp-green); }
+  .rp .rp-stat.s-orange{ border-top-color: var(--rp-orange); }
+  .rp .rp-stat.s-red   { border-top-color: var(--rp-red); }
+
+  .rp .rp-stat-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: var(--rp-gray-500);
+    margin-bottom: 6px;
+  }
+
+  .rp .rp-stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .rp .rp-stat-num.c-navy   { color: var(--rp-navy); }
+  .rp .rp-stat-num.c-teal   { color: var(--rp-teal); }
+  .rp .rp-stat-num.c-green  { color: var(--rp-green); }
+  .rp .rp-stat-num.c-orange { color: var(--rp-orange); }
+  .rp .rp-stat-num.c-red    { color: var(--rp-red); }
+
+  .rp .rp-stat-footer {
+    font-size: 0.72rem;
+    color: var(--rp-gray-500);
+  }
+
+  /* ── Section card ── */
+  .rp .rp-card {
+    background: #fff;
+    border: 1px solid var(--rp-gray-200);
+    border-radius: 4px;
+    box-shadow: var(--rp-shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .rp .rp-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--rp-navy);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .rp .rp-card-header.warn-hdr { background: var(--rp-red); }
+  .rp .rp-card-header.teal-hdr { background: var(--rp-teal); }
+
+  /* ── Controls bar (search + filter) ── */
+  .rp .controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    background: var(--rp-gray-50);
+    border-bottom: 1px solid var(--rp-gray-200);
+  }
+
+  .rp .ctrl-search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .rp .ctrl-search-wrap i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--rp-gray-400);
+    font-size: 0.8rem;
+    pointer-events: none;
+  }
+
+  .rp .ctrl-input {
+    width: 100%;
+    border: 1.5px solid var(--rp-gray-200);
+    border-radius: 4px;
+    padding: 8px 10px 8px 32px;
+    font-size: 0.8rem;
+    color: var(--rp-gray-900);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+
+  .rp .ctrl-input:focus { border-color: var(--rp-navy); }
+
+  .rp .ctrl-select {
+    border: 1.5px solid var(--rp-gray-200);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--rp-gray-900);
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+
+  .rp .ctrl-select:focus { border-color: var(--rp-navy); }
+
+  .rp .ctrl-count {
+    font-size: 0.72rem;
+    color: var(--rp-gray-500);
+    white-space: nowrap;
+  }
+
+  /* ── Tables ── */
+  .rp .rp-table-wrap { overflow-x: auto; }
+
+  .rp .rp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    min-width: 700px;
+  }
+
+  .rp .rp-table thead th {
+    background: var(--rp-gray-100);
+    color: var(--rp-gray-700);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--rp-gray-200);
+    white-space: nowrap;
+  }
+
+  .rp .rp-table tbody tr {
+    border-bottom: 1px solid var(--rp-gray-100);
+    transition: background 0.15s;
+  }
+
+  .rp .rp-table tbody tr:hover { background: rgba(13,27,62,0.035); }
+  .rp .rp-table tbody tr:last-child { border-bottom: none; }
+
+  .rp .rp-table tbody td {
+    padding: 11px 14px;
+    color: var(--rp-gray-900);
+    vertical-align: middle;
+  }
+
+  .rp .rp-table .col-mono {
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: var(--rp-gray-700);
+  }
+
+  .rp .rp-table .col-bold { font-weight: 700; }
+
+  /* ── Score bar ── */
+  .rp .score-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rp .score-track {
+    flex: 1;
+    height: 5px;
+    background: var(--rp-gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+  }
+
+  .rp .score-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .rp .score-val {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--rp-gray-700);
+    white-space: nowrap;
+    min-width: 26px;
+  }
+
+  /* ── Pills / badges ── */
+  .rp .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+
+  .rp .pill-active   { background: #e8f5e9; color: var(--rp-green); border: 1px solid #a5d6a7; }
+  .rp .pill-banned   { background: #fce4e4; color: var(--rp-red);   border: 1px solid #ef9a9a; }
+  .rp .pill-pending  { background: #fff3e0; color: var(--rp-orange);border: 1px solid #ffcc80; }
+  .rp .pill-resolved { background: #e8f5e9; color: var(--rp-green); border: 1px solid #a5d6a7; }
+  .rp .pill-archived { background: #f5f5f5; color: var(--rp-gray-500); border: 1px solid var(--rp-gray-200); }
+  .rp .pill-anon     { background: #ede7f6; color: #4527a0; border: 1px solid #b39ddb; }
+  .rp .pill-named    { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+
+  /* ── Incident type icon ── */
+  .rp .incident-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 700;
+    color: var(--rp-gray-900);
+  }
+
+  .rp .incident-icon i {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .rp .icon-harassment { background: #fce4e4; color: var(--rp-red); }
+  .rp .icon-discrimination { background: #fff3e0; color: var(--rp-orange); }
+  .rp .icon-labor  { background: #e8eaf6; color: #3949ab; }
+  .rp .icon-ojt    { background: #e0f2f1; color: var(--rp-teal); }
+  .rp .icon-pwd    { background: #f3e5f5; color: #7b1fa2; }
+  .rp .icon-overseas { background: #e3f2fd; color: #0277bd; }
+  .rp .icon-wages  { background: #e8f5e9; color: var(--rp-green); }
+  .rp .icon-other  { background: var(--rp-gray-100); color: var(--rp-gray-500); }
+
+  /* ── Reason cell ── */
+  .rp .reason-preview {
+    font-size: 0.78rem;
+    color: var(--rp-gray-700);
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rp .btn-view-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    background: none;
+    border: 1px solid var(--rp-gray-200);
+    border-radius: 3px;
+    padding: 3px 9px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--rp-navy);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .rp .btn-view-detail:hover {
+    background: var(--rp-navy);
+    color: white;
+    border-color: var(--rp-navy);
+  }
+
+  /* ── Small action buttons ── */
+  .rp .btn-s {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+
+  .rp .btn-teal { background: var(--rp-teal); color: white; }
+  .rp .btn-teal:hover { background: #004d40; color: white; }
+
+  .rp .btn-navy { background: var(--rp-navy); color: white; }
+  .rp .btn-navy:hover { background: #051029; color: white; }
+
+  .rp .btn-outline-teal {
+    background: transparent;
+    border: 1px solid var(--rp-teal);
+    color: var(--rp-teal);
+  }
+  .rp .btn-outline-teal:hover { background: var(--rp-teal); color: white; }
+
+  .rp .btn-outline-red {
+    background: transparent;
+    border: 1px solid var(--rp-red);
+    color: var(--rp-red);
+  }
+  .rp .btn-outline-red:hover { background: var(--rp-red); color: white; }
+
+  /* ── Empty state ── */
+  .rp .rp-empty {
+    text-align: center;
+    padding: 52px 20px;
+    color: var(--rp-gray-400);
+  }
+
+  .rp .rp-empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--rp-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 16px;
+    color: var(--rp-gray-400);
+  }
+
+  .rp .rp-empty h6 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--rp-gray-700);
+    margin-bottom: 6px;
+  }
+
+  .rp .rp-empty p {
+    font-size: 0.8rem;
+    color: var(--rp-gray-500);
+    margin: 0;
+  }
+
+  /* ── No-results row ── */
+  .rp .no-results-row td {
+    text-align: center;
+    padding: 36px;
+    color: var(--rp-gray-500);
+    font-size: 0.82rem;
+  }
+
+  /* ── Modal overrides ── */
+  .rp-modal .modal-content {
+    border: none;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: var(--rp-shadow-lg);
+  }
+
+  .rp-modal .modal-header {
+    background: var(--rp-navy);
+    color: white;
+    padding: 16px 22px;
+    border-bottom: none;
+  }
+
+  .rp-modal .modal-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .rp-modal .btn-close { filter: invert(1); }
+
+  .rp-modal .modal-body {
+    padding: 24px;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--rp-gray-900);
+    background: var(--rp-gray-50);
+  }
+
+  .rp-modal .modal-footer {
+    background: white;
+    border-top: 1px solid var(--rp-gray-200);
+    padding: 14px 22px;
+  }
+
+  .rp-modal .detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .rp-modal .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--rp-gray-200);
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--rp-gray-700);
+  }
+
+  .rp-modal .meta-chip i { color: var(--rp-navy); font-size: 0.7rem; }
+
+  .rp-modal .detail-body {
+    background: white;
+    border: 1px solid var(--rp-gray-200);
+    border-left: 4px solid var(--rp-red);
+    border-radius: 0 4px 4px 0;
+    padding: 18px;
+    font-size: 0.875rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .rp .rp-page-header { flex-direction: column; align-items: flex-start; }
+    .rp .rp-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+{# ════ WRAPPER ════ #}
+<div class="rp">
+
+  {# ── Page Header ── #}
+  <div class="rp-page-header">
+    <div>
+      <p class="rp-eyebrow"><i class="fas fa-file-contract me-1"></i>Sentinel Admin</p>
+      <h1 class="rp-title">Reports &amp; PDF Export</h1>
+      <p class="rp-subtitle">Generate compliance notices, review all incident filings, and export registry data.</p>
+    </div>
+    <a href="/admin/reports/pdf-all" class="btn-s btn-teal" target="_blank">
+      <i class="fas fa-file-pdf"></i> Export Full Registry PDF
+    </a>
+  </div>
+
+  {# ── Stat Row ── #}
+  <div class="rp-stats">
+    <div class="rp-stat s-navy">
+      <div class="rp-stat-label">Total Companies</div>
+      <div class="rp-stat-num c-navy">{{ companies | length }}</div>
+      <div class="rp-stat-footer">In active registry</div>
+    </div>
+    <div class="rp-stat s-teal">
+      <div class="rp-stat-label">Total Reports Filed</div>
+      <div class="rp-stat-num c-teal">{{ reports | length }}</div>
+      <div class="rp-stat-footer">All incident records</div>
+    </div>
+    <div class="rp-stat s-orange">
+      <div class="rp-stat-label">Pending</div>
+      <div class="rp-stat-num c-orange">{{ reports | selectattr('status', 'equalto', 'Pending') | list | length }}</div>
+      <div class="rp-stat-footer">Awaiting resolution</div>
+    </div>
+    <div class="rp-stat s-green">
+      <div class="rp-stat-label">Resolved</div>
+      <div class="rp-stat-num c-green">{{ reports | selectattr('status', 'equalto', 'Resolved') | list | length }}</div>
+      <div class="rp-stat-footer">Closed cases</div>
+    </div>
+    <div class="rp-stat s-red">
+      <div class="rp-stat-label">Anonymous</div>
+      <div class="rp-stat-num c-red">{{ reports | selectattr('is_anonymous') | list | length }}</div>
+      <div class="rp-stat-footer">Confidential reports</div>
+    </div>
+  </div>
+
+  {# ══════════════════════════════════════════════
+     SECTION 1 — COMPANY COMPLIANCE NOTICES
+  ══════════════════════════════════════════════ #}
+  <div class="rp-card">
+    <div class="rp-card-header teal-hdr">
+      <span><i class="fas fa-building me-2"></i>Company Compliance Notices</span>
+      <span style="font-size:0.65rem; opacity:0.7; font-weight:500;">{{ companies|length }} record(s)</span>
+    </div>
+
+    {# Company search #}
+    <div class="controls-bar">
+      <div class="ctrl-search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" class="ctrl-input" id="coSearch" placeholder="Search by company name, industry, or type…" oninput="filterCompanies()">
+      </div>
+      <select class="ctrl-select" id="coStatusFilter" onchange="filterCompanies()">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Blacklisted">Blacklisted</option>
+      </select>
+      <span class="ctrl-count" id="coCount">{{ companies|length }} shown</span>
+    </div>
+
+    {% if companies %}
+    <div class="rp-table-wrap">
+      <table class="rp-table" id="coTable">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>SEC / Permit</th>
+            <th>Industry</th>
+            <th>Type</th>
+            <th>Compliance</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="coTableBody">
+          {% for co in companies %}
+          <tr data-name="{{ co.name | lower }}"
+              data-industry="{{ (co.industry or '') | lower }}"
+              data-type="{{ (co.type or '') | lower }}"
+              data-status="{{ co.status }}">
+            <td class="col-bold">{{ co.name }}</td>
+            <td class="col-mono">{{ co.sec_id or '—' }}</td>
+            <td>{{ co.industry or '—' }}</td>
+            <td class="col-mono" style="font-size:0.75rem;">{{ co.type or '—' }}</td>
+            <td>
+              <div class="score-wrap">
+                <div class="score-track">
+                  <div class="score-fill" style="width:{{ co.compliance_score }}%;
+                    background:{% if co.compliance_score >= 80 %}var(--rp-green){% elif co.compliance_score >= 50 %}var(--rp-orange){% else %}var(--rp-red){% endif %};"></div>
+                </div>
+                <span class="score-val">{{ co.compliance_score }}/100</span>
+              </div>
+            </td>
+            <td>
+              <span class="pill {% if co.status == 'Active' %}pill-active{% else %}pill-banned{% endif %}">
+                <i class="fas {% if co.status == 'Active' %}fa-check-circle{% else %}fa-ban{% endif %}"></i>
+                {{ co.status }}
+              </span>
+            </td>
+            <td>
+              <a href="/admin/reports/pdf/{{ co.id }}" class="btn-s btn-outline-teal" target="_blank" title="Download PDF Notice">
+                <i class="fas fa-file-pdf"></i> Notice
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tbody id="coNoResults" style="display:none;">
+          <tr class="no-results-row"><td colspan="7"><i class="fas fa-search me-2"></i>No companies match your search.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="rp-empty">
+      <div class="rp-empty-icon"><i class="fas fa-building"></i></div>
+      <h6>No Companies Found</h6>
+      <p>Add companies via the Company Registry to generate compliance notices.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ══════════════════════════════════════════════
+     SECTION 2 — INCIDENT REPORT LOG
+  ══════════════════════════════════════════════ #}
+  <div class="rp-card">
+    <div class="rp-card-header warn-hdr">
+      <span><i class="fas fa-file-alt me-2"></i>Incident Report Log</span>
+      <span style="font-size:0.65rem; opacity:0.7; font-weight:500;">{{ reports|length }} record(s)</span>
+    </div>
+
+    {# Incident search + filter #}
+    <div class="controls-bar">
+      <div class="ctrl-search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" class="ctrl-input" id="repSearch" placeholder="Search by company, incident type, or description…" oninput="filterReports()">
+      </div>
+      <select class="ctrl-select" id="repStatusFilter" onchange="filterReports()">
+        <option value="">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Archived">Archived</option>
+      </select>
+      <select class="ctrl-select" id="repTypeFilter" onchange="filterReports()">
+        <option value="">All Types</option>
+        <option value="Sexual Harassment">Sexual Harassment</option>
+        <option value="Discrimination">Discrimination</option>
+        <option value="Labor Violation">Labor Violation</option>
+        <option value="OJT Abuse">OJT Abuse</option>
+        <option value="PWD Rights Violation">PWD Rights Violation</option>
+        <option value="Overseas Abuse">Overseas Abuse</option>
+        <option value="Unpaid Wages">Unpaid Wages</option>
+        <option value="Other">Other</option>
+      </select>
+      <span class="ctrl-count" id="repCount">{{ reports|length }} shown</span>
+    </div>
+
+    {% if reports %}
+    <div class="rp-table-wrap">
+      <table class="rp-table" id="repTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Incident Type</th>
+            <th>Company</th>
+            <th>Reason / Details</th>
+            <th>Identity</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="repTableBody">
+          {% for rep in reports %}
+          {# Build incident icon class #}
+          {% set icon_map = {
+            'Sexual Harassment': ('fa-hand-paper', 'icon-harassment'),
+            'Discrimination':    ('fa-not-equal',  'icon-discrimination'),
+            'Labor Violation':   ('fa-industry',   'icon-labor'),
+            'OJT Abuse':         ('fa-user-graduate', 'icon-ojt'),
+            'PWD Rights Violation': ('fa-wheelchair', 'icon-pwd'),
+            'Overseas Abuse':    ('fa-globe-asia', 'icon-overseas'),
+            'Unpaid Wages':      ('fa-peso-sign',  'icon-wages'),
+          } %}
+          {% set icon_info = icon_map.get(rep.incident_type, ('fa-ellipsis-h', 'icon-other')) %}
+          <tr data-type="{{ (rep.incident_type or '') | lower }}"
+              data-company="{{ (rep.company_name or '') | lower }}"
+              data-desc="{{ (rep.description or '') | lower }}"
+              data-status="{{ rep.status }}">
+            <td class="col-mono">{{ rep.id }}</td>
+            <td>
+              <span class="incident-icon">
+                <i class="fas {{ icon_info[0] }} {{ icon_info[1] }}"></i>
+                {{ rep.incident_type or '—' }}
+              </span>
+            </td>
+            <td class="col-bold">{{ rep.company_name or '—' }}</td>
+            <td>
+              {% if rep.description %}
+                <div class="reason-preview" title="{{ rep.description | e }}">
+                  {{ rep.description[:90] | e }}{% if rep.description | length > 90 %}…{% endif %}
+                </div>
+                <button class="btn-view-detail"
+                  onclick="viewReport(
+                    {{ rep.id }},
+                    `{{ rep.incident_type | e }}`,
+                    `{{ rep.company_name | e }}`,
+                    `{{ rep.description | e }}`,
+                    `{{ rep.status }}`,
+                    `{{ 'Anonymous' if rep.is_anonymous else 'Named' }}`
+                  )">
+                  <i class="fas fa-expand-alt"></i> View Full
+                </button>
+              {% else %}
+                <span style="color:var(--rp-gray-400); font-style:italic; font-size:0.78rem;">No description provided</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="pill {% if rep.is_anonymous %}pill-anon{% else %}pill-named{% endif %}">
+                <i class="fas {% if rep.is_anonymous %}fa-user-secret{% else %}fa-user{% endif %}"></i>
+                {% if rep.is_anonymous %}Anonymous{% else %}Named{% endif %}
+              </span>
+            </td>
+            <td>
+              <span class="pill
+                {% if rep.status == 'Resolved' %}pill-resolved
+                {% elif rep.status == 'Archived' %}pill-archived
+                {% else %}pill-pending{% endif %}">
+                <i class="fas
+                  {% if rep.status == 'Resolved' %}fa-check-circle
+                  {% elif rep.status == 'Archived' %}fa-archive
+                  {% else %}fa-clock{% endif %}"></i>
+                {{ rep.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-s btn-outline-red"
+                onclick="viewReport(
+                  {{ rep.id }},
+                  `{{ rep.incident_type | e }}`,
+                  `{{ rep.company_name | e }}`,
+                  `{{ rep.description | e }}`,
+                  `{{ rep.status }}`,
+                  `{{ 'Anonymous' if rep.is_anonymous else 'Named' }}`
+                )">
+                <i class="fas fa-eye"></i> Details
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tbody id="repNoResults" style="display:none;">
+          <tr class="no-results-row"><td colspan="7"><i class="fas fa-search me-2"></i>No reports match your search criteria.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="rp-empty">
+      <div class="rp-empty-icon"><i class="fas fa-inbox"></i></div>
+      <h6>No Incident Reports Filed</h6>
+      <p>When users submit reports through the portal, they will appear here for review and action.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>{# end .rp #}
+
+{# ════════════════════════════════════════════════════════
+   INCIDENT DETAIL MODAL
+   ════════════════════════════════════════════════════════ #}
+<div class="modal fade rp-modal" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="reportDetailTitle">
+          <i class="fas fa-file-alt me-2"></i>
+          <span id="modalTitleText">Incident Report Details</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        {# Metadata chips #}
+        <div class="detail-meta" id="modalMeta">
+          <div class="meta-chip"><i class="fas fa-hashtag"></i><span id="modalId">—</span></div>
+          <div class="meta-chip"><i class="fas fa-exclamation-triangle"></i><span id="modalType">—</span></div>
+          <div class="meta-chip"><i class="fas fa-building"></i><span id="modalCompany">—</span></div>
+          <div class="meta-chip"><i class="fas fa-user-secret"></i><span id="modalIdentity">—</span></div>
+          <div class="meta-chip"><i class="fas fa-circle-dot"></i><span id="modalStatusChip">—</span></div>
+        </div>
+
+        {# Full description #}
+        <p style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--rp-gray-500); margin-bottom:8px;">
+          <i class="fas fa-align-left me-1"></i>Full Incident Description
+        </p>
+        <div class="detail-body" id="modalDescription">—</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-s btn-navy" data-bs-dismiss="modal">
+          <i class="fas fa-times"></i> Close
+        </button>
+        <a id="modalPdfLink" href="#" class="btn-s btn-teal" target="_blank" style="display:none;">
+          <i class="fas fa-file-pdf"></i> Export Notice
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{# ════════════════════════════════════════════════════════
+   JAVASCRIPT
+   ════════════════════════════════════════════════════════ #}
+<script>
+/* ── Company table filter ── */
+function filterCompanies() {
+  const q      = document.getElementById('coSearch').value.toLowerCase();
+  const status = document.getElementById('coStatusFilter').value;
+  const rows   = document.querySelectorAll('#coTableBody tr');
+  let   shown  = 0;
+
+  rows.forEach(row => {
+    const nameMatch  = row.dataset.name.includes(q)
+                    || row.dataset.industry.includes(q)
+                    || row.dataset.type.includes(q);
+    const statMatch  = !status || row.dataset.status === status;
+    const visible    = nameMatch && statMatch;
+    row.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+
+  document.getElementById('coNoResults').style.display = shown === 0 ? '' : 'none';
+  document.getElementById('coCount').textContent = shown + ' shown';
+}
+
+/* ── Incident report filter ── */
+function filterReports() {
+  const q      = document.getElementById('repSearch').value.toLowerCase();
+  const status = document.getElementById('repStatusFilter').value;
+  const type   = document.getElementById('repTypeFilter').value.toLowerCase();
+  const rows   = document.querySelectorAll('#repTableBody tr');
+  let   shown  = 0;
+
+  rows.forEach(row => {
+    const textMatch  = row.dataset.company.includes(q)
+                    || row.dataset.type.includes(q)
+                    || row.dataset.desc.includes(q);
+    const statMatch  = !status || row.dataset.status === status;
+    const typeMatch  = !type   || row.dataset.type.includes(type);
+    const visible    = textMatch && statMatch && typeMatch;
+    row.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+
+  document.getElementById('repNoResults').style.display = shown === 0 ? '' : 'none';
+  document.getElementById('repCount').textContent = shown + ' shown';
+}
+
+/* ── View full incident detail modal ── */
+function viewReport(id, type, company, description, status, identity) {
+  document.getElementById('modalTitleText').textContent = 'Report #' + id + ' — ' + (type || 'Incident');
+  document.getElementById('modalId').textContent        = '#' + id;
+  document.getElementById('modalType').textContent      = type      || '—';
+  document.getElementById('modalCompany').textContent   = company   || '—';
+  document.getElementById('modalIdentity').textContent  = identity  || '—';
+  document.getElementById('modalStatusChip').textContent= status    || '—';
+  document.getElementById('modalDescription').textContent = description || 'No description was provided for this report.';
+
+  // Show modal
+  const modal = new bootstrap.Modal(document.getElementById('reportDetailModal'));
+  modal.show();
+}
+
+/* ── Keyboard shortcut: Escape closes modal ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const modalEl = document.getElementById('reportDetailModal');
+    const instance = bootstrap.Modal.getInstance(modalEl);
+    if (instance) instance.hide();
+  }
+});
+</script>
+
+{% endblock %}

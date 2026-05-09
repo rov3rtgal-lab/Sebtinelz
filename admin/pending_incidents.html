@@ -1,0 +1,75 @@
+{% extends 'admin.html' %}
+{% block title %}Pending Incidents{% endblock %}
+{% block breadcrumb %}PENDING INCIDENTS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-exclamation-triangle me-2"></i>PENDING INCIDENTS</h1>
+            <p class="page-subtitle">Review and act on unresolved incident reports submitted by workers.</p>
+        </div>
+        <span class="pill pill-pending"><i class="fas fa-clock"></i> {{ incidents|length }} Pending</span>
+    </div>
+</div>
+
+{% if incidents %}
+<div class="s-card">
+    <div class="s-card-header danger-hdr">
+        <span><i class="fas fa-inbox me-2"></i>INCIDENT QUEUE</span>
+    </div>
+    <div style="overflow-x:auto;">
+        <tuht_reports.htmlable class="s-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TYPE</th>
+                    <th>COMPANY</th>
+                    <th>DESCRIPTION</th>
+                    <th>IDENTITY</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inc in incidents %}
+                <tr>
+                    <td class="col-mono">{{ inc.id }}</td>
+                    <td style="font-weight:700;">{{ inc.incident_type or '—' }}</td>
+                    <td>{{ inc.company_name or '—' }}</td>
+                    <td style="max-width:260px;white-space:normal;font-size:.75rem;color:var(--text-muted);">
+                        {{ inc.description[:120] }}{% if inc.description and inc.description|length > 120 %}…{% endif %}
+                    </td>
+                    <td>
+                        <span class="pill {% if inc.is_anonymous %}pill-anon{% else %}pill-named{% endif %}">
+                            <i class="fas {% if inc.is_anonymous %}fa-user-secret{% else %}fa-user{% endif %}"></i>
+                            {% if inc.is_anonymous %}ANONYMOUS{% else %}NAMED{% endif %}
+                        </span>
+                    </td>
+                    <td><span class="pill pill-pending"><i class="fas fa-clock"></i> PENDING</span></td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="/admin/pending-incidents/resolve/{{ inc.id }}" class="btn-s btn-success">
+                                <i class="fas fa-check"></i> RESOLVE
+                            </a>
+                            <a href="/admin/pending-incidents/archive/{{ inc.id }}" class="btn-s btn-outline">
+                                <i class="fas fa-archive"></i> ARCHIVE
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </tuht_reports.htmlable>
+    </div>
+</div>
+{% else %}
+<div class="s-card">
+    <div class="empty-state" style="padding:80px 20px;">
+        <i class="fas fa-check-circle" style="color:var(--green);opacity:.4;"></i>
+        <p style="font-size:1rem;font-weight:700;color:var(--green);">All Clear — No Pending Incidents</p>
+        <p style="margin-top:4px;">All submitted reports have been resolved or archived.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

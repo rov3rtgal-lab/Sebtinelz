@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentinel — Sign In</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal:        #006064;
+            --teal-dark:   #004448;
+            --teal-light:  #e0f2f1;
+            --teal-glow:   rgba(0, 96, 100, 0.18);
+            --orange:      #ef6c00;
+            --orange-light:#fff3e0;
+            --text:        #1a2b2c;
+            --muted:       #607d8b;
+            --white:       #ffffff;
+            --surface:     #f5fafa;
+            --border:      #cfd8d8;
+            --danger:      #c62828;
+            --green:       #2e7d32;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── LEFT BRAND PANEL ─────────────────────────────── */
+        .panel-brand {
+            width: 40%;
+            background: var(--teal);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px 48px;
+            overflow: hidden;
+        }
+
+        .panel-brand::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 120% 10%, rgba(0,150,136,0.5) 0%, transparent 55%),
+                radial-gradient(ellipse at -10% 90%, rgba(239,108,0,0.2) 0%, transparent 50%);
+        }
+
+        /* Decorative rings */
+        .deco-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            pointer-events: none;
+        }
+        .ring-1 { width: 300px; height: 300px; top: -70px; right: -100px; }
+        .ring-2 { width: 180px; height: 180px; bottom: 60px; right: 30px; }
+        .ring-3 { width: 100px; height: 100px; bottom: 180px; left: -30px; }
+        .ring-4 { width: 440px; height: 440px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.04; }
+
+        /* Animated floating shield */
+        .brand-shield {
+            position: absolute;
+            right: 36px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.06;
+            font-size: 11rem;
+            color: white;
+            animation: floatShield 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes floatShield {
+            0%, 100% { transform: translateY(-50%) rotate(-4deg); }
+            50%       { transform: translateY(calc(-50% - 14px)) rotate(4deg); }
+        }
+
+        .brand-lockup { position: relative; z-index: 2; }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 6px 16px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .brand-badge i { color: var(--orange); }
+
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            color: var(--white);
+            line-height: 1.05;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+        }
+
+        .brand-sub {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.63rem;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.45);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .brand-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+            max-width: 320px;
+            margin-bottom: 36px;
+        }
+
+        /* Feature pills */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .feature-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 40px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .feature-pill i {
+            color: var(--orange);
+            font-size: 0.8rem;
+            width: 14px;
+            text-align: center;
+        }
+        .feature-pill:hover { background: rgba(255,255,255,0.12); }
+
+        /* Trust badge row */
+        .trust-row {
+            margin-top: 36px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 12px;
+        }
+        .trust-icon { font-size: 1.5rem; color: rgba(255,255,255,0.4); }
+        .trust-text { font-size: 0.72rem; color: rgba(255,255,255,0.55); line-height: 1.45; }
+        .trust-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+        /* ── RIGHT FORM PANEL ─────────────────────────────── */
+        .panel-form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 52px 40px;
+            background: var(--white);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* subtle grid texture on right panel */
+        .panel-form::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,96,100,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,96,100,0.025) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Eyebrow / heading */
+        .form-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 2px;
+            background: var(--orange);
+            border-radius: 2px;
+        }
+
+        .form-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            color: var(--text);
+            line-height: 1.1;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-subtitle {
+            font-size: 0.86rem;
+            color: var(--muted);
+            margin-bottom: 32px;
+            line-height: 1.55;
+        }
+
+        /* Alert */
+        .alert-sentinel {
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .alert-error   { background: #fdecea; border: 1px solid #f5c6cb; color: var(--danger); }
+        .alert-success { background: #e8f5e9; border: 1px solid #c8e6c9; color: var(--green); }
+        .alert-sentinel i { margin-top: 2px; flex-shrink: 0; }
+        .alert-sentinel.d-none { display: none !important; }
+
+        /* Field */
+        .field-group { margin-bottom: 18px; }
+
+        .field-label {
+            display: block;
+            font-size: 0.77rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 7px;
+        }
+        .field-label .req { color: var(--danger); margin-left: 2px; }
+
+        .field-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.82rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            background: var(--surface);
+            transition: all 0.22s;
+            outline: none;
+        }
+        .field-input::placeholder { color: #adbfc0; }
+        .field-input:focus {
+            border-color: var(--teal);
+            background: var(--white);
+            box-shadow: 0 0 0 3.5px rgba(0,96,100,0.09);
+        }
+        .field-input.is-invalid {
+            border-color: var(--danger);
+            background: #fff8f8;
+        }
+        .field-input.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(198,40,40,0.09);
+        }
+        .field-wrap:focus-within .field-icon { color: var(--teal); }
+
+        .field-error {
+            font-size: 0.7rem;
+            color: var(--danger);
+            margin-top: 5px;
+            display: none;
+        }
+        .field-error.show { display: flex; align-items: center; gap: 4px; }
+
+        .toggle-pw {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 0.82rem;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .toggle-pw:hover { color: var(--teal); }
+
+        /* Remember / Forgot row */
+        .form-extras {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            gap: 8px;
+        }
+        .check-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .check-input {
+            width: 15px;
+            height: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+        }
+        .check-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+        }
+        .forgot-link {
+            font-size: 0.78rem;
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .forgot-link:hover { opacity: 0.75; text-decoration: underline; }
+
+        /* Buttons */
+        .btn-login {
+            width: 100%;
+            padding: 13.5px;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.22s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.2px;
+        }
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+        }
+        .btn-login:hover {
+            background: var(--teal-dark);
+            transform: translateY(-1.5px);
+            box-shadow: 0 10px 28px rgba(0,96,100,0.28);
+        }
+        .btn-login:active { transform: translateY(0); box-shadow: none; }
+
+        /* Loading state */
+        .btn-login.loading .btn-text { opacity: 0; }
+        .btn-login.loading::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(255,255,255,0.35);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            z-index: 1;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .btn-register {
+            width: 100%;
+            padding: 13px;
+            background: transparent;
+            color: var(--teal);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            text-decoration: none;
+        }
+        .btn-register:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+            color: var(--teal);
+            transform: translateY(-1px);
+        }
+
+        /* Divider */
+        .form-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .form-divider hr {
+            flex: 1;
+            border: none;
+            border-top: 1.5px solid var(--border);
+            opacity: 1;
+        }
+        .form-divider span {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #b0bec5;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        .form-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+        .form-footer a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* Security note */
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 20px;
+            font-size: 0.68rem;
+            color: #b0bec5;
+        }
+        .security-note i { color: #90a4ae; }
+
+        /* Entrance animations */
+        .form-card { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .field-group { animation: fadeIn 0.3s ease both; }
+        .field-group:nth-child(1) { animation-delay: 0.05s; }
+        .field-group:nth-child(2) { animation-delay: 0.10s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) { .panel-brand { display: none; } }
+        @media (max-width: 576px) {
+            .panel-form { padding: 36px 20px; }
+            .form-title { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+
+    <!-- ══════ LEFT BRAND PANEL ══════ -->
+    <div class="panel-brand">
+        <div class="deco-ring ring-1"></div>
+        <div class="deco-ring ring-2"></div>
+        <div class="deco-ring ring-3"></div>
+        <div class="deco-ring ring-4"></div>
+        <div class="brand-shield"><i class="fas fa-shield-halved"></i></div>
+
+        <div class="brand-lockup">
+            <div class="brand-badge">
+                <i class="fas fa-shield-halved"></i> Safe Spaces Protection System
+            </div>
+            <h1 class="brand-name">PROJECT<br>SENTINEL</h1>
+            <p class="brand-sub">DOLE / DMW Certified Platform</p>
+            <p class="brand-desc">
+                Your trusted gateway to verified OJT placements, overseas opportunities,
+                PAO legal aid, and Safe Spaces Act protections — all in one secure platform.
+            </p>
+
+            <div class="feature-list">
+                <div class="feature-pill">
+                    <i class="fas fa-graduation-cap"></i>
+                    Safe &amp; vetted OJT placements for students
+                </div>
+                <div class="feature-pill">
+                    <i class="fas fa-globe-asia"></i>
+                    Overseas opportunities for OFWs &amp; scholars
+                </div>
+                <div class="feature-pill">
+                    <i class="fas fa-universal-access"></i>
+                    PWD-inclusive jobs &amp; employment access
+                </div>
+                <div class="feature-pill">
+                    <i class="fas fa-scale-balanced"></i>
+                    Free PAO legal aid &amp; rights guidance
+                </div>
+            </div>
+
+            <div class="trust-row">
+                <div class="trust-icon"><i class="fas fa-lock"></i></div>
+                <div class="trust-text">
+                    <strong>Your data is protected</strong><br>
+                    Compliant with the Data Privacy Act of 2012 (RA 10173)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ RIGHT FORM PANEL ══════ -->
+    <div class="panel-form">
+        <div class="form-card">
+
+            <!-- Inline error / success alert (Flask flash or JS-driven) -->
+            <div class="alert-sentinel alert-error d-none" id="loginAlert" role="alert">
+                <i class="fas fa-circle-exclamation"></i>
+                <span id="loginAlertMsg">Invalid email or password. Please try again.</span>
+            </div>
+
+            <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for cat, msg in messages %}
+            <div class="alert-sentinel alert-{{ 'error' if cat == 'error' else 'success' }}">
+                <i class="fas fa-{{ 'circle-exclamation' if cat == 'error' else 'circle-check' }}"></i>
+                <span>{{ msg }}</span>
+            </div>
+            {% endfor %}{% endif %}{% endwith %} -->
+
+            <p class="form-eyebrow">Secure Sign-In</p>
+            <h2 class="form-title">Welcome Back</h2>
+            <p class="form-subtitle">Sign in to continue to your Sentinel account and access your services.</p>
+
+            <form id="loginForm" action="/login_action" method="POST" novalidate>
+
+                <!-- Email -->
+                <div class="field-group">
+                    <label class="field-label" for="email">
+                        Email Address <span class="req">*</span>
+                    </label>
+                    <div class="field-wrap">
+                        <input
+                            class="field-input"
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@email.com"
+                            required
+                            autocomplete="email"
+                            inputmode="email"
+                        >
+                        <i class="fas fa-envelope field-icon"></i>
+                    </div>
+                    <div class="field-error" id="err_email">
+                        <i class="fas fa-circle-exclamation" style="font-size:0.65rem;"></i>
+                        Please enter a valid email address.
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="field-group">
+                    <label class="field-label" for="password">
+                        Password <span class="req">*</span>
+                    </label>
+                    <div class="field-wrap">
+                        <input
+                            class="field-input"
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <i class="fas fa-lock field-icon"></i>
+                        <button
+                            type="button"
+                            class="toggle-pw"
+                            onclick="togglePassword()"
+                            aria-label="Toggle password visibility"
+                        >
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="field-error" id="err_password">
+                        <i class="fas fa-circle-exclamation" style="font-size:0.65rem;"></i>
+                        Password is required.
+                    </div>
+                </div>
+
+                <!-- Remember Me + Forgot Password -->
+                <div class="form-extras">
+                    <div class="check-group">
+                        <input class="check-input" type="checkbox" id="remember" name="remember">
+                        <label class="check-label" for="remember">Remember me</label>
+                    </div>
+                    <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <!-- Hidden role field (pass 'user' by default; admin logs in separately) -->
+                <input type="hidden" name="role" value="user">
+
+                <!-- Login Button -->
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-arrow-right-to-bracket"></i>&nbsp; Sign In
+                    </span>
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="form-divider">
+                <hr><span>or</span><hr>
+            </div>
+
+            <!-- Register CTA -->
+            <a href="/register" class="btn-register">
+                <i class="fas fa-user-plus"></i> Create an Account
+            </a>
+
+            <!-- Footer -->
+            <div class="form-footer">
+                <p>Don't have an account? <a href="/register">Create one now</a></p>
+            </div>
+
+            <!-- Security note -->
+            <div class="security-note">
+                <i class="fas fa-shield-halved"></i>
+                256-bit encrypted &nbsp;·&nbsp; RA 10173 compliant &nbsp;·&nbsp; DOLE / DMW certified
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ── Toggle Password Visibility ───────────────────────────────
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon  = document.getElementById('eyeIcon');
+        const show  = input.type === 'password';
+        input.type  = show ? 'text' : 'password';
+        icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+    }
+
+    // ── Form Validation & Submit ─────────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const emailEl = document.getElementById('email');
+        const pwEl    = document.getElementById('password');
+        const errEmail = document.getElementById('err_email');
+        const errPw    = document.getElementById('err_password');
+        const alert    = document.getElementById('loginAlert');
+
+        // Reset states
+        [emailEl, pwEl].forEach(el => el.classList.remove('is-invalid'));
+        [errEmail, errPw].forEach(el => el.classList.remove('show'));
+        alert.classList.add('d-none');
+
+        let valid = true;
+
+        // Email validation
+        const emailVal = emailEl.value.trim();
+        if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+            emailEl.classList.add('is-invalid');
+            errEmail.classList.add('show');
+            valid = false;
+        }
+
+        // Password validation
+        if (!pwEl.value) {
+            pwEl.classList.add('is-invalid');
+            errPw.classList.add('show');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // Show loading state
+        const btn = document.getElementById('loginBtn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        // Submit the form to Flask after brief delay (remove setTimeout in production)
+        setTimeout(() => {
+            this.submit();
+        }, 800);
+    });
+
+    // ── Live field clearing on input ─────────────────────────────
+    document.getElementById('email').addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+        document.getElementById('err_email').classList.remove('show');
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+        document.getElementById('err_password').classList.remove('show');
+    });
+</script>
+</body>
+</html>
