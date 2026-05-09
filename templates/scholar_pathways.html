@@ -1,0 +1,959 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Scholar Pathways | Project Sentinel</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+<!--    <style>-->
+<!--        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');-->
+
+<!--        :root {-->
+<!--            &#45;&#45;scholar-primary: #01579b;-->
+<!--            &#45;&#45;scholar-accent: #0288d1;-->
+<!--            &#45;&#45;scholar-bg: #f4f7fa;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            background: var(&#45;&#45;scholar-bg);-->
+<!--            font-family: 'Inter', sans-serif;-->
+<!--            color: #263238;-->
+<!--        }-->
+
+<!--        /* Elegant Navbar */-->
+<!--        .navbar-scholar {-->
+<!--            background: white;-->
+<!--            border-bottom: 3px solid var(&#45;&#45;scholar-primary);-->
+<!--            padding: 15px 0;-->
+<!--        }-->
+<!--        .navbar-brand {-->
+<!--            font-family: 'Playfair Display', serif;-->
+<!--            font-weight: 700;-->
+<!--            color: var(&#45;&#45;scholar-primary) !important;-->
+<!--            font-size: 1.5rem;-->
+<!--        }-->
+
+<!--        /* Scholar Hero */-->
+<!--        .scholar-hero {-->
+<!--            background: linear-gradient(rgba(1, 87, 155, 0.9), rgba(1, 87, 155, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');-->
+<!--            background-size: cover;-->
+<!--            background-position: center;-->
+<!--            color: white;-->
+<!--            padding: 80px 0;-->
+<!--            margin-bottom: 50px;-->
+<!--        }-->
+
+<!--        /* Refined Scholar Cards */-->
+<!--        .scholar-card {-->
+<!--            border: none;-->
+<!--            border-radius: 16px;-->
+<!--            background: white;-->
+<!--            overflow: hidden;-->
+<!--            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);-->
+<!--            border: 1px solid #e1e8ed;-->
+<!--        }-->
+
+<!--        .scholar-card:hover {-->
+<!--            transform: translateY(-10px);-->
+<!--            box-shadow: 0 20px 40px rgba(0,0,0,0.1);-->
+<!--        }-->
+
+<!--        .scholar-top {-->
+<!--            background: var(&#45;&#45;scholar-primary);-->
+<!--            color: white;-->
+<!--            padding: 12px;-->
+<!--            text-align: center;-->
+<!--            font-size: 0.85rem;-->
+<!--            letter-spacing: 1px;-->
+<!--            text-transform: uppercase;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .rating-box {-->
+<!--            background: #e1f5fe;-->
+<!--            color: var(&#45;&#45;scholar-primary);-->
+<!--            padding: 8px 15px;-->
+<!--            border-radius: 8px;-->
+<!--            font-weight: 700;-->
+<!--        }-->
+
+<!--        .btn-scholar {-->
+<!--            background: var(&#45;&#45;scholar-primary);-->
+<!--            color: white;-->
+<!--            border-radius: 8px;-->
+<!--            font-weight: 600;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .btn-scholar:hover {-->
+<!--            background: var(&#45;&#45;scholar-accent);-->
+<!--            color: white;-->
+<!--            box-shadow: 0 4px 12px rgba(1, 87, 155, 0.2);-->
+<!--        }-->
+
+<!--        .cert-text {-->
+<!--            font-size: 0.75rem;-->
+<!--            color: #546e7a;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--    <nav class="navbar navbar-expand-lg navbar-scholar sticky-top">-->
+<!--        <div class="container">-->
+<!--            <a class="navbar-brand" href="/user">-->
+<!--                <i class="fas fa-graduation-cap me-2"></i>SCHOLAR SENTINEL-->
+<!--            </a>-->
+<!--            <div class="ms-auto">-->
+<!--                <a href="/user" class="btn btn-link text-decoration-none text-muted me-3">Back to Portal</a>-->
+<!--                <a href="/report" class="btn btn-outline-danger rounded-pill px-4">Report Campus Issue</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--    <div class="scholar-hero text-center">-->
+<!--        <div class="container">-->
+<!--            <h1 class="display-4 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">Academic Excellence & Safety</h1>-->
+<!--            <p class="lead opacity-90 mx-auto" style="max-width: 700px;">Explore international scholarship pathways with pre-vetted campuses that prioritize student welfare and Safe Spaces Act compliance.</p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="container pb-5">-->
+<!--        <div class="row">-->
+<!--            {% for co in results %}-->
+<!--            <div class="col-md-6 mb-4">-->
+<!--                <div class="scholar-card shadow-sm h-100">-->
+<!--                    <div class="scholar-top">-->
+<!--                        <i class="fas fa-award me-2"></i>{{ co.industry }} Program-->
+<!--                    </div>-->
+<!--                    <div class="card-body p-4 d-flex flex-column">-->
+<!--                        <div class="d-flex justify-content-between align-items-start mb-3">-->
+<!--                            <h4 class="fw-bold mb-0 text-dark">{{ co.name }}</h4>-->
+<!--                            <div class="rating-box">-->
+<!--                                <small class="d-block text-uppercase" style="font-size: 9px; opacity: 0.8;">Safety Rating</small>-->
+<!--                                {{ co.compliance_score }}%-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <p class="text-muted small flex-grow-1">-->
+<!--                            Verified as a "Secure Academic Environment." This institution provides mandatory orientation on international student rights and safety protocols.-->
+<!--                        </p>-->
+
+<!--                        <div class="cert-text mb-4">-->
+<!--                            <i class="fas fa-certificate text-primary me-2"></i>-->
+<!--                            Safe campus certification valid for academic year 2026-2027.-->
+<!--                        </div>-->
+
+<!--                        <div class="d-grid gap-2">-->
+<!--                            <button class="btn btn-scholar py-2">Check Application Eligibility</button>-->
+<!--                            <span class="badge bg-light text-dark py-2"><i class="fas fa-check-circle text-success me-2"></i>Sentinel Verified Grant</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            {% else %}-->
+<!--            <div class="col-12 text-center py-5">-->
+<!--                <i class="fas fa-book-open fa-3x text-light mb-3"></i>-->
+<!--                <h5 class="text-muted">Currently evaluating new academic pathways. Check back soon.</h5>-->
+<!--            </div>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Pathways | Project Sentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --scholar-primary: #01579b;
+            --scholar-accent:  #0288d1;
+            --scholar-gold:    #f59e0b;
+            --scholar-bg:      #f4f7fa;
+            --scholar-dark:    #0c2340;
+        }
+        * { box-sizing: border-box; }
+        body { background: var(--scholar-bg); font-family: 'DM Sans', sans-serif; color: #263238; }
+
+        /* ── NAVBAR ── */
+        .navbar-scholar {
+            background: white; border-bottom: 3px solid var(--scholar-primary);
+            padding: 14px 0; position: sticky; top: 0; z-index: 1000;
+        }
+        .navbar-brand {
+            font-family: 'Playfair Display', serif; font-weight: 900;
+            color: var(--scholar-primary) !important; font-size: 1.45rem; letter-spacing: -0.5px;
+        }
+
+        /* ── FLASH ── */
+        .flash-bar {
+            background: #e8f5e9; border-left: 4px solid #2e7d32; color: #1b5e20;
+            padding: 12px 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;
+        }
+        .flash-bar button { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+
+        /* ── HERO ── */
+        .scholar-hero {
+            background: linear-gradient(135deg, var(--scholar-dark) 0%, var(--scholar-primary) 60%, var(--scholar-accent) 100%);
+            color: white; padding: 72px 0 60px; position: relative; overflow: hidden;
+        }
+        .scholar-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-badge {
+            display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+            color: white; padding: 5px 16px; border-radius: 50px; font-size: 0.78rem;
+            font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 18px;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif; font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin-bottom: 16px;
+        }
+        /* Hero search → GET /search?q= */
+        .hero-search-wrap { max-width: 540px; margin: 28px auto 0; position: relative; }
+        .hero-search-wrap input {
+            width: 100%; border: none; border-radius: 50px;
+            padding: 14px 60px 14px 24px; font-size: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); outline: none;
+        }
+        .hero-search-wrap button {
+            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+            background: var(--scholar-primary); color: white; border: none;
+            border-radius: 50px; padding: 8px 20px; font-weight: 600; cursor: pointer;
+        }
+        .hero-search-wrap button:hover { background: var(--scholar-dark); }
+
+        /* ── STATS RIBBON ── */
+        .stats-ribbon {
+            background: white; border-bottom: 1px solid #e1e8ed;
+            padding: 18px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .stat-item { text-align: center; padding: 0 24px; border-right: 1px solid #e1e8ed; }
+        .stat-item:last-child { border-right: none; }
+        .stat-number { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--scholar-primary); line-height: 1; }
+        .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: #78909c; margin-top: 4px; }
+
+        /* ── FILTER BAR ── */
+        .search-section { padding: 32px 0 8px; }
+        .search-wrap { position: relative; max-width: 360px; }
+        .search-wrap .fa-search { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #90a4ae; }
+        .search-input {
+            border: 2px solid #e1e8ed; border-radius: 12px; padding: 12px 16px 12px 44px;
+            font-size: 0.95rem; width: 100%; transition: border-color 0.2s; outline: none;
+        }
+        .search-input:focus { border-color: var(--scholar-accent); box-shadow: 0 0 0 3px rgba(2,136,209,0.12); }
+        .filter-pills { gap: 8px; }
+        .filter-pill {
+            border: 1.5px solid #e1e8ed; background: white; color: #546e7a;
+            border-radius: 50px; padding: 5px 16px; font-size: 0.82rem;
+            font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .filter-pill:hover, .filter-pill.active { background: var(--scholar-primary); border-color: var(--scholar-primary); color: white; }
+
+        /* ── SECTION HEADERS ── */
+        .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .section-label { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--scholar-dark); }
+        .section-line { flex: 1; height: 2px; background: linear-gradient(to right, var(--scholar-primary), transparent); border-radius: 2px; }
+        .rec-badge { background: var(--scholar-gold); color: #7c4a00; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+        /* ── CARDS ── */
+        .scholar-card {
+            border-radius: 18px; background: white; overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.35s;
+            border: 1px solid #e1e8ed; height: 100%; display: flex; flex-direction: column;
+        }
+        .scholar-card:hover { transform: translateY(-8px); box-shadow: 0 20px 44px rgba(1,87,155,0.13); }
+        .scholar-card.recommended { border-color: var(--scholar-gold); box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+        .card-top {
+            background: linear-gradient(135deg, var(--scholar-primary), var(--scholar-accent));
+            color: white; padding: 13px 20px; font-size: 0.8rem; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-top.gold-top { background: linear-gradient(135deg, #b45309, var(--scholar-gold)); }
+        .card-body-inner { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+        .score-pill { background: #e1f5fe; color: var(--scholar-primary); padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+        .score-pill.high { background: #e8f5e9; color: #2e7d32; }
+        .meta-row { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #78909c; margin-bottom: 6px; }
+        .cert-chip { background: #f1f8e9; color: #558b2f; border-radius: 6px; padding: 5px 12px; font-size: 0.77rem; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+
+        /* ── BUTTONS ── */
+        .btn-main { background: var(--scholar-primary); color: white; border: none; border-radius: 10px; font-weight: 600; padding: 10px; transition: background 0.2s, box-shadow 0.2s; width: 100%; cursor: pointer; font-size: 0.9rem; }
+        .btn-main:hover { background: var(--scholar-accent); box-shadow: 0 4px 14px rgba(1,87,155,0.25); color: white; }
+        .btn-outline-blue { background: transparent; color: var(--scholar-primary); border: 1.5px solid var(--scholar-primary); border-radius: 10px; font-weight: 600; padding: 9px; transition: all 0.2s; width: 100%; cursor: pointer; font-size: 0.85rem; text-align: center; display: block; text-decoration: none; }
+        .btn-outline-blue:hover { background: var(--scholar-primary); color: white; }
+        .btn-outline-red { background: transparent; color: #c62828; border: 1.5px solid #c62828; border-radius: 10px; font-weight: 600; padding: 9px; transition: all 0.2s; width: 100%; cursor: pointer; font-size: 0.85rem; text-align: center; display: block; text-decoration: none; }
+        .btn-outline-red:hover { background: #c62828; color: white; }
+        .btn-ghost { background: transparent; color: #546e7a; border: 1.5px solid #e1e8ed; border-radius: 10px; font-weight: 500; padding: 8px; transition: all 0.2s; width: 100%; cursor: pointer; font-size: 0.8rem; }
+        .btn-ghost:hover { background: #f1f8e9; border-color: #558b2f; color: #558b2f; }
+
+        /* ── EMPTY / NO RESULTS ── */
+        .empty-state { background: white; border-radius: 18px; padding: 60px 30px; text-align: center; border: 2px dashed #e1e8ed; }
+        #noResults { display: none; }
+        .card-wrapper.hidden { display: none !important; }
+
+        /* ── MODALS ── */
+        .modal-header-scholar { background: linear-gradient(135deg, var(--scholar-dark), var(--scholar-primary)); color: white; border-radius: 12px 12px 0 0; }
+        .modal-header-scholar .btn-close { filter: invert(1); }
+        .modal-content { border-radius: 14px; border: none; overflow: hidden; }
+        .elig-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f4f8; font-size: 0.9rem; }
+        .elig-row:last-child { border-bottom: none; }
+        .elig-label { color: #78909c; font-weight: 500; }
+        .elig-val { font-weight: 600; color: #263238; }
+        .score-bar-wrap { background: #e1e8ed; border-radius: 50px; height: 8px; margin-top: 6px; }
+        .score-bar { height: 8px; border-radius: 50px; background: linear-gradient(to right, var(--scholar-accent), #2e7d32); transition: width 0.6s ease; }
+        .req-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; background: #f8fafd; border: 1px solid #e1e8ed; margin-bottom: 8px; font-size: 0.88rem; }
+        .req-item i { color: var(--scholar-primary); margin-top: 2px; flex-shrink: 0; }
+
+        /* ── CHATBOT ── */
+        #chatbotBtn { position: fixed; bottom: 30px; right: 30px; z-index: 2000; width: 58px; height: 58px; border-radius: 50%; background: var(--scholar-primary); color: white; border: none; font-size: 1.4rem; cursor: pointer; box-shadow: 0 4px 20px rgba(1,87,155,0.4); transition: transform 0.2s, background 0.2s; }
+        #chatbotBtn:hover { transform: scale(1.1); background: var(--scholar-dark); }
+        #chatbotBox { position: fixed; bottom: 100px; right: 30px; z-index: 2000; width: 340px; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.18); display: none; flex-direction: column; background: white; border: 1px solid #e1e8ed; }
+        #chatbotBox.open { display: flex; }
+        .chat-header { background: linear-gradient(135deg, var(--scholar-dark), var(--scholar-primary)); color: white; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+        .chat-title { font-weight: 700; font-size: 0.95rem; }
+        .chat-sub { font-size: 0.72rem; opacity: 0.8; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 14px; max-height: 280px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 0.87rem; line-height: 1.45; }
+        .msg.user { align-self: flex-end; background: var(--scholar-primary); color: white; border-radius: 14px 14px 2px 14px; }
+        .msg.bot  { align-self: flex-start; background: #f4f7fa; color: #263238; border-radius: 14px 14px 14px 2px; border: 1px solid #e1e8ed; }
+        .msg.typing { color: #90a4ae; font-style: italic; font-size: 0.82rem; align-self: flex-start; }
+        .chat-input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #e1e8ed; }
+        .chat-input-row input { flex: 1; border: 1.5px solid #e1e8ed; border-radius: 10px; padding: 9px 14px; font-size: 0.88rem; outline: none; }
+        .chat-input-row input:focus { border-color: var(--scholar-accent); }
+        .chat-input-row button { background: var(--scholar-primary); color: white; border: none; border-radius: 10px; padding: 9px 14px; cursor: pointer; }
+        .chat-input-row button:hover { background: var(--scholar-dark); }
+
+        /* ── FOOTER ── */
+        .page-footer { background: var(--scholar-dark); color: rgba(255,255,255,0.55); font-size: 0.82rem; text-align: center; padding: 20px; margin-top: 60px; }
+        .page-footer a { color: rgba(255,255,255,0.6); }
+
+        /* ── ANIMATION ── */
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .col-anim { animation: fadeUp 0.45s both; }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ NAVBAR ══════════════════════════════════════ -->
+<nav class="navbar-scholar">
+    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <a class="navbar-brand" href="/user">
+            <i class="fas fa-graduation-cap me-2"></i>SCHOLAR SENTINEL
+        </a>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <!-- /rights → rights_view() -->
+            <a href="/rights" class="btn btn-link text-decoration-none text-muted">
+                <i class="fas fa-balance-scale me-1"></i>Your Rights
+            </a>
+            <!-- /pao → pao_portal() -->
+            <a href="/pao" class="btn btn-link text-decoration-none text-muted">
+                <i class="fas fa-gavel me-1"></i>Legal Aid
+            </a>
+            <!-- /user → user_dashboard() -->
+            <a href="/user" class="btn btn-link text-decoration-none text-muted">
+                <i class="fas fa-home me-1"></i>Portal
+            </a>
+            <!-- /report → report_page() -->
+            <a href="/report" class="btn btn-outline-danger rounded-pill px-4">
+                <i class="fas fa-flag me-1"></i>Report Campus Issue
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════════════════════════════ FLASH MESSAGES ══════════════════════════════════════ -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+    <div class="flash-bar">
+        <i class="fas fa-check-circle text-success"></i>
+        <span>{{ msg }}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- ══════════════════════════════════════ HERO ══════════════════════════════════════ -->
+<section class="scholar-hero text-center">
+    <div class="container position-relative">
+        <div class="hero-badge"><i class="fas fa-shield-alt me-1"></i> Sentinel Verified Programs</div>
+        <h1 class="hero-title">Academic Excellence &amp; Student Safety</h1>
+        <p class="opacity-80 mx-auto mb-0" style="max-width:660px; font-size:1.05rem;">
+            Pre-vetted scholarship pathways where student welfare and Safe Spaces Act (RA 11313) compliance are non-negotiable.
+        </p>
+        <!-- Submits to GET /search?q= → search() in app.py, returns ojt_placements.html with results -->
+        <form class="hero-search-wrap" action="/search" method="get">
+            <input type="text" name="q" placeholder="Search a program or institution…"
+                   value="{{ query if query is defined and query else '' }}">
+            <button type="submit"><i class="fas fa-search me-1"></i>Search</button>
+        </form>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════ STATS RIBBON ══════════════════════════════════════ -->
+<div class="stats-ribbon">
+    <div class="container">
+        <div class="d-flex justify-content-center flex-wrap">
+            <div class="stat-item">
+                <div class="stat-number">{{ results|length }}</div>
+                <div class="stat-label">Verified Programs</div>
+            </div>
+            <div class="stat-item">
+                {% if results %}
+                  {% set total_score = namespace(val=0) %}
+                  {% for co in results %}{% set total_score.val = total_score.val + co.compliance_score %}{% endfor %}
+                  {% set avg = (total_score.val / results|length) | round(0) | int %}
+                {% else %}
+                  {% set avg = 0 %}
+                {% endif %}
+                <div class="stat-number">{{ avg }}%</div>
+                <div class="stat-label">Avg Safety Rating</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ recommendations|length }}</div>
+                <div class="stat-label">AI Recommended</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">AY 26–27</div>
+                <div class="stat-label">Current Cycle</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════ CLIENT-SIDE FILTER ══════════════════════════════════════ -->
+<div class="container search-section">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="localSearch"
+                   placeholder="Filter visible cards…" oninput="filterCards()">
+        </div>
+        <div class="d-flex filter-pills flex-wrap">
+            <button class="filter-pill active" onclick="setFilter('all',this)">All</button>
+            <button class="filter-pill" onclick="setFilter('Education',this)">Education</button>
+            <button class="filter-pill" onclick="setFilter('Engineering',this)">Engineering</button>
+            <button class="filter-pill" onclick="setFilter('Healthcare',this)">Healthcare</button>
+            <button class="filter-pill" onclick="setFilter('Business',this)">Business</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════ MAIN CONTENT ══════════════════════════════════════ -->
+<div class="container pb-5 mt-4">
+
+    <!-- ─── AI RECOMMENDATIONS ─── -->
+    {% if recommendations %}
+    <section class="mb-5">
+        <div class="section-header">
+            <span class="section-label">AI-Recommended For You</span>
+            <span class="rec-badge"><i class="fas fa-robot me-1"></i>ML Matched</span>
+            <div class="section-line"></div>
+        </div>
+        <p class="text-muted small mb-4">
+            Sentinel's Nearest-Neighbour model matched these programs to your academic profile based on skills vector and compliance score.
+        </p>
+        <div class="row g-4">
+            {% for co in recommendations %}
+            <div class="col-md-6 col-lg-4 col-anim card-wrapper"
+                 style="animation-delay:{{ loop.index0 * 0.07 }}s"
+                 data-name="{{ co.name | lower }}"
+                 data-industry="{{ co.industry }}">
+                <div class="scholar-card recommended h-100">
+                    <div class="card-top gold-top">
+                        <span><i class="fas fa-star me-2"></i>{{ co.industry }}</span>
+                        <span class="badge bg-warning text-dark" style="font-size:0.7rem;">ML Pick</span>
+                    </div>
+                    <div class="card-body-inner">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="fw-bold mb-0 text-dark" style="font-size:1rem;">{{ co.name }}</h5>
+                            <span class="score-pill high">{{ co.compliance_score }}%</span>
+                        </div>
+                        <div class="meta-row"><i class="fas fa-id-badge"></i>{{ co.sec_id }}</div>
+                        <div class="meta-row"><i class="fas fa-industry"></i>{{ co.industry }}</div>
+                        <p class="text-muted small flex-grow-1 mt-2">
+                            Top match for your profile. Sentinel-verified, DOLE-compliant, and Safe Spaces Act certified.
+                        </p>
+                        <div class="cert-chip mb-3">
+                            <i class="fas fa-check-circle"></i>Safe Campus Certified — AY 2026-2027
+                        </div>
+                        <div class="d-grid gap-2">
+                            <!-- 1. Opens eligibility detail modal -->
+                            <button class="btn-main"
+                                onclick="openEligibility('{{ co.id }}','{{ co.name }}','{{ co.sec_id }}','{{ co.industry }}',{{ co.compliance_score }})">
+                                <i class="fas fa-clipboard-check me-1"></i>Check Application Eligibility
+                            </button>
+                            <!-- 2. GET /generate_pdf/<id> → generate_pdf() → downloads PDF -->
+                            <a href="/generate_pdf/{{ co.id }}" class="btn-ghost text-center text-decoration-none">
+                                <i class="fas fa-file-pdf me-1"></i>Download Compliance Notice
+                            </a>
+                            <!-- 3. Report → /report?company=<name> → report_page() pre-selects company -->
+                            <a href="/report?company={{ co.name | urlencode }}"
+                               class="btn-outline-red text-decoration-none">
+                                <i class="fas fa-flag me-1"></i>Report an Issue
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ─── ALL VERIFIED PROGRAMS ─── -->
+    <section>
+        <div class="section-header">
+            <span class="section-label">All Verified Programs</span>
+            <div class="section-line"></div>
+            <span class="text-muted small">{{ results|length }} program(s)</span>
+        </div>
+
+        <div class="row g-4">
+            {% for co in results %}
+            <div class="col-md-6 col-lg-4 col-anim card-wrapper"
+                 style="animation-delay:{{ loop.index0 * 0.07 }}s"
+                 data-name="{{ co.name | lower }}"
+                 data-industry="{{ co.industry }}">
+                <div class="scholar-card h-100">
+                    <div class="card-top">
+                        <span><i class="fas fa-award me-2"></i>{{ co.industry }}</span>
+                        {% if co.compliance_score >= 95 %}
+                        <span class="badge bg-light text-success" style="font-size:0.68rem;">Top Rated</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body-inner">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="fw-bold mb-0 text-dark" style="font-size:1rem; line-height:1.3;">{{ co.name }}</h5>
+                            <span class="score-pill {% if co.compliance_score >= 90 %}high{% endif %}">
+                                {{ co.compliance_score }}%
+                            </span>
+                        </div>
+                        <div class="meta-row"><i class="fas fa-id-badge"></i>{{ co.sec_id }}</div>
+                        <div class="meta-row"><i class="fas fa-industry"></i>{{ co.industry }}</div>
+                        <p class="text-muted small flex-grow-1 mt-2">
+                            Verified "Secure Academic Environment." Mandatory RA 11313 orientation and international student rights compliance.
+                        </p>
+                        <div class="cert-chip mb-3">
+                            <i class="fas fa-certificate"></i>Safe Campus Certification — AY 2026-2027
+                        </div>
+                        <div class="d-grid gap-2">
+
+                            <!-- 1. CHECK APPLICATION ELIGIBILITY
+                                 → Opens eligibility modal (shows score, SEC ID, requirements)
+                                 → Modal footer links to /generate_pdf/<id> and opens Legal Aid modal -->
+                            <button class="btn-main"
+                                onclick="openEligibility('{{ co.id }}','{{ co.name }}','{{ co.sec_id }}','{{ co.industry }}',{{ co.compliance_score }})">
+                                <i class="fas fa-clipboard-check me-1"></i>Check Application Eligibility
+                            </button>
+
+                            <!-- 2. DOWNLOAD COMPLIANCE NOTICE
+                                 → GET /generate_pdf/<id> → generate_pdf() / admin_generate_pdf()
+                                 → Returns PDF via send_file() -->
+                            <a href="/generate_pdf/{{ co.id }}" class="btn-outline-blue text-decoration-none">
+                                <i class="fas fa-file-pdf me-1"></i>Download Compliance Notice
+                            </a>
+
+                            <!-- 3. REQUEST LEGAL AID (PAO)
+                                 → Opens legal aid modal → POST /request-legal-aid → request_legal_aid()
+                                 → Saves LegalAidRequest to DB, flash, redirect /pao -->
+                            <button class="btn-ghost"
+                                onclick="openLegalAid('{{ co.name }}')">
+                                <i class="fas fa-gavel me-1"></i>Request Legal Aid (PAO)
+                            </button>
+
+                            <!-- 4. REPORT AN ISSUE
+                                 → GET /report?company=<name> → report_page()
+                                 → report.html auto-selects this company in the dropdown
+                                 → POST /submit-report → handle_report() → IncidentReport saved to DB -->
+                            <a href="/report?company={{ co.name | urlencode }}"
+                               class="btn-outline-red text-decoration-none">
+                                <i class="fas fa-flag me-1"></i>Report an Issue
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-book-open fa-3x mb-3" style="color:#cfd8dc;"></i>
+                    <h5 class="text-muted fw-semibold">No programs available right now</h5>
+                    <p class="text-muted small">We're evaluating new academic pathways for AY 2026-2027. Check back soon.</p>
+                    <a href="/user" class="btn btn-outline-primary rounded-pill mt-2">Back to Portal</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- JS no-results state -->
+        <div id="noResults" class="empty-state mt-4">
+            <i class="fas fa-search fa-2x mb-3" style="color:#cfd8dc;"></i>
+            <h5 class="text-muted">No programs match your filter</h5>
+            <p class="text-muted small">Try a different keyword or clear the industry filter.</p>
+        </div>
+    </section>
+
+</div><!-- /container -->
+
+<!-- ══════════════════════════════════════ FOOTER ══════════════════════════════════════ -->
+<div class="page-footer">
+    <i class="fas fa-shield-alt me-2"></i>
+    Project Sentinel — DOLE / DMW Compliance Portal — All data verified by Sentinel review officers.
+    &nbsp;|&nbsp;<a href="/rights">Know Your Rights</a>
+    &nbsp;|&nbsp;<a href="/pao">PAO Legal Aid</a>
+    &nbsp;|&nbsp;<a href="/user">User Portal</a>
+</div>
+
+<!-- ══════════════════════════════════════ CHATBOT ══════════════════════════════════════ -->
+<!-- Calls POST /chatbot → chatbot_response() in app.py (Groq LLaMA API) -->
+<button id="chatbotBtn" onclick="toggleChat()" title="Ask Sentinel Assistant">
+    <i class="fas fa-robot"></i>
+</button>
+<div id="chatbotBox">
+    <div class="chat-header">
+        <div>
+            <div class="chat-title"><i class="fas fa-robot me-2"></i>Sentinel Assistant</div>
+            <div class="chat-sub">Ask about RA 11313, scholarships, student rights…</div>
+        </div>
+        <button onclick="toggleChat()" style="background:none;border:none;color:white;font-size:1.1rem;cursor:pointer;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">
+            Hi! I'm your Sentinel Legal Assistant 👋<br>
+            Ask me about scholarship rights, Safe Spaces Act violations, or how to apply for free PAO legal aid.
+        </div>
+    </div>
+    <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type your question…">
+        <button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════ ELIGIBILITY MODAL ══════════════════════════════════════ -->
+<div class="modal fade" id="eligibilityModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-scholar border-0">
+                <div>
+                    <h5 class="modal-title fw-bold mb-0">
+                        <i class="fas fa-clipboard-check me-2"></i>Application Eligibility Check
+                    </h5>
+                    <small class="opacity-75" id="modalSubtitle">—</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+
+                <!-- Compliance Score Bar -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold" style="font-size:0.9rem;">Sentinel Compliance Score</span>
+                        <span id="modalScore" class="fw-bold" style="color:#2e7d32;"></span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <div class="score-bar" id="modalScoreBar" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- Program Details -->
+                <h6 class="fw-bold mb-3" style="color:var(--scholar-primary);">Program Details</h6>
+                <div class="elig-row">
+                    <span class="elig-label"><i class="fas fa-building me-2"></i>Institution</span>
+                    <span class="elig-val" id="modalName"></span>
+                </div>
+                <div class="elig-row">
+                    <span class="elig-label"><i class="fas fa-id-badge me-2"></i>SEC / Permit No.</span>
+                    <span class="elig-val" id="modalSec"></span>
+                </div>
+                <div class="elig-row">
+                    <span class="elig-label"><i class="fas fa-industry me-2"></i>Industry / Field</span>
+                    <span class="elig-val" id="modalIndustry"></span>
+                </div>
+                <div class="elig-row">
+                    <span class="elig-label"><i class="fas fa-calendar-check me-2"></i>Certification Period</span>
+                    <span class="elig-val">AY 2026 – 2027</span>
+                </div>
+                <div class="elig-row">
+                    <span class="elig-label"><i class="fas fa-shield-alt me-2"></i>Sentinel Status</span>
+                    <span class="elig-val text-success"><i class="fas fa-check-circle me-1"></i>Active &amp; Verified</span>
+                </div>
+
+                <!-- Requirements -->
+                <h6 class="fw-bold mt-4 mb-3" style="color:var(--scholar-primary);">Basic Application Requirements</h6>
+                <div class="req-item"><i class="fas fa-file-alt"></i><span>Completed application form with valid government-issued ID</span></div>
+                <div class="req-item"><i class="fas fa-graduation-cap"></i><span>Most recent transcript of records (minimum 85% GWA or equivalent)</span></div>
+                <div class="req-item"><i class="fas fa-certificate"></i><span>Certificate of enrollment or graduation from an accredited institution</span></div>
+                <div class="req-item"><i class="fas fa-users"></i><span>Two (2) character references from teachers or community leaders</span></div>
+                <div class="req-item"><i class="fas fa-hand-holding-heart"></i><span>Signed Safe Spaces Act (RA 11313) acknowledgment form</span></div>
+
+                <!-- Student Rights Reminder -->
+                <div class="alert mt-4 mb-0" style="background:#e3f2fd;border:none;border-left:4px solid var(--scholar-primary);border-radius:10px;">
+                    <strong><i class="fas fa-info-circle me-2" style="color:var(--scholar-primary);"></i>Student Rights Reminder</strong><br>
+                    <small>
+                        Under RA 11313, this institution must maintain a harassment-free campus.
+                        If violated, you may
+                        <a href="/report" style="color:var(--scholar-primary);">file an incident report</a> or
+                        <a href="/pao" style="color:var(--scholar-primary);">request free PAO legal aid</a> at any time.
+                    </small>
+                </div>
+
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0 gap-2 flex-wrap">
+                <!-- Opens Legal Aid modal for this company, closes eligibility modal first -->
+                <button class="btn btn-outline-primary rounded-pill px-4"
+                        data-bs-dismiss="modal"
+                        id="modalLegalBtn">
+                    <i class="fas fa-gavel me-1"></i>Request Legal Aid
+                </button>
+                <!-- GET /generate_pdf/<id> → generate_pdf() → PDF download -->
+                <a id="modalPdfLink" href="#" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="fas fa-file-pdf me-1"></i>Download PDF Notice
+                </a>
+                <!-- /report?company=<name> → report_page() -->
+                <a id="modalReportLink" href="/report" class="btn btn-outline-danger rounded-pill px-4">
+                    <i class="fas fa-flag me-1"></i>Report Issue
+                </a>
+                <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════ LEGAL AID MODAL ══════════════════════════════════════ -->
+<!-- POST /request-legal-aid → request_legal_aid() → saves LegalAidRequest → flash → redirect /pao -->
+<div class="modal fade" id="legalAidModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-scholar border-0">
+                <div>
+                    <h5 class="modal-title fw-bold mb-0">
+                        <i class="fas fa-gavel me-2"></i>Request PAO Legal Aid
+                    </h5>
+                    <small class="opacity-75">Free legal assistance via the Public Attorney's Office</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form action="/request-legal-aid" method="POST" id="legalAidForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Full Name</label>
+                            <input type="text" name="fullname" class="form-control" placeholder="Your full legal name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Contact Number</label>
+                            <input type="text" name="contact" class="form-control" placeholder="+63 9XX XXX XXXX">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Concern Type</label>
+                            <select name="concern_type" class="form-select">
+                                <option>Scholarship Dispute</option>
+                                <option>Safe Spaces Act Violation (RA 11313)</option>
+                                <option>Unpaid Stipend / OJT</option>
+                                <option>Contract / MOA Issue</option>
+                                <option>Academic Institution Misconduct</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Institution / Company Involved</label>
+                            <!-- Pre-filled by openLegalAid(companyName) -->
+                            <input type="text" name="company_involved" id="legalCompanyField"
+                                   class="form-control" placeholder="Name of the institution or company">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" style="font-size:0.88rem;">Describe Your Concern</label>
+                            <textarea name="concern" class="form-control" rows="4"
+                                      placeholder="Explain your situation in detail…" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="is_anonymous" id="anonCheck">
+                                <label class="form-check-label" for="anonCheck" style="font-size:0.88rem;">
+                                    Submit anonymously (your identity will not be shared with the company)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert mt-3 mb-0"
+                         style="background:#fff8e1;border:none;border-left:4px solid #f59e0b;border-radius:10px;font-size:0.83rem;">
+                        <i class="fas fa-info-circle me-2" style="color:#b45309;"></i>
+                        A PAO attorney will contact you within <strong>3–5 working days</strong>.
+                        This service is <strong>completely free</strong> for all Sentinel users.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <!-- Submits form → POST /request-legal-aid → request_legal_aid() → DB + flash + redirect -->
+                <button type="submit" form="legalAidForm" class="btn btn-primary rounded-pill px-4">
+                    <i class="fas fa-paper-plane me-1"></i>Submit Application
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ════════════════════════════════════════
+   CLIENT-SIDE FILTER (instant, no server)
+════════════════════════════════════════ */
+let activeFilter = 'all';
+
+function setFilter(industry, el) {
+    activeFilter = industry;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    filterCards();
+}
+
+function filterCards() {
+    const q = document.getElementById('localSearch').value.toLowerCase().trim();
+    const wrappers = document.querySelectorAll('.card-wrapper');
+    let visible = 0;
+    wrappers.forEach(w => {
+        const name     = w.dataset.name     || '';
+        const industry = w.dataset.industry || '';
+        const matchQ   = !q || name.includes(q) || industry.toLowerCase().includes(q);
+        const matchF   = activeFilter === 'all' || industry === activeFilter;
+        if (matchQ && matchF) { w.classList.remove('hidden'); visible++; }
+        else                  { w.classList.add('hidden'); }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+/* ════════════════════════════════════════
+   ELIGIBILITY MODAL
+   Populates fields and wires footer buttons
+════════════════════════════════════════ */
+let _companyId   = null;
+let _companyName = '';
+
+function openEligibility(id, name, sec, industry, score) {
+    _companyId   = id;
+    _companyName = name;
+
+    // Populate text fields
+    document.getElementById('modalSubtitle').textContent  = name;
+    document.getElementById('modalName').textContent      = name;
+    document.getElementById('modalSec').textContent       = sec;
+    document.getElementById('modalIndustry').textContent  = industry;
+    document.getElementById('modalScore').textContent     = score + ' / 100';
+
+    // Animate score bar
+    const bar = document.getElementById('modalScoreBar');
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = score + '%'; }, 100);
+
+    // Wire footer buttons dynamically
+    // PDF link → /generate_pdf/<id>
+    document.getElementById('modalPdfLink').href = '/generate_pdf/' + id;
+
+    // Report link → /report?company=<name>
+    document.getElementById('modalReportLink').href = '/report?company=' + encodeURIComponent(name);
+
+    // Legal Aid button → close this modal, open legal aid modal with company pre-filled
+    const legalBtn = document.getElementById('modalLegalBtn');
+    legalBtn.onclick = function() {
+        // Bootstrap hides the modal; we open legal aid after short delay
+        setTimeout(() => openLegalAid(_companyName), 350);
+    };
+
+    new bootstrap.Modal(document.getElementById('eligibilityModal')).show();
+}
+
+/* ════════════════════════════════════════
+   LEGAL AID MODAL
+   Pre-fills company name, submits to POST /request-legal-aid
+════════════════════════════════════════ */
+function openLegalAid(companyName) {
+    document.getElementById('legalCompanyField').value = companyName || '';
+    new bootstrap.Modal(document.getElementById('legalAidModal')).show();
+}
+
+/* ════════════════════════════════════════
+   CHATBOT
+   POST /chatbot → chatbot_response() → Groq LLaMA
+════════════════════════════════════════ */
+function toggleChat() {
+    document.getElementById('chatbotBox').classList.toggle('open');
+}
+
+async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    const msgs = document.getElementById('chatMessages');
+
+    // User bubble
+    const userEl       = document.createElement('div');
+    userEl.className   = 'msg user';
+    userEl.textContent = msg;
+    msgs.appendChild(userEl);
+    input.value = '';
+
+    // Typing indicator
+    const typingEl       = document.createElement('div');
+    typingEl.className   = 'msg typing';
+    typingEl.textContent = 'Sentinel is thinking…';
+    msgs.appendChild(typingEl);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+        const res  = await fetch('/chatbot', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        typingEl.remove();
+
+        const botEl       = document.createElement('div');
+        botEl.className   = 'msg bot';
+        botEl.textContent = data.reply || 'Sorry, I could not get a response right now.';
+        msgs.appendChild(botEl);
+    } catch (e) {
+        typingEl.remove();
+        const errEl       = document.createElement('div');
+        errEl.className   = 'msg bot';
+        errEl.textContent = 'Connection error. Please try again shortly.';
+        msgs.appendChild(errEl);
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+// Enter key in chat
+document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendChat();
+});
+</script>
+
+</body>
+</html>
+</html>

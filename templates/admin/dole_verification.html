@@ -1,0 +1,85 @@
+{% extends 'admin.html' %}
+{% block title %}DOLE Verification{% endblock %}
+{% block breadcrumb %}DOLE VERIFICATION{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-user-check me-2"></i>DOLE VERIFICATION</h1>
+            <p class="page-subtitle">Companies with compliance score below 90 require official DOLE review.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="pill pill-banned"><i class="fas fa-exclamation"></i> {{ needs_verification|length }} Need Review</span>
+            <span class="pill pill-resolved"><i class="fas fa-check"></i> {{ verified|length }} Verified</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="s-card">
+            <div class="s-card-header danger-hdr"><i class="fas fa-exclamation-circle me-2"></i>NEEDS VERIFICATION (Score &lt; 90)</div>
+            {% if needs_verification %}
+            <table class="s-table">
+                <thead>
+                    <tr><th>COMPANY</th><th>TYPE</th><th>SCORE</th><th>ACTION</th></tr>
+                </thead>
+                <tbody>
+                    {% for co in needs_verification|sort(attribute='compliance_score') %}
+                    <tr>
+                        <td style="font-weight:600;">{{ co.name }}</td>
+                        <td class="col-mono">{{ co.type }}</td>
+                        <td>
+                            <span class="score-val" style="color:{% if co.compliance_score < 50 %}var(--red){% else %}var(--orange){% endif %};">
+                                {{ co.compliance_score }}/100
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/admin/dole-verification/verify/{{ co.id }}" class="btn-s btn-success">
+                                <i class="fas fa-stamp"></i> VERIFY +15
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-check-circle"></i><p>All companies have passed verification.</p></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="s-card">
+            <div class="s-card-header success-hdr"><i class="fas fa-shield-alt me-2"></i>DOLE VERIFIED (Score ≥ 90)</div>
+            {% if verified %}
+            <table class="s-table">
+                <thead>
+                    <tr><th>COMPANY</th><th>TYPE</th><th>SCORE</th><th>STATUS</th></tr>
+                </thead>
+                <tbody>
+                    {% for co in verified|sort(attribute='compliance_score', reverse=True) %}
+                    <tr>
+                        <td style="font-weight:600;">{{ co.name }}</td>
+                        <td class="col-mono">{{ co.type }}</td>
+                        <td>
+                            <div class="score-wrap">
+                                <div class="score-track">
+                                    <div class="score-fill" style="width:{{ co.compliance_score }}%;background:var(--green);"></div>
+                                </div>
+                                <span class="score-val" style="color:var(--green);">{{ co.compliance_score }}</span>
+                            </div>
+                        </td>
+                        <td><span class="pill pill-resolved"><i class="fas fa-check"></i> VERIFIED</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-building"></i><p>No verified companies yet.</p></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

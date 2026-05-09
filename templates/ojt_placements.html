@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJT Placement Portal | Project Sentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           CSS VARIABLES & RESET
+        ========================================================= */
+        :root {
+            --teal-900: #003d40;
+            --teal-800: #00363a; /* sentinel dark */
+            --teal-700: #004d51;
+            --teal-600: #006064; /* sentinel teal */
+            --teal-400: #4db6ac; /* accent green */
+            --teal-100: #e0f2f1;
+            --teal-50:  #f0faf9;
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-100: #f1f5f9;
+            --slate-50:  #f8fafc;
+            --success-bg: #f0fdf4;
+            --success-text: #15803d;
+            --success-border: #86efac;
+            --warning-bg: #fffbeb;
+            --warning-text: #b45309;
+            --danger-bg: #fef2f2;
+            --danger-text: #b91c1c;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--slate-50);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--slate-700);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+        .navbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--slate-300);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--teal-600) !important;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-pill-outline {
+            border: 1.5px solid var(--slate-300);
+            color: var(--slate-700);
+            background: transparent;
+        }
+        .nav-pill-outline:hover { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+
+        .nav-pill-danger { background: var(--danger-bg); color: var(--danger-text); border: 1.5px solid #fca5a5; }
+        .nav-pill-danger:hover { background: #fecaca; color: var(--danger-text); }
+
+        /* =========================================================
+           DARK MODE
+        ========================================================= */
+        body.dark-mode {
+            background: #0d1117;
+            color: #e2e8f0;
+        }
+        body.dark-mode .navbar,
+        body.dark-mode .filter-bar,
+        body.dark-mode .card-ojt,
+        body.dark-mode .ai-panel,
+        body.dark-mode .modal-content,
+        body.dark-mode .detail-modal-body { background: #161b22 !important; border-color: #30363d !important; }
+        body.dark-mode .card-ojt { color: #e2e8f0; }
+        body.dark-mode .text-muted, body.dark-mode .text-secondary { color: #8b949e !important; }
+        body.dark-mode .form-control, body.dark-mode .form-select {
+            background: #21262d; color: #e2e8f0; border-color: #30363d;
+        }
+        body.dark-mode .form-control:focus, body.dark-mode .form-select:focus { border-color: var(--teal-400); }
+        body.dark-mode .hero-ojt { background: linear-gradient(135deg, #001a1c 0%, #003d40 100%); }
+        body.dark-mode hr { border-color: #30363d; }
+        body.dark-mode .score-badge { background: #1e3a3a; }
+        body.dark-mode .industry-chip { background: #1e2a38; color: #94a3b8; }
+        body.dark-mode .skeleton { background: linear-gradient(90deg, #21262d 25%, #30363d 50%, #21262d 75%); }
+        body.dark-mode .navbar-brand { color: var(--teal-400) !important; }
+        body.dark-mode .nav-pill-outline { border-color: #30363d; color: #94a3b8; }
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+        .hero-ojt {
+            background: linear-gradient(135deg, var(--teal-800) 0%, var(--teal-600) 100%);
+            color: var(--white);
+            padding: 52px 0 72px;
+            border-bottom: 3px solid var(--teal-400);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-ojt::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-ojt .container { position: relative; z-index: 1; }
+
+        .breadcrumb-item a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem; }
+        .breadcrumb-item a:hover { color: var(--teal-400); }
+        .breadcrumb-item.active { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+        .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.3); }
+
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; line-height: 1.2; }
+        .hero-subtitle { opacity: 0.7; font-size: 1rem; margin-top: 0.5rem; }
+
+        .hero-stat {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .hero-stat .num { font-size: 1.6rem; font-weight: 700; }
+        .hero-stat .lbl { font-size: 0.72rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* =========================================================
+           FILTER BAR
+        ========================================================= */
+        .filter-bar {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            padding: 1.25rem 1.5rem;
+            margin-top: -36px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid var(--slate-300);
+        }
+
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            border: 1.5px solid var(--slate-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            padding: 0.5rem 0.9rem;
+            transition: var(--transition);
+        }
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--teal-600);
+            box-shadow: 0 0 0 3px rgba(0,96,100,0.1);
+        }
+
+        .search-icon-wrap { position: relative; }
+        .search-icon-wrap .fa-search {
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-500);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+        .search-icon-wrap input { padding-left: 2.2rem; }
+
+        .btn-search {
+            background: var(--teal-600);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 1.3rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        .btn-search:hover { background: var(--teal-800); color: var(--white); }
+
+        .sort-btn {
+            padding: 0.35rem 0.85rem;
+            font-size: 0.78rem;
+            border: 1.5px solid var(--slate-300);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--slate-700);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .sort-btn:hover, .sort-btn.active {
+            background: var(--teal-600);
+            color: var(--white);
+            border-color: var(--teal-600);
+        }
+
+        .score-range-label { font-size: 0.78rem; color: var(--slate-500); }
+        input[type=range] { accent-color: var(--teal-600); }
+
+        /* =========================================================
+           AI PANEL
+        ========================================================= */
+        .ai-panel {
+            background: var(--white);
+            border: 1px solid var(--slate-300);
+            border-left: 4px solid var(--teal-400);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .ai-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--teal-600);
+            margin-bottom: 1rem;
+        }
+
+        .ai-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--teal-50);
+            border: 1.5px solid var(--teal-100);
+            border-radius: 999px;
+            padding: 0.45rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--teal-700);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .ai-chip:hover {
+            background: var(--teal-600);
+            color: var(--white);
+            border-color: var(--teal-600);
+        }
+        .ai-chip.best-match {
+            background: var(--teal-600);
+            color: var(--white);
+            border-color: var(--teal-600);
+        }
+
+        .match-score-pill {
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            padding: 1px 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .ai-chip:not(.best-match) .match-score-pill {
+            background: var(--teal-100);
+            color: var(--teal-700);
+        }
+
+        /* =========================================================
+           COMPANY CARDS
+        ========================================================= */
+        .card-ojt {
+            background: var(--white);
+            border: 1px solid var(--slate-300);
+            border-radius: var(--radius-lg);
+            padding: 1.4rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-ojt::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal-600), var(--teal-400));
+            transform: scaleX(0);
+            transition: transform var(--transition);
+            transform-origin: left;
+        }
+
+        .card-ojt:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--teal-400);
+        }
+        .card-ojt:hover::before { transform: scaleX(1); }
+
+        /* skeleton for card */
+        .card-ojt.is-loading .skeleton { pointer-events: none; }
+
+        .company-logo-wrap {
+            width: 52px; height: 52px;
+            border-radius: var(--radius-sm);
+            background: var(--teal-50);
+            border: 1px solid var(--teal-100);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            color: var(--teal-600);
+            flex-shrink: 0;
+            font-weight: 700;
+            overflow: hidden;
+        }
+        .company-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+        }
+
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .score-badge {
+            background: var(--slate-100);
+            border-radius: var(--radius-sm);
+            padding: 6px 10px;
+            text-align: center;
+            min-width: 60px;
+        }
+        .score-badge .score-num { font-weight: 700; font-size: 1.05rem; }
+        .score-badge .score-lbl { font-size: 0.6rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.06em; display: block; }
+
+        .score-high { color: var(--success-text); }
+        .score-mid  { color: var(--warning-text); }
+        .score-low  { color: var(--danger-text); }
+
+        .company-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--slate-900);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .industry-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: var(--slate-100);
+            color: var(--slate-500);
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .compliance-bar-wrap { margin: 0.75rem 0; }
+        .compliance-bar-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--slate-500); margin-bottom: 4px; }
+        .compliance-bar {
+            height: 5px;
+            background: var(--slate-100);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .compliance-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--teal-400), var(--teal-600));
+            transition: width 1s ease;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: var(--slate-500);
+            margin-bottom: 0.75rem;
+            flex-grow: 1;
+        }
+
+        .card-footer-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--slate-100);
+        }
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+        .btn-apply {
+            flex: 1;
+            background: var(--teal-600);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.55rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.82rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .btn-apply:hover:not(:disabled) { background: var(--teal-800); color: var(--white); }
+        .btn-apply:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-apply.applied { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
+
+        .btn-icon {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--slate-300);
+            background: transparent;
+            color: var(--slate-500);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .btn-icon:hover { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+        .btn-icon.saved { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+        .btn-icon.report-btn:hover { border-color: var(--danger-text); color: var(--danger-text); background: var(--danger-bg); }
+
+        /* =========================================================
+           SKELETON LOADER
+        ========================================================= */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .sk-line { height: 12px; margin-bottom: 8px; }
+        .sk-title { height: 18px; width: 70%; margin-bottom: 10px; }
+        .sk-circle { width: 52px; height: 52px; border-radius: var(--radius-sm); flex-shrink: 0; }
+        .sk-btn { height: 36px; border-radius: var(--radius-sm); }
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 1rem;
+        }
+        .empty-state-icon {
+            width: 90px; height: 90px;
+            background: var(--teal-50);
+            border: 2px dashed var(--teal-400);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            color: var(--teal-400);
+            margin: 0 auto 1.5rem;
+        }
+        .empty-state h5 { font-weight: 700; color: var(--slate-700); margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--slate-500); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        /* =========================================================
+           MODALS
+        ========================================================= */
+        .modal-content {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--slate-100);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .modal-header.teal-header {
+            background: linear-gradient(135deg, var(--teal-800), var(--teal-600));
+            color: var(--white);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .modal-header.teal-header .btn-close { filter: invert(1); }
+
+        .modal-footer { border-top: 1px solid var(--slate-100); padding: 1rem 1.5rem; }
+
+        .modal-title { font-weight: 700; font-size: 1rem; }
+
+        .detail-stat {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-300);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .detail-stat .num { font-size: 1.3rem; font-weight: 700; }
+        .detail-stat .lbl { font-size: 0.7rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.06em; }
+
+        .info-row { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; font-size: 0.875rem; }
+        .info-row i { color: var(--teal-600); width: 16px; flex-shrink: 0; margin-top: 3px; }
+
+        /* =========================================================
+           SAVED PANEL
+        ========================================================= */
+        .saved-panel {
+            position: fixed;
+            bottom: 1.5rem; right: 1.5rem;
+            background: var(--teal-600);
+            color: var(--white);
+            border-radius: 999px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,96,100,0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+        .saved-panel:hover { background: var(--teal-800); transform: translateY(-2px); }
+        .saved-count-badge {
+            background: var(--white);
+            color: var(--teal-600);
+            border-radius: 999px;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* =========================================================
+           DARK MODE TOGGLE
+        ========================================================= */
+        .dark-toggle {
+            background: transparent;
+            border: 1.5px solid var(--slate-300);
+            border-radius: 999px;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--slate-500);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .dark-toggle:hover { border-color: var(--teal-600); color: var(--teal-600); }
+
+        /* =========================================================
+           FORM ELEMENTS
+        ========================================================= */
+        .form-label { font-weight: 600; font-size: 0.82rem; color: var(--slate-700); margin-bottom: 0.35rem; }
+        .form-control, .form-select {
+            border: 1.5px solid var(--slate-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--teal-600);
+            box-shadow: 0 0 0 3px rgba(0,96,100,0.1);
+        }
+
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        .btn-primary-teal {
+            background: var(--teal-600);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.6rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        .btn-primary-teal:hover { background: var(--teal-800); color: var(--white); }
+
+        .btn-secondary-outline {
+            background: transparent;
+            color: var(--slate-700);
+            border: 1.5px solid var(--slate-300);
+            border-radius: var(--radius-sm);
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        .btn-secondary-outline:hover { border-color: var(--slate-500); color: var(--slate-900); }
+
+        /* =========================================================
+           SECTION HEADER
+        ========================================================= */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+        .section-count {
+            font-size: 0.78rem;
+            color: var(--slate-500);
+            background: var(--slate-100);
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        /* =========================================================
+           APPLICATIONS PAGE PREVIEW
+        ========================================================= */
+        .app-status-pill {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pending  { background: var(--warning-bg);  color: var(--warning-text); }
+        .status-approved { background: var(--success-bg);  color: var(--success-text); }
+        .status-rejected { background: var(--danger-bg);   color: var(--danger-text); }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+        @media (max-width: 576px) {
+            .hero-title { font-size: 1.6rem; }
+            .hero-ojt { padding: 36px 0 60px; }
+            .filter-bar { margin-top: -24px; }
+            .saved-panel { bottom: 1rem; right: 1rem; padding: 0.5rem 1rem; }
+        }
+
+        /* =========================================================
+           UTILITIES
+        ========================================================= */
+        .gap-xs { gap: 0.4rem; }
+        .text-teal { color: var(--teal-600); }
+        .bg-teal-light { background: var(--teal-50); }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/user" class="nav-pill nav-pill-outline" aria-label="Back to dashboard">
+                <i class="fas fa-arrow-left fa-xs"></i> Dashboard
+            </a>
+            <a class="navbar-brand d-none d-md-block" href="/user">
+                <i class="fas fa-shield-halved me-2"></i>PROJECT SENTINEL
+            </a>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <i class="fas fa-moon" id="darkIcon"></i>
+            </button>
+            <a href="/applications" class="nav-pill nav-pill-outline d-none d-sm-inline-flex" aria-label="My applications">
+                <i class="fas fa-file-alt fa-xs"></i> My Applications
+            </a>
+            <a href="/report" class="nav-pill nav-pill-danger" aria-label="Report incident">
+                <i class="fas fa-flag fa-xs"></i> Report
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<header class="hero-ojt" role="banner">
+    <div class="container">
+        <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb mb-3" style="background:none; padding:0;">
+                <li class="breadcrumb-item"><a href="/user">User Portal</a></li>
+                <li class="breadcrumb-item active" aria-current="page">OJT Opportunities</li>
+            </ol>
+        </nav>
+        <div class="row align-items-end g-4">
+            <div class="col-lg-7">
+                <h1 class="hero-title">
+                    <i class="fas fa-graduation-cap me-3" style="color: var(--teal-400);"></i>OJT Placement Portal
+                </h1>
+                <p class="hero-subtitle">Safe, verified, and AI-matched internships — compliant with RA 11313 &amp; DOLE regulations.</p>
+            </div>
+            <div class="col-lg-5">
+                <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
+                    <div class="hero-stat">
+                        <div class="num">{{ results|length }}</div>
+                        <div class="lbl">Active Listings</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num">{{ recommendations|length }}</div>
+                        <div class="lbl">AI Matches</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num">100%</div>
+                        <div class="lbl">DOLE Verified</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<main class="container py-4" id="main-content">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar mb-4" role="search" aria-label="Company search and filter">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="searchInput" class="form-label">Search Companies</label>
+                <div class="search-icon-wrap">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" id="searchInput" class="form-control"
+                           placeholder="Company name or industry..."
+                           value="{{ query or '' }}"
+                           aria-label="Search companies by name or industry">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="industryFilter" class="form-label">Industry</label>
+                <select id="industryFilter" class="form-select" aria-label="Filter by industry">
+                    <option value="">All Industries</option>
+                    {% set industries = results | map(attribute='industry') | list | unique %}
+                    {% for ind in industries %}
+                    <option value="{{ ind }}">{{ ind }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">
+                    Min Safety Score: <strong id="scoreLabel">0%</strong>
+                </label>
+                <input type="range" class="form-range" id="scoreFilter"
+                       min="0" max="100" value="0" step="5"
+                       aria-label="Minimum safety score filter"
+                       aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            </div>
+            <div class="col-md-2">
+                <button class="btn-search w-100" id="applyFilters" aria-label="Apply filters">
+                    <i class="fas fa-sliders-h me-1"></i> Filter
+                </button>
+            </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-3 align-items-center">
+            <span class="score-range-label fw-600">Sort:</span>
+            <button class="sort-btn active" data-sort="score" aria-pressed="true">
+                <i class="fas fa-star me-1"></i>Safety Score
+            </button>
+            <button class="sort-btn" data-sort="alpha" aria-pressed="false">
+                <i class="fas fa-sort-alpha-down me-1"></i>A–Z
+            </button>
+            <button class="sort-btn" data-sort="recommended" aria-pressed="false">
+                <i class="fas fa-brain me-1"></i>AI Recommended
+            </button>
+        </div>
+    </div>
+
+    <!-- AI RECOMMENDATIONS -->
+    {% if recommendations %}
+    <div class="ai-panel" role="region" aria-label="AI recommendations">
+        <div class="ai-panel-header">
+            <i class="fas fa-brain" aria-hidden="true"></i>
+            AI Top Matches — Based on Your Profile
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            {% for rec in recommendations %}
+            <a href="#card-{{ loop.index }}" class="ai-chip {% if loop.first %}best-match{% endif %}"
+               data-company="{{ rec.name }}"
+               aria-label="{{ rec.name }} - {{ loop.index * 15 + 70 }}% match{% if loop.first %}, best match{% endif %}"
+               onclick="highlightCard('{{ rec.name }}')">
+                {% if loop.first %}
+                <i class="fas fa-trophy fa-xs" aria-hidden="true"></i> BEST MATCH —
+                {% else %}
+                <i class="fas fa-check-circle fa-xs" aria-hidden="true"></i>
+                {% endif %}
+                {{ rec.name }}
+                <span class="match-score-pill" aria-label="Match score">{{ (100 - loop.index * 8) }}%</span>
+            </a>
+            {% endfor %}
+        </div>
+        <p class="mt-2 mb-0" style="font-size: 0.78rem; color: var(--slate-500);">
+            <i class="fas fa-info-circle me-1"></i>
+            Matches based on your skill profile and compliance history. Click a chip to highlight the company.
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- SECTION HEADER -->
+    <div class="section-header">
+        <span class="section-title">
+            <i class="fas fa-building me-2 text-teal"></i>Available Placements
+        </span>
+        <span class="section-count" id="listingCount">{{ results|length }} listings</span>
+    </div>
+
+    <!-- SKELETON LOADERS (shown while JS initializes) -->
+    <div id="skeletonGrid" class="row g-3" aria-hidden="true">
+        {% for i in range(3) %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card-ojt">
+                <div class="card-header-row">
+                    <div class="skeleton sk-circle"></div>
+                    <div style="flex:1; margin-left: 12px;">
+                        <div class="skeleton sk-title"></div>
+                        <div class="skeleton sk-line" style="width:50%;"></div>
+                    </div>
+                </div>
+                <div class="skeleton sk-line" style="width:100%;"></div>
+                <div class="skeleton sk-line" style="width:80%;"></div>
+                <div class="skeleton sk-line" style="width:60%;"></div>
+                <div class="skeleton sk-btn mt-2"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- COMPANY CARDS GRID -->
+    <div id="companyGrid" class="row g-3" style="display:none;" role="list" aria-label="Company listings">
+        {% if results %}
+            {% for co in results %}
+            <div class="col-md-6 col-lg-4 company-card"
+                 role="listitem"
+                 data-name="{{ co.name | lower }}"
+                 data-industry="{{ co.industry | lower }}"
+                 data-score="{{ co.compliance_score }}"
+                 data-recommended="{% if co in recommendations %}true{% else %}false{% endif %}"
+                 id="card-{{ loop.index }}">
+
+                <div class="card-ojt h-100" aria-label="Company: {{ co.name }}">
+
+                    <!-- Card Header -->
+                    <div class="card-header-row">
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
+                            <div class="company-logo-wrap" aria-hidden="true">
+                                {{ co.name[0] | upper }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="company-name text-truncate">{{ co.name }}</div>
+                                <span class="badge-verified">
+                                    <i class="fas fa-certificate" aria-hidden="true"></i> Verified
+                                </span>
+                            </div>
+                        </div>
+                        <div class="score-badge" aria-label="Safety score: {{ co.compliance_score }} percent">
+                            <span class="score-num {% if co.compliance_score >= 85 %}score-high{% elif co.compliance_score >= 60 %}score-mid{% else %}score-low{% endif %}">
+                                {{ co.compliance_score }}%
+                            </span>
+                            <span class="score-lbl">Safety</span>
+                        </div>
+                    </div>
+
+                    <!-- Industry -->
+                    <div class="mb-2">
+                        <span class="industry-chip">
+                            <i class="fas fa-briefcase" aria-hidden="true" style="font-size:0.65rem;"></i>
+                            {{ co.industry }}
+                        </span>
+                    </div>
+
+                    <!-- Compliance Bar -->
+                    <div class="compliance-bar-wrap">
+                        <div class="compliance-bar-label">
+                            <span>Compliance Score</span>
+                            <span class="fw-bold">{{ co.compliance_score }}/100</span>
+                        </div>
+                        <div class="compliance-bar" role="progressbar"
+                             aria-valuenow="{{ co.compliance_score }}"
+                             aria-valuemin="0" aria-valuemax="100"
+                             aria-label="Compliance score {{ co.compliance_score }} out of 100">
+                            <div class="compliance-bar-fill" style="width: {{ co.compliance_score }}%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="card-desc">
+                        Verified compliant with RA 11313 (Safe Spaces Act) and DOLE intern safety guidelines.
+                        SEC Permit: {{ co.sec_id or 'On file' }}.
+                    </p>
+
+                    <!-- Footer Actions -->
+                    <div class="card-footer-row">
+                        <button class="btn-apply apply-btn"
+                                data-company="{{ co.name }}"
+                                data-company-id="{{ co.id }}"
+                                aria-label="Apply for placement at {{ co.name }}">
+                            <i class="fas fa-paper-plane me-1" aria-hidden="true"></i> Apply
+                        </button>
+                        <button class="btn-icon view-btn"
+                                data-id="{{ co.id }}"
+                                data-name="{{ co.name }}"
+                                data-industry="{{ co.industry }}"
+                                data-score="{{ co.compliance_score }}"
+                                data-sec="{{ co.sec_id or 'N/A' }}"
+                                aria-label="View details for {{ co.name }}"
+                                title="View Details">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn-icon save-btn"
+                                data-company="{{ co.name }}"
+                                aria-label="Save {{ co.name }}"
+                                title="Save Company">
+                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn-icon report-btn"
+                                data-company="{{ co.name }}"
+                                aria-label="Report {{ co.name }}"
+                                title="Report Company">
+                            <i class="fas fa-flag" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state" style="display:none;" role="status" aria-live="polite">
+        <div class="empty-state-icon" aria-hidden="true">
+            <i class="fas fa-search-minus"></i>
+        </div>
+        <h5>No Placements Found</h5>
+        <p>Try adjusting your search filters or clearing the search term.</p>
+        <button class="btn-primary-teal" onclick="clearFilters()" aria-label="Clear all filters">
+            <i class="fas fa-times me-1"></i> Clear Filters
+        </button>
+    </div>
+
+    <!-- BACK LINK -->
+    <div class="text-center py-4">
+        <a href="/user" class="text-decoration-none" style="color: var(--slate-500); font-size: 0.85rem;">
+            <i class="fas fa-chevron-left me-1"></i> Return to Main Dashboard
+        </a>
+    </div>
+</main>
+
+<!-- SAVED COMPANIES FAB -->
+<button class="saved-panel" id="savedFab" onclick="openSavedModal()"
+        aria-label="View saved companies" style="display:none;">
+    <i class="fas fa-bookmark" aria-hidden="true"></i>
+    Saved
+    <span class="saved-count-badge" id="savedCount">0</span>
+</button>
+
+<!-- ============================================================
+     MODAL: APPLY CONFIRMATION
+============================================================ -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header teal-header">
+                <h5 class="modal-title" id="applyModalLabel">
+                    <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Confirm Application
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-3" style="font-size: 0.9rem;">You are applying for an OJT placement at:</p>
+                <div style="background: var(--teal-50); border: 1px solid var(--teal-100); border-radius: var(--radius-sm); padding: 1rem;" class="mb-3">
+                    <strong id="applyCompanyName" style="font-size: 1.05rem;"></strong>
+                </div>
+                <p class="mb-0 text-muted" style="font-size: 0.82rem;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Your application will be reviewed by the company and you'll be notified of any status updates.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-primary-teal" id="confirmApplyBtn"
+                        aria-label="Confirm application">
+                    <i class="fas fa-check me-1"></i> Confirm Application
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: COMPANY DETAILS
+============================================================ -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header teal-header">
+                <h5 class="modal-title" id="detailModalLabel">
+                    <i class="fas fa-building me-2" aria-hidden="true"></i>Company Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 detail-modal-body" id="detailModalBody">
+                <!-- JS populated -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: REPORT COMPANY
+============================================================ -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid var(--slate-100);">
+                <h5 class="modal-title" id="reportModalLabel">
+                    <i class="fas fa-flag me-2 text-danger" aria-hidden="true"></i>Report a Company
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="reportCompanyName" class="form-label">Company Name</label>
+                    <input type="text" id="reportCompanyName" class="form-control" readonly aria-readonly="true">
+                </div>
+                <div class="mb-3">
+                    <label for="reporterName" class="form-label">Your Name <span class="text-danger">*</span></label>
+                    <input type="text" id="reporterName" class="form-control" placeholder="Full name" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="reporterContact" class="form-label">Contact Number <span class="text-danger">*</span></label>
+                    <input type="tel" id="reporterContact" class="form-control" placeholder="+63 9XX XXX XXXX" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="reportMessage" class="form-label">Complaint Details <span class="text-danger">*</span></label>
+                    <textarea id="reportMessage" class="form-control" rows="4"
+                              placeholder="Describe the incident or concern in detail..." required aria-required="true"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-primary-teal" id="submitReportBtn" style="background: #dc2626;"
+                        aria-label="Submit report">
+                    <i class="fas fa-flag me-1"></i> Submit Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: SAVED COMPANIES
+============================================================ -->
+<div class="modal fade" id="savedModal" tabindex="-1" aria-labelledby="savedModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header teal-header">
+                <h5 class="modal-title" id="savedModalLabel">
+                    <i class="fas fa-bookmark me-2" aria-hidden="true"></i>Saved Companies
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="savedModalBody">
+                <!-- JS populated -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+let savedCompanies = JSON.parse(localStorage.getItem('sentinel_saved') || '[]');
+let appliedCompanies = JSON.parse(localStorage.getItem('sentinel_applied') || '[]');
+let currentReportCompany = '';
+let pendingApplyBtn = null;
+let pendingApplyCompany = '';
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    // Simulate loading then reveal cards
+    setTimeout(() => {
+        document.getElementById('skeletonGrid').style.display = 'none';
+        document.getElementById('companyGrid').style.display = '';
+        applyFiltersAndSort();
+    }, 800);
+
+    updateSavedFab();
+    restoreAppliedState();
+    initSortButtons();
+    initFilterListeners();
+    initDarkMode();
+    initViewButtons();
+    initSaveButtons();
+    initReportButtons();
+    initApplyButtons();
+});
+
+/* ============================================================
+   DARK MODE
+============================================================ */
+function initDarkMode() {
+    const isDark = localStorage.getItem('sentinel_dark') === 'true';
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkIcon').className = 'fas fa-sun';
+    }
+    document.getElementById('darkToggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const nowDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('sentinel_dark', nowDark);
+        document.getElementById('darkIcon').className = nowDark ? 'fas fa-sun' : 'fas fa-moon';
+    });
+}
+
+/* ============================================================
+   FILTERS & SORT
+============================================================ */
+function initFilterListeners() {
+    document.getElementById('searchInput').addEventListener('input', applyFiltersAndSort);
+    document.getElementById('industryFilter').addEventListener('change', applyFiltersAndSort);
+    document.getElementById('applyFilters').addEventListener('click', applyFiltersAndSort);
+    document.getElementById('scoreFilter').addEventListener('input', function() {
+        document.getElementById('scoreLabel').textContent = this.value + '%';
+        applyFiltersAndSort();
+    });
+}
+
+function initSortButtons() {
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.sort-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            this.classList.add('active');
+            this.setAttribute('aria-pressed', 'true');
+            applyFiltersAndSort();
+        });
+    });
+}
+
+function applyFiltersAndSort() {
+    const search   = document.getElementById('searchInput').value.toLowerCase();
+    const industry = document.getElementById('industryFilter').value.toLowerCase();
+    const minScore = parseInt(document.getElementById('scoreFilter').value);
+    const sortBy   = document.querySelector('.sort-btn.active')?.dataset.sort || 'score';
+
+    const cards = Array.from(document.querySelectorAll('.company-card'));
+    let visible = 0;
+
+    cards.forEach(card => {
+        const name       = card.dataset.name;
+        const ind        = card.dataset.industry;
+        const score      = parseInt(card.dataset.score);
+        const matchSearch   = !search || name.includes(search) || ind.includes(search);
+        const matchIndustry = !industry || ind === industry;
+        const matchScore    = score >= minScore;
+
+        card.style.display = (matchSearch && matchIndustry && matchScore) ? '' : 'none';
+        if (matchSearch && matchIndustry && matchScore) visible++;
+    });
+
+    document.getElementById('listingCount').textContent = visible + ' listing' + (visible !== 1 ? 's' : '');
+    document.getElementById('emptyState').style.display = visible === 0 ? '' : 'none';
+
+    // Sort visible cards
+    const grid = document.getElementById('companyGrid');
+    const sorted = cards.filter(c => c.style.display !== 'none');
+
+    sorted.sort((a, b) => {
+        if (sortBy === 'score')   return parseInt(b.dataset.score) - parseInt(a.dataset.score);
+        if (sortBy === 'alpha')   return a.dataset.name.localeCompare(b.dataset.name);
+        if (sortBy === 'recommended') {
+            const ra = a.dataset.recommended === 'true' ? 1 : 0;
+            const rb = b.dataset.recommended === 'true' ? 1 : 0;
+            return rb - ra;
+        }
+        return 0;
+    });
+    sorted.forEach(c => grid.appendChild(c));
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('industryFilter').value = '';
+    document.getElementById('scoreFilter').value = 0;
+    document.getElementById('scoreLabel').textContent = '0%';
+    applyFiltersAndSort();
+}
+
+/* ============================================================
+   APPLY SYSTEM
+============================================================ */
+function initApplyButtons() {
+    document.querySelectorAll('.apply-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const company = this.dataset.company;
+            pendingApplyBtn = this;
+            pendingApplyCompany = company;
+            document.getElementById('applyCompanyName').textContent = company;
+            new bootstrap.Modal(document.getElementById('applyModal')).show();
+        });
+    });
+
+    document.getElementById('confirmApplyBtn').addEventListener('click', async () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('applyModal'));
+        modal.hide();
+
+        const btn = pendingApplyBtn;
+        const company = pendingApplyCompany;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Submitting…';
+        btn.setAttribute('aria-busy', 'true');
+
+        try {
+            const res = await fetch('/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ company_name: company })
+            });
+            const data = await res.json();
+
+            if (data.status === 'success' || res.ok) {
+                btn.innerHTML = '<i class="fas fa-check me-1"></i> Applied';
+                btn.classList.add('applied');
+                btn.setAttribute('aria-label', 'Already applied to ' + company);
+
+                // Persist
+                if (!appliedCompanies.includes(company)) {
+                    appliedCompanies.push(company);
+                    localStorage.setItem('sentinel_applied', JSON.stringify(appliedCompanies));
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Application Submitted!',
+                    html: `Your application to <strong>${company}</strong> has been submitted. You'll be notified of updates.`,
+                    confirmButtonColor: '#006064',
+                    timer: 4000,
+                    timerProgressBar: true
+                });
+            } else {
+                throw new Error(data.message || 'Server error');
+            }
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Apply';
+            btn.setAttribute('aria-busy', 'false');
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Application Failed',
+                text: err.message || 'Something went wrong. Please try again.',
+                confirmButtonColor: '#006064'
+            });
+        }
+    });
+}
+
+function restoreAppliedState() {
+    appliedCompanies.forEach(name => {
+        const btn = document.querySelector(`.apply-btn[data-company="${name}"]`);
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i> Applied';
+            btn.classList.add('applied');
+        }
+    });
+}
+
+/* ============================================================
+   VIEW DETAILS
+============================================================ */
+function initViewButtons() {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const name     = this.dataset.name;
+            const industry = this.dataset.industry;
+            const score    = parseInt(this.dataset.score);
+            const sec      = this.dataset.sec;
+
+            const scoreColor = score >= 85 ? '#15803d' : score >= 60 ? '#b45309' : '#b91c1c';
+            const complianceItems = [
+                { label: 'RA 11313 Safe Spaces Act', ok: true },
+                { label: 'DOLE Intern Safety Guidelines', ok: score >= 70 },
+                { label: 'Mandatory Insurance for OJT', ok: score >= 80 },
+                { label: '8-Hour Work Limit Compliance', ok: score >= 85 },
+            ];
+
+            document.getElementById('detailModalLabel').innerHTML =
+                `<i class="fas fa-building me-2"></i>${name}`;
+
+            document.getElementById('detailModalBody').innerHTML = `
+                <div class="row g-3 mb-4">
+                    <div class="col-4">
+                        <div class="detail-stat">
+                            <div class="num" style="color:${scoreColor};">${score}%</div>
+                            <div class="lbl">Safety Score</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="detail-stat">
+                            <div class="num text-teal">Active</div>
+                            <div class="lbl">Status</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="detail-stat">
+                            <div class="num" style="color:#15803d;">Verified</div>
+                            <div class="lbl">DOLE</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-500); margin-bottom:0.75rem;">Company Info</h6>
+                        <div class="info-row"><i class="fas fa-building"></i><span>${name}</span></div>
+                        <div class="info-row"><i class="fas fa-briefcase"></i><span>${industry}</span></div>
+                        <div class="info-row"><i class="fas fa-id-card"></i><span>SEC/Permit: ${sec}</span></div>
+                        <div class="info-row"><i class="fas fa-map-marker-alt"></i><span>Philippines (Local OJT)</span></div>
+                        <div class="info-row"><i class="fas fa-envelope"></i><span>hr@${name.toLowerCase().replace(/\s+/g,'')}.com</span></div>
+                        <div class="info-row"><i class="fas fa-phone"></i><span>+63 2 8XXX XXXX</span></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-500); margin-bottom:0.75rem;">Compliance Checklist</h6>
+                        ${complianceItems.map(item => `
+                            <div class="d-flex align-items-center gap-2 mb-2" style="font-size:0.82rem;">
+                                <i class="fas fa-${item.ok ? 'check-circle' : 'times-circle'}"
+                                   style="color:${item.ok ? '#15803d' : '#b91c1c'}; font-size:0.9rem;"></i>
+                                <span>${item.label}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <hr style="margin: 1.25rem 0;">
+                <div>
+                    <h6 style="font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-500); margin-bottom:0.5rem;">Requirements</h6>
+                    <p style="font-size:0.85rem; color:var(--slate-500);">Endorsement letter from school, OJT MOA, PhilHealth/SSS details, and 2×2 ID photo. Interns are entitled to allowance per CHED guidelines.</p>
+                </div>
+            `;
+
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        });
+    });
+}
+
+/* ============================================================
+   SAVE / BOOKMARK
+============================================================ */
+function initSaveButtons() {
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        const company = btn.dataset.company;
+        if (savedCompanies.includes(company)) btn.classList.add('saved');
+
+        btn.addEventListener('click', function() {
+            const idx = savedCompanies.indexOf(company);
+            if (idx === -1) {
+                savedCompanies.push(company);
+                this.classList.add('saved');
+            } else {
+                savedCompanies.splice(idx, 1);
+                this.classList.remove('saved');
+            }
+            localStorage.setItem('sentinel_saved', JSON.stringify(savedCompanies));
+            updateSavedFab();
+        });
+    });
+}
+
+function updateSavedFab() {
+    const fab = document.getElementById('savedFab');
+    const count = document.getElementById('savedCount');
+    if (savedCompanies.length > 0) {
+        fab.style.display = 'flex';
+        count.textContent = savedCompanies.length;
+    } else {
+        fab.style.display = 'none';
+    }
+}
+
+function openSavedModal() {
+    const body = document.getElementById('savedModalBody');
+    if (savedCompanies.length === 0) {
+        body.innerHTML = '<p class="text-center text-muted py-3">No saved companies yet.</p>';
+    } else {
+        body.innerHTML = savedCompanies.map(name => `
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="font-size:0.875rem;">
+                <span><i class="fas fa-building text-teal me-2"></i>${name}</span>
+                <button class="btn-icon" onclick="unsaveFromModal('${name}')" aria-label="Remove ${name} from saved">
+                    <i class="fas fa-times" style="font-size:0.75rem;"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+    new bootstrap.Modal(document.getElementById('savedModal')).show();
+}
+
+function unsaveFromModal(name) {
+    savedCompanies = savedCompanies.filter(c => c !== name);
+    localStorage.setItem('sentinel_saved', JSON.stringify(savedCompanies));
+    // Update button state
+    const saveBtn = document.querySelector(`.save-btn[data-company="${name}"]`);
+    if (saveBtn) saveBtn.classList.remove('saved');
+    updateSavedFab();
+    openSavedModal(); // re-render
+    // close if empty
+    if (savedCompanies.length === 0) {
+        bootstrap.Modal.getInstance(document.getElementById('savedModal')).hide();
+    }
+}
+
+/* ============================================================
+   REPORT COMPANY
+============================================================ */
+function initReportButtons() {
+    document.querySelectorAll('.report-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentReportCompany = this.dataset.company;
+            document.getElementById('reportCompanyName').value = currentReportCompany;
+            document.getElementById('reporterName').value = '';
+            document.getElementById('reporterContact').value = '';
+            document.getElementById('reportMessage').value = '';
+            new bootstrap.Modal(document.getElementById('reportModal')).show();
+        });
+    });
+
+    document.getElementById('submitReportBtn').addEventListener('click', async () => {
+        const name    = document.getElementById('reporterName').value.trim();
+        const contact = document.getElementById('reporterContact').value.trim();
+        const message = document.getElementById('reportMessage').value.trim();
+
+        if (!name || !contact || !message) {
+            Swal.fire({ icon: 'warning', title: 'Incomplete Form', text: 'Please fill in all required fields.', confirmButtonColor: '#006064' });
+            return;
+        }
+
+        const btn = document.getElementById('submitReportBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Submitting…';
+
+        try {
+            const res = await fetch('/report-company', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    company_name: currentReportCompany,
+                    reporter_name: name,
+                    contact: contact,
+                    message: message
+                })
+            });
+            const data = await res.json();
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+            Swal.fire({ icon: 'success', title: 'Report Submitted', text: 'Your report has been sent to Sentinel for review.', confirmButtonColor: '#006064' });
+        } catch (err) {
+            Swal.fire({ icon: 'error', title: 'Submission Failed', text: 'Please try again later.', confirmButtonColor: '#006064' });
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-flag me-1"></i> Submit Report';
+        }
+    });
+}
+
+/* ============================================================
+   AI CHIP HIGHLIGHT
+============================================================ */
+function highlightCard(companyName) {
+    // Filter to show this company
+    document.getElementById('searchInput').value = companyName;
+    applyFiltersAndSort();
+
+    // Brief highlight flash
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.company-card');
+        cards.forEach(card => {
+            if (card.dataset.name === companyName.toLowerCase()) {
+                card.querySelector('.card-ojt').style.borderColor = 'var(--teal-400)';
+                card.querySelector('.card-ojt').style.boxShadow = '0 0 0 3px rgba(77,182,172,0.3)';
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    card.querySelector('.card-ojt').style.borderColor = '';
+                    card.querySelector('.card-ojt').style.boxShadow = '';
+                }, 2000);
+            }
+        });
+    }, 100);
+}
+</script>
+</body>
+</html>

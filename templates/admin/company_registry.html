@@ -1,0 +1,190 @@
+{% extends 'admin.html' %}
+{% block title %}Company Registry{% endblock %}
+{% block breadcrumb %}COMPANY REGISTRY{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-building me-2"></i>COMPANY REGISTRY</h1>
+            <p class="page-subtitle">Manage all partner companies, compliance scores, and blacklist status.</p>
+        </div>
+        <button class="btn-s btn-teal" data-bs-toggle="modal" data-bs-target="#addModal">
+            <i class="fas fa-plus"></i> ADD COMPANY
+        </button>
+    </div>
+</div>
+
+<div class="s-card">
+    <div class="s-card-header">
+        <span><i class="fas fa-list me-2"></i>ALL REGISTERED COMPANIES ({{ companies|length }})</span>
+        <input type="text" id="searchInput" placeholder="Search company…" class="form-ctrl" style="width:220px;padding:4px 10px;font-size:.72rem;">
+    </div>
+    {% if companies %}
+    <div style="overflow-x:auto;">
+        <table class="s-table" id="companyTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>COMPANY NAME</th>
+                    <th>SEC / PERMIT</th>
+                    <th>INDUSTRY</th>
+                    <th>TYPE</th>
+                    <th>SCORE</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for co in companies %}
+                <tr>
+                    <td class="col-mono">{{ co.id }}</td>
+                    <td style="font-weight:600;">{{ co.name }}</td>
+                    <td class="col-mono">{{ co.sec_id }}</td>
+                    <td>{{ co.industry }}</td>
+                    <td>{{ co.type }}</td>
+                    <td>
+                        <div class="score-wrap">
+                            <div class="score-track">
+                                <div class="score-fill" style="width:{{ co.compliance_score }}%;
+                                    background:{% if co.compliance_score >= 80 %}var(--green){% elif co.compliance_score >= 50 %}var(--orange){% else %}var(--red){% endif %};"></div>
+                            </div>
+                            <span class="score-val" style="color:{% if co.compliance_score >= 80 %}var(--green){% elif co.compliance_score >= 50 %}var(--orange){% else %}var(--red){% endif %};">
+                                {{ co.compliance_score }}
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="pill {% if co.status == 'Active' %}pill-active{% else %}pill-banned{% endif %}">
+                            <i class="fas {% if co.status == 'Active' %}fa-check{% else %}fa-ban{% endif %}"></i>
+                            {{ co.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <a href="/admin/company-registry/toggle/{{ co.id }}" class="btn-s {% if co.status == 'Active' %}btn-danger{% else %}btn-success{% endif %}">
+                                <i class="fas {% if co.status == 'Active' %}fa-ban{% else %}fa-check{% endif %}"></i>
+                                {% if co.status == 'Active' %}BLACKLIST{% else %}RESTORE{% endif %}
+                            </a>
+                            <button class="btn-s btn-outline" data-bs-toggle="modal" data-bs-target="#editModal{{ co.id }}">
+                                <i class="fas fa-pen"></i> EDIT
+                            </button>
+                            <a href="/admin/company-registry/delete/{{ co.id }}"
+                               onclick="return confirm('Delete {{ co.name }}? This cannot be undone.')"
+                               class="btn-s btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editModal{{ co.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0">
+                            <div class="modal-header modal-header-dark">
+                                <span class="modal-title-s"><i class="fas fa-pen me-2"></i>EDIT — {{ co.name }}</span>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="/admin/company-registry/edit/{{ co.id }}">
+                                <div class="modal-body p-4" style="display:grid;gap:14px;">
+                                    <div>
+                                        <label class="form-label-s">Company Name</label>
+                                        <input name="name" class="form-ctrl" value="{{ co.name }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label-s">Industry</label>
+                                        <input name="industry" class="form-ctrl" value="{{ co.industry }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label-s">Type</label>
+                                        <select name="type" class="form-ctrl">
+                                            <option {% if co.type == 'Local OJT' %}selected{% endif %}>Local OJT</option>
+                                            <option {% if co.type == 'Overseas' %}selected{% endif %}>Overseas</option>
+                                            <option {% if co.type == 'Scholarship' %}selected{% endif %}>Scholarship</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="form-label-s">Compliance Score</label>
+                                        <input name="compliance_score" type="number" min="0" max="100" class="form-ctrl" value="{{ co.compliance_score }}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn-s btn-outline" data-bs-dismiss="modal">CANCEL</button>
+                                    <button type="submit" class="btn-s btn-teal"><i class="fas fa-save"></i> SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-building"></i>
+        <p>No companies registered yet. Click "Add Company" to get started.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Company Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header modal-header-dark">
+                <span class="modal-title-s"><i class="fas fa-plus me-2"></i>ADD NEW COMPANY</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="/admin/company-registry/add">
+                <div class="modal-body p-4" style="display:grid;gap:14px;">
+                    <div>
+                        <label class="form-label-s">Company Name *</label>
+                        <input name="name" class="form-ctrl" required placeholder="e.g. TechCorp Manila">
+                    </div>
+                    <div>
+                        <label class="form-label-s">SEC / Permit ID *</label>
+                        <input name="sec_id" class="form-ctrl" required placeholder="e.g. SEC/O11">
+                    </div>
+                    <div>
+                        <label class="form-label-s">Industry</label>
+                        <input name="industry" class="form-ctrl" placeholder="e.g. BPO, Healthcare">
+                    </div>
+                    <div>
+                        <label class="form-label-s">Type</label>
+                        <select name="type" class="form-ctrl">
+                            <option>Local OJT</option>
+                            <option>Overseas</option>
+                            <option>Scholarship</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label-s">Compliance Score (0–100)</label>
+                        <input name="compliance_score" type="number" min="0" max="100" class="form-ctrl" value="100">
+                    </div>
+                    <div>
+                        <label class="form-label-s">Skills Vector (Software,Hardware,Mgmt,Design)</label>
+                        <input name="skills_vector" class="form-ctrl" value="0,0,0,0" placeholder="e.g. 1,0,1,0">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn-s btn-outline" data-bs-dismiss="modal">CANCEL</button>
+                    <button type="submit" class="btn-s btn-teal"><i class="fas fa-plus"></i> ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#companyTable tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

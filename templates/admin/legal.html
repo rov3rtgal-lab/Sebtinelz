@@ -1,0 +1,246 @@
+{% extends 'admin.html' %}
+{% block title %}Legal (PAO){% endblock %}
+{% block breadcrumb %}LEGAL (PAO){% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <h1 class="page-title"><i class="fas fa-gavel me-2"></i>LEGAL — PUBLIC ATTORNEY'S OFFICE</h1>
+            <p class="page-subtitle">Manage legal counsel availability and assign lawyers to pending cases.</p>
+        </div>
+        <div class="d-flex gap-2">
+            {% set avail = lawyers|selectattr('is_available')|list %}
+            <span class="pill pill-resolved"><i class="fas fa-user-tie"></i> {{ avail|length }} Available</span>
+            <span class="pill pill-pending"><i class="fas fa-file-alt"></i> {{ pending_reports|length }} Pending Cases</span>
+            <span class="pill pill-anon"><i class="fas fa-balance-scale"></i> {{ legal_requests|length }} Aid Request(s)</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- ── LAWYER ROSTER ── -->
+    <div class="col-lg-5">
+        <div class="s-card">
+            <div class="s-card-header"><i class="fas fa-users me-2"></i>LEGAL COUNSEL ROSTER</div>
+            {% if lawyers %}
+            <table class="s-table">
+                <thead>
+                    <tr><th>ATTORNEY</th><th>SPECIALIZATION</th><th>STATUS</th><th>TOGGLE</th></tr>
+                </thead>
+                <tbody>
+                    {% for lw in lawyers %}
+                    <tr>
+                        <td style="font-weight:700;">Atty. {{ lw.name }}</td>
+                        <td style="font-size:.75rem;">{{ lw.specialization }}</td>
+                        <td>
+                            <span class="pill {% if lw.is_available %}pill-resolved{% else %}pill-pending{% endif %}">
+                                <i class="fas {% if lw.is_available %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i>
+                                {% if lw.is_available %}AVAILABLE{% else %}IN SESSION{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/admin/legal/toggle/{{ lw.id }}" class="btn-s {% if lw.is_available %}btn-orange{% else %}btn-teal{% endif %}">
+                                <i class="fas fa-toggle-{% if lw.is_available %}off{% else %}on{% endif %}"></i>
+                                {% if lw.is_available %}SET BUSY{% else %}SET FREE{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-user-tie"></i><p>No lawyers registered in the system.</p></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ── ASSIGN LAWYER ── -->
+    <div class="col-lg-7">
+        <div class="s-card">
+            <div class="s-card-header warning-hdr"><i class="fas fa-link me-2"></i>ASSIGN LAWYER TO INCIDENT</div>
+            {% if pending_reports and lawyers %}
+            <div style="padding:20px;">
+                <form method="POST" action="/admin/legal/assign">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label-s">SELECT LAWYER</label>
+                            <select name="lawyer_id" class="form-ctrl" required>
+                                <option value="" disabled selected>Choose attorney…</option>
+                                {% for lw in lawyers %}
+                                <option value="{{ lw.id }}" {% if not lw.is_available %}disabled{% endif %}>
+                                    Atty. {{ lw.name }} — {{ lw.specialization }}
+                                    {% if not lw.is_available %}(In Session){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label-s">SELECT INCIDENT</label>
+                            <select name="incident_id" class="form-ctrl" required>
+                                <option value="" disabled selected>Choose case…</option>
+                                {% for rep in pending_reports %}
+                                <option value="{{ rep.id }}">#{{ rep.id }} — {{ rep.incident_type }} @ {{ rep.company_name or 'Unknown' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn-s btn-teal w-100"><i class="fas fa-link"></i> ASSIGN</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending cases to assign, or no lawyers available.</p></div>
+            {% endif %}
+
+            {% if pending_reports %}
+            <div style="border-top:1px solid var(--border);">
+                <table class="s-table">
+                    <thead>
+                        <tr><th>#</th><th>TYPE</th><th>COMPANY</th><th>IDENTITY</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for rep in pending_reports %}
+                        <tr>
+                            <td class="col-mono">{{ rep.id }}</td>
+                            <td style="font-weight:600;">{{ rep.incident_type or '—' }}</td>
+                            <td>{{ rep.company_name or '—' }}</td>
+                            <td>
+                                <span class="pill {% if rep.is_anonymous %}pill-anon{% else %}pill-named{% endif %}">
+                                    {% if rep.is_anonymous %}ANON{% else %}NAMED{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ── PAO LEGAL AID APPLICATIONS ── -->
+<div class="row g-3 mt-1">
+    <div class="col-12">
+        <div class="s-card">
+            <div class="s-card-header success-hdr">
+                <span><i class="fas fa-file-signature me-2"></i>PAO LEGAL AID APPLICATIONS</span>
+                <span style="font-size:.72rem; opacity:.8;">Submitted via the PAO Portal by users requesting pro-bono counsel</span>
+            </div>
+
+            {% if legal_requests %}
+            <div style="overflow-x:auto;">
+                <table class="s-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>FULL NAME</th>
+                            <th>CONTACT</th>
+                            <th>CONCERN TYPE</th>
+                            <th>COMPANY INVOLVED</th>
+                            <th>IDENTITY</th>
+                            <th>STATUS</th>
+                            <th>DESCRIPTION</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in legal_requests %}
+                        <tr>
+                            <!-- ID -->
+                            <td class="col-mono">{{ req.id }}</td>
+
+                            <!-- Name / Email -->
+                            <td>
+                                <div style="font-weight:700; font-size:.82rem;">
+                                    {% if req.is_anonymous %}
+                                        <span style="color:var(--text-muted); font-style:italic;">Anonymous</span>
+                                    {% else %}
+                                        {{ req.fullname or '—' }}
+                                    {% endif %}
+                                </div>
+                                <div style="font-size:.7rem; color:var(--text-muted);">{{ req.email or '' }}</div>
+                            </td>
+
+                            <!-- Contact -->
+                            <td style="font-size:.78rem;">{{ req.contact or '—' }}</td>
+
+                            <!-- Concern Type -->
+                            <td>
+                                <span class="pill pill-pending" style="font-size:.6rem; white-space:nowrap;">
+                                    {{ req.concern_type or 'Other' }}
+                                </span>
+                            </td>
+
+                            <!-- Company -->
+                            <td style="font-size:.78rem;">{{ req.company_involved or '—' }}</td>
+
+                            <!-- Identity -->
+                            <td>
+                                <span class="pill {% if req.is_anonymous %}pill-anon{% else %}pill-named{% endif %}">
+                                    {% if req.is_anonymous %}ANON{% else %}NAMED{% endif %}
+                                </span>
+                            </td>
+
+                            <!-- Status -->
+                            <td>
+                                <span class="pill
+                                    {% if req.status == 'Resolved' %}pill-resolved
+                                    {% elif req.status == 'Archived' %}pill-archived
+                                    {% else %}pill-pending{% endif %}">
+                                    <i class="fas
+                                        {% if req.status == 'Resolved' %}fa-circle-check
+                                        {% elif req.status == 'Archived' %}fa-box-archive
+                                        {% else %}fa-clock{% endif %}">
+                                    </i>
+                                    {{ req.status | upper }}
+                                </span>
+                            </td>
+
+                            <!-- Description (truncated) -->
+                            <td style="max-width:220px;">
+                                <span style="font-size:.74rem; color:var(--text-muted);"
+                                      title="{{ req.concern or '' }}">
+                                    {{ (req.concern or '—')[:80] }}{% if req.concern and req.concern|length > 80 %}…{% endif %}
+                                </span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    {% if req.status != 'Resolved' %}
+                                    <a href="/admin/legal/resolve/{{ req.id }}"
+                                       class="btn-s btn-success"
+                                       title="Mark as Resolved"
+                                       onclick="return confirm('Mark Legal Aid Request #{{ req.id }} as Resolved?')">
+                                        <i class="fas fa-check"></i> RESOLVE
+                                    </a>
+                                    {% endif %}
+                                    {% if req.status != 'Archived' %}
+                                    <a href="/admin/legal/archive/{{ req.id }}"
+                                       class="btn-s btn-outline"
+                                       title="Archive this request"
+                                       onclick="return confirm('Archive Legal Aid Request #{{ req.id }}?')">
+                                        <i class="fas fa-box-archive"></i> ARCHIVE
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-balance-scale"></i>
+                <p>No legal aid applications submitted yet.<br>
+                <span style="font-size:.75rem;">Applications submitted via the PAO Portal will appear here.</span></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

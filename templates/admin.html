@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} — Project Sentinel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+
+    <style>
+        :root {
+            --teal:        #006064;
+            --teal-dark:   #00363a;
+            --teal-mid:    #004d40;
+            --teal-light:  #e0f2f1;
+            --teal-accent: #4db6ac;
+            --orange:      #ef6c00;
+            --orange-lt:   #fff3e0;
+            --red:         #c62828;
+            --red-lt:      #ffebee;
+            --green:       #2e7d32;
+            --green-lt:    #e8f5e9;
+            --yellow:      #f9a825;
+            --text:        #1a2327;
+            --text-muted:  #607d8b;
+            --border:      #e0e9ea;
+            --bg:          #f0f4f4;
+            --white:       #ffffff;
+            --sidebar-w:   272px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--teal-dark);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: width .25s ease;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.1) transparent;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            flex-shrink: 0;
+        }
+        .sidebar-brand-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--teal-accent), #00897b);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,.3);
+        }
+        .sidebar-brand-icon i { color: #fff; font-size: 1.1rem; }
+        .sidebar-brand-text { flex: 1; min-width: 0; }
+        .sidebar-brand-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: .08em;
+            color: #fff;
+            line-height: 1;
+        }
+        .sidebar-brand-sub {
+            font-size: .58rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            color: rgba(255,255,255,.45);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-section-label {
+            padding: 14px 20px 5px;
+            font-size: .6rem;
+            font-weight: 700;
+            letter-spacing: .14em;
+            color: rgba(255,255,255,.28);
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 20px;
+            color: rgba(255,255,255,.6);
+            text-decoration: none;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            transition: background .15s, color .15s;
+            position: relative;
+            white-space: nowrap;
+            border-radius: 0;
+        }
+        .nav-link .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: .9rem;
+            flex-shrink: 0;
+            opacity: .75;
+            transition: opacity .15s;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,.07);
+            color: rgba(255,255,255,.9);
+        }
+        .nav-link:hover .nav-icon { opacity: 1; }
+        .nav-link.active {
+            background: rgba(77,182,172,.15);
+            color: var(--teal-accent);
+            font-weight: 700;
+        }
+        .nav-link.active .nav-icon { opacity: 1; color: var(--teal-accent); }
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: var(--teal-accent);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255,255,255,.07);
+        }
+
+        /* ── CONTENT AREA ── */
+        .content-wrap {
+            flex: 1;
+            margin-left: var(--sidebar-w);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left .25s ease;
+        }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            height: 58px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            gap: 16px;
+        }
+        .topbar-breadcrumb {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: .04em;
+        }
+        .topbar-breadcrumb span { color: var(--text); }
+        .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+        .topbar-icon-btn {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background .15s, border-color .15s;
+            text-decoration: none;
+        }
+        .topbar-icon-btn:hover { background: var(--bg); border-color: var(--teal-accent); color: var(--teal); }
+        .topbar-user {
+            display: flex; align-items: center; gap: 8px;
+            padding: 5px 10px 5px 5px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .topbar-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--teal-accent));
+            display: flex; align-items: center; justify-content: center;
+        }
+        .topbar-avatar i { color: #fff; font-size: .75rem; }
+        .topbar-username { font-size: .72rem; font-weight: 700; color: var(--text); }
+        .btn-portal-login {
+            background: var(--teal);
+            color: #fff !important;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            padding: 7px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background .15s;
+        }
+        .btn-portal-login:hover { background: var(--teal-mid); }
+
+        /* ── FLASH MESSAGES ── */
+        .flash-container {
+            padding: 10px 28px 0;
+        }
+        .flash-alert {
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: .78rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        /* ── PAGE BODY ── */
+        .page-body { padding: 24px 28px 40px; flex: 1; }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            margin-bottom: 22px;
+        }
+        .page-header-inner {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 16px 20px;
+            border-left: 4px solid var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 6px rgba(0,0,0,.05);
+        }
+        .page-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+            color: var(--teal);
+            margin: 0;
+        }
+        .page-subtitle {
+            font-size: .72rem;
+            color: var(--text-muted);
+            margin: 2px 0 0;
+        }
+
+        /* ── STAT CARDS ── */
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            border-bottom: 4px solid transparent;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            right: -10px; top: -10px;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            opacity: .05;
+        }
+        .stat-card.s-teal   { border-color: var(--teal); }
+        .stat-card.s-teal::after   { background: var(--teal); }
+        .stat-card.s-orange { border-color: var(--orange); }
+        .stat-card.s-orange::after { background: var(--orange); }
+        .stat-card.s-green  { border-color: var(--green); }
+        .stat-card.s-green::after  { background: var(--green); }
+        .stat-card.s-red    { border-color: var(--red); }
+        .stat-card.s-red::after    { background: var(--red); }
+
+        .stat-label {
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .stat-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .stat-num.c-teal   { color: var(--teal); }
+        .stat-num.c-orange { color: var(--orange); }
+        .stat-num.c-green  { color: var(--green); }
+        .stat-num.c-red    { color: var(--red); }
+        .stat-footer { font-size: .7rem; color: var(--text-muted); }
+
+        /* ── SENTINEL CARD ── */
+        .s-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            overflow: hidden;
+        }
+        .s-card-header {
+            background: var(--teal-dark);
+            color: #fff;
+            padding: 13px 20px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: .85rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .s-card-header.danger-hdr  { background: var(--red); }
+        .s-card-header.success-hdr { background: var(--teal-mid); }
+        .s-card-header.warning-hdr { background: #7b4200; }
+
+        /* ── TABLE ── */
+        .s-table { width: 100%; border-collapse: collapse; }
+        .s-table thead tr { background: #004d40; }
+        .s-table thead th {
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.85);
+            padding: 11px 14px;
+            white-space: nowrap;
+            border: none;
+        }
+        .s-table tbody td {
+            padding: 11px 14px;
+            font-size: .8rem;
+            border-bottom: 1px solid #f0f4f4;
+            vertical-align: middle;
+        }
+        .s-table tbody tr:last-child td { border-bottom: none; }
+        .s-table tbody tr:hover td { background: #f7fffe; }
+        .s-table .col-mono { font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; color: var(--text-muted); }
+
+        /* ── BADGES ── */
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+        .pill-active    { background: var(--green-lt);  color: var(--green); }
+        .pill-banned    { background: var(--red-lt);    color: var(--red); }
+        .pill-pending   { background: var(--orange-lt); color: var(--orange); }
+        .pill-resolved  { background: var(--green-lt);  color: var(--green); }
+        .pill-archived  { background: #eceff1;          color: #546e7a; }
+        .pill-anon      { background: #ede7f6;          color: #6a1b9a; }
+        .pill-named     { background: #e3f2fd;          color: #1565c0; }
+        .pill-high-risk { background: var(--red-lt);    color: var(--red); }
+        .pill-med-risk  { background: var(--orange-lt); color: var(--orange); }
+        .pill-low-risk  { background: var(--green-lt);  color: var(--green); }
+
+        /* ── SCORE BAR ── */
+        .score-wrap { display: flex; align-items: center; gap: 8px; }
+        .score-track {
+            width: 72px; height: 5px;
+            background: #e8ecec;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .score-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+        .score-val  { font-size: .72rem; font-weight: 700; }
+
+        /* ── BUTTONS ── */
+        .btn-s {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            text-decoration: none;
+            transition: all .15s;
+            white-space: nowrap;
+        }
+        .btn-teal    { background: var(--teal);   color: #fff;           border-color: var(--teal); }
+        .btn-teal:hover { background: var(--teal-mid); color:#fff; border-color: var(--teal-mid); }
+        .btn-success { background: var(--green);  color: #fff;           border-color: var(--green); }
+        .btn-success:hover { background: #1b5e20; color:#fff; }
+        .btn-danger  { background: var(--red);    color: #fff;           border-color: var(--red); }
+        .btn-danger:hover  { background: #b71c1c; color:#fff; }
+        .btn-orange  { background: var(--orange); color: #fff;           border-color: var(--orange); }
+        .btn-orange:hover  { background: #e65100; color:#fff; }
+        .btn-outline { background: transparent;   color: var(--text);    border-color: var(--border); }
+        .btn-outline:hover { background: var(--bg); border-color: #b0bec5; }
+        .btn-outline-teal  { background: transparent; color: var(--teal); border-color: var(--teal); }
+        .btn-outline-teal:hover { background: var(--teal-light); }
+        .btn-outline-danger { background: transparent; color: var(--red); border-color: var(--red); }
+        .btn-outline-danger:hover { background: var(--red-lt); }
+        .btn-outline-light { background: transparent; color: rgba(255,255,255,.8); border-color: rgba(255,255,255,.2); font-size:.68rem; }
+        .btn-outline-light:hover { background: rgba(255,255,255,.1); color:#fff; }
+
+        /* ── FORM CONTROLS ── */
+        .form-ctrl {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 7px;
+            font-size: .8rem;
+            font-family: 'Barlow', sans-serif;
+            color: var(--text);
+            background: var(--white);
+            transition: border-color .15s;
+        }
+        .form-ctrl:focus { outline: none; border-color: var(--teal-accent); }
+        .form-label-s {
+            display: block;
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        /* ── MODAL ── */
+        .modal-header-dark {
+            background: var(--teal-dark);
+            color: #fff;
+            padding: 14px 20px;
+            border-bottom: none;
+        }
+        .modal-title-s {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: .9rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            padding: 48px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 2.5rem; opacity: .25; margin-bottom: 12px; display: block; }
+        .empty-state p { font-size: .82rem; margin: 0; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            :root { --sidebar-w: 70px; }
+            .nav-label, .nav-section-label, .sidebar-brand-text { display: none; }
+            .nav-link { padding: 12px; justify-content: center; gap: 0; }
+            .nav-link .nav-icon { width: auto; font-size: 1.1rem; margin: 0; }
+            .sidebar-brand { padding: 16px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="sidebar-brand-text">
+            <div class="sidebar-brand-name">SENTINEL</div>
+            <div class="sidebar-brand-sub">AGENCY PARTNER PORTAL</div>
+        </div>
+    </div>
+
+    <div class="nav-section-label">Main</div>
+
+    <a href="/admin/overview" class="nav-link {% if request.path == '/admin/overview' or request.path == '/admin' %}active{% endif %}">
+        <i class="fas fa-home nav-icon"></i>
+        <span class="nav-label">OVERVIEW</span>
+    </a>
+    <a href="/admin/heatmap" class="nav-link {% if request.path == '/admin/heatmap' %}active{% endif %}">
+        <i class="fas fa-map-marked-alt nav-icon"></i>
+        <span class="nav-label">OVERVIEW (HEATMAP)</span>
+    </a>
+    <a href="/admin/company-registry" class="nav-link {% if request.path == '/admin/company-registry' %}active{% endif %}">
+        <i class="fas fa-building nav-icon"></i>
+        <span class="nav-label">COMPANY REGISTRY</span>
+    </a>
+    <a href="/admin/pending-incidents" class="nav-link {% if request.path == '/admin/pending-incidents' %}active{% endif %}">
+        <i class="fas fa-exclamation-triangle nav-icon"></i>
+        <span class="nav-label">PENDING INCIDENTS</span>
+    </a>
+
+    <div class="nav-section-label">Reports</div>
+
+    <a href="/admin/uht-reports" class="nav-link {% if request.path == '/admin/uht-reports' %}active{% endif %}">
+        <i class="fas fa-file-alt nav-icon"></i>
+        <span class="nav-label">UHT REPORTS</span>
+    </a>
+    <a href="/admin/dole-verification" class="nav-link {% if request.path == '/admin/dole-verification' %}active{% endif %}">
+        <i class="fas fa-user-check nav-icon"></i>
+        <span class="nav-label">DOLE VERIFICATION</span>
+    </a>
+    <a href="/admin/reports" class="nav-link {% if request.path == '/admin/reports' %}active{% endif %}">
+        <i class="fas fa-file-contract nav-icon"></i>
+        <span class="nav-label">REPORTS</span>
+    </a>
+
+    <div class="nav-section-label">Services</div>
+
+    <a href="/admin/overseas" class="nav-link {% if request.path == '/admin/overseas' %}active{% endif %}">
+        <i class="fas fa-globe-americas nav-icon"></i>
+        <span class="nav-label">OVERSEAS (DMW)</span>
+    </a>
+    <a href="/admin/scholarships" class="nav-link {% if request.path == '/admin/scholarships' %}active{% endif %}">
+        <i class="fas fa-graduation-cap nav-icon"></i>
+        <span class="nav-label">SCHOLARSHIPS</span>
+    </a>
+    <a href="/admin/legal" class="nav-link {% if request.path == '/admin/legal' %}active{% endif %}">
+        <i class="fas fa-gavel nav-icon"></i>
+        <span class="nav-label">LEGAL (PAO)</span>
+    </a>
+
+    <div class="sidebar-footer">
+        <a href="/admin/settings" class="nav-link {% if request.path == '/admin/settings' %}active{% endif %}">
+            <i class="fas fa-user-cog nav-icon"></i>
+            <span class="nav-label">AGENCY SETTINGS</span>
+        </a>
+    </div>
+
+</aside>
+
+<!-- ══════════ CONTENT ══════════ -->
+<div class="content-wrap">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <div class="topbar-breadcrumb">
+            SENTINEL ADMIN &rsaquo; <span>{% block breadcrumb %}Dashboard{% endblock %}</span>
+        </div>
+        <div class="topbar-right">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for cat, msg in messages %}
+                <div class="flash-alert alert alert-{% if cat == 'success' %}success{% elif cat == 'warning' %}warning{% elif cat == 'danger' %}danger{% else %}info{% endif %} py-1 px-3 mb-0" style="font-size:.72rem;">
+                    <i class="fas {% if cat == 'success' %}fa-check-circle{% elif cat == 'warning' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-1"></i>
+                    {{ msg }}
+                </div>
+                {% endfor %}
+            {% endwith %}
+            <a href="#" class="topbar-icon-btn" title="Notifications">
+                <i class="fas fa-bell" style="font-size:.8rem;"></i>
+            </a>
+            <div class="topbar-user">
+                <div class="topbar-avatar"><i class="fas fa-user-shield"></i></div>
+                <span class="topbar-username">DOLE Admin</span>
+            </div>
+            <a href="/" class="btn-portal-login">AGENCY LOGIN</a>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-body">
+        {% block content %}{% endblock %}
+    </main>
+
+</div><!-- /content-wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications | Project Sentinel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal-800: #00363a;
+            --teal-600: #006064;
+            --teal-400: #4db6ac;
+            --teal-50:  #f0faf9;
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-100: #f1f5f9;
+            --slate-50:  #f8fafc;
+        }
+        body { background: var(--slate-50); font-family: 'DM Sans', sans-serif; color: var(--slate-700); }
+
+        .navbar { background: #fff; border-bottom: 1px solid var(--slate-300); padding: 0.75rem 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .navbar-brand { font-weight: 700; color: var(--teal-600) !important; font-size: 1rem; letter-spacing: 0.05em; text-transform: uppercase; }
+        .nav-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; text-decoration: none; transition: 0.2s; border: 1.5px solid var(--slate-300); color: var(--slate-700); }
+        .nav-pill:hover { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+
+        .page-header { background: linear-gradient(135deg, var(--teal-800), var(--teal-600)); color: #fff; padding: 48px 0 64px; border-bottom: 3px solid var(--teal-400); }
+        .page-title { font-size: 1.8rem; font-weight: 700; }
+
+        .content-wrap { margin-top: -36px; }
+
+        .app-card {
+            background: #fff;
+            border: 1px solid var(--slate-300);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: 0.2s;
+        }
+        .app-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--teal-400); }
+
+        .app-icon { width: 48px; height: 48px; border-radius: 10px; background: var(--teal-50); border: 1px solid #b2dfdb; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--teal-600); flex-shrink: 0; font-weight: 700; }
+        .app-name { font-weight: 700; font-size: 0.95rem; color: var(--slate-900); }
+        .app-meta { font-size: 0.78rem; color: var(--slate-500); }
+
+        .status-pill { padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .status-Pending  { background: #fffbeb; color: #b45309; }
+        .status-Approved { background: #f0fdf4; color: #15803d; }
+        .status-Rejected { background: #fef2f2; color: #b91c1c; }
+
+        .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .dot-Pending  { background: #f59e0b; }
+        .dot-Approved { background: #22c55e; }
+        .dot-Rejected { background: #ef4444; }
+
+        .empty-state { text-align: center; padding: 5rem 1rem; }
+        .empty-icon { width: 80px; height: 80px; background: var(--teal-50); border: 2px dashed var(--teal-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--teal-400); margin: 0 auto 1.5rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation">
+    <div class="container d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/service/ojt" class="nav-pill"><i class="fas fa-arrow-left fa-xs"></i> Back to OJT Portal</a>
+            <a class="navbar-brand d-none d-md-block" href="/user"><i class="fas fa-shield-halved me-2"></i>PROJECT SENTINEL</a>
+        </div>
+        <a href="/user" class="nav-pill">Dashboard</a>
+    </div>
+</nav>
+
+<header class="page-header">
+    <div class="container">
+        <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb mb-3" style="background:none;padding:0;">
+                <li class="breadcrumb-item"><a href="/user" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.8rem;">Portal</a></li>
+                <li class="breadcrumb-item"><a href="/service/ojt" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.8rem;">OJT</a></li>
+                <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.5);font-size:0.8rem;">My Applications</li>
+            </ol>
+        </nav>
+        <h1 class="page-title"><i class="fas fa-file-alt me-3" style="color:var(--teal-400);"></i>My OJT Applications</h1>
+        <p style="opacity:0.7; font-size:0.95rem; margin-top:0.5rem;">Track the status of all your placement applications.</p>
+    </div>
+</header>
+
+<main class="container content-wrap pb-5">
+    <div class="bg-white border border-slate-300 rounded-3 p-4 shadow-sm mb-4"
+         style="border-color:var(--slate-300)!important;">
+        <div class="row g-3 text-center">
+            <div class="col-4">
+                <div style="font-size:1.8rem; font-weight:700; color:var(--teal-600);">{{ applications|length }}</div>
+                <div style="font-size:0.75rem; color:var(--slate-500); text-transform:uppercase; letter-spacing:0.06em;">Total</div>
+            </div>
+            <div class="col-4">
+                <div style="font-size:1.8rem; font-weight:700; color:#22c55e;">
+                    {{ applications | selectattr('status', 'equalto', 'Approved') | list | length }}
+                </div>
+                <div style="font-size:0.75rem; color:var(--slate-500); text-transform:uppercase; letter-spacing:0.06em;">Approved</div>
+            </div>
+            <div class="col-4">
+                <div style="font-size:1.8rem; font-weight:700; color:#f59e0b;">
+                    {{ applications | selectattr('status', 'equalto', 'Pending') | list | length }}
+                </div>
+                <div style="font-size:0.75rem; color:var(--slate-500); text-transform:uppercase; letter-spacing:0.06em;">Pending</div>
+            </div>
+        </div>
+    </div>
+
+    {% if applications %}
+    <div class="d-flex flex-column gap-3">
+        {% for app in applications %}
+        <div class="app-card" role="article" aria-label="Application to {{ app.company_name }}">
+            <div class="app-icon">{{ app.company_name[0] | upper }}</div>
+            <div class="flex-grow-1 min-w-0">
+                <div class="app-name text-truncate">{{ app.company_name }}</div>
+                <div class="app-meta">
+                    <i class="fas fa-clock me-1"></i>
+                    Applied: {{ app.timestamp.strftime('%b %d, %Y at %I:%M %p') if app.timestamp else 'Recently' }}
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <div class="timeline-dot dot-{{ app.status }}" aria-hidden="true"></div>
+                <span class="status-pill status-{{ app.status }}" aria-label="Status: {{ app.status }}">
+                    {{ app.status }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true"><i class="fas fa-inbox"></i></div>
+        <h5 style="font-weight:700;">No Applications Yet</h5>
+        <p style="color:var(--slate-500); font-size:0.9rem;">You haven't applied to any OJT placements. Browse the listings and apply!</p>
+        <a href="/service/ojt" style="background:var(--teal-600); color:#fff; border:none; border-radius:8px; padding:0.6rem 1.5rem; font-weight:600; font-size:0.875rem; text-decoration:none; display:inline-block;">
+            <i class="fas fa-search me-1"></i> Browse Placements
+        </a>
+    </div>
+    {% endif %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

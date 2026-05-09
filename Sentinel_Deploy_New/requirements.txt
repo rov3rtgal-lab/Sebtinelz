@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+requests
+numpy
+pandas
+scikit-learn
+reportlab
+dlib
+face-recognition
+opencv-python
